@@ -1,16 +1,26 @@
 import React from "react";
 import { NavLink} from "./elementos";
-  
+import Cookies from 'universal-cookie';
+const cookies = new Cookies();
+
+
+
 const Navbar = () => {
+    const cerrarSesion=()=>{    
+        cookies.remove('nombre', {path: "/"});
+        window.location.href='./login';
+    }
   return (
     <>
     <nav class="navbar navbar-expand-lg navbar-light bg-light px-4">
         <div class="container-fluid">
             <a class="navbar-brand" href="#">Sistema BAD115</a>
+            
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarText" aria-controls="navbarText" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
             </button>
             <div class="collapse navbar-collapse" id="navbarText">
+            {cookies.get('nombre')!=null &&
             <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                 <li class="nav-item">
                     <NavLink to="/" class="nav-link active" href="#">Inicio</NavLink>
@@ -23,8 +33,45 @@ const Navbar = () => {
                 </li>
                       
             </ul>
+            }
+             {cookies.get('nombre')==null &&
+            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                      
+            </ul>
+            }
             <span class="navbar-text">
-               Usuario/ cerrar sesion
+                
+                {cookies.get('nombre')!=null &&
+                      <div>                        <div class="collapse navbar-collapse" id="navbarNavDarkDropdown">
+                        <ul class="navbar-nav">
+                          <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" id="navbarDarkDropdownMenuLink" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            {cookies.get('nombre')}
+                            </a>
+                            <ul class="dropdown-menu dropdown-menu" aria-labelledby="navbarDarkDropdownMenuLink">
+                            <li><h6 class="dropdown-header">Opciones:</h6></li>
+                              <li><a class="dropdown-item" href="#">Perfil</a></li>
+                              <li><hr class="dropdown-divider"/></li>
+                              <li><a class="dropdown-item" href="#" onClick={()=>cerrarSesion()}>Cerrar Sesión</a></li>
+                            </ul>
+                          </li>
+                        </ul>
+                      </div>
+                    </div>
+                    
+                       
+
+                }
+                {cookies.get('nombre')==null &&
+                  <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                 
+                  <li class="nav-item">
+                      <NavLink to="/login" class="nav-link " aria-current="page" href="#">Iniciar Sesión</NavLink>
+                  </li>
+                        
+              </ul>
+                }
+              
             </span>
             </div>
         </div>

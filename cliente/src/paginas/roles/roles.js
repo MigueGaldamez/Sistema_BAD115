@@ -3,6 +3,10 @@ import { useState,useEffect } from 'react';
 import Axios from 'axios';  
 import DatatableRoles from "./datatable";
 
+
+import Cookies from 'universal-cookie';
+const cookies = new Cookies();
+
 const Roles = () => { 
   const[nombre,setNombre]=useState("");
   //ESTE PARA CADA ATRIBUTO QUE SEPUEDE EDITAR
@@ -63,7 +67,12 @@ const Roles = () => {
   //LEER LOS DATOS AL CARGAR
   useEffect(()=>{
    obtenerRoles();
+
+   if(!cookies.get('nombre')){
+    window.location.href="./login";
+    }
   },[]);
+
   return (
     <div class="container my-4">
       <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
