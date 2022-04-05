@@ -26,23 +26,41 @@ const Login = () => {
   }
   return (
     <div class="container mt-4">
-    <div class="card card-body col-6 mx-auto p-4">
-      <h1 class="mb-0">Sistema BAD115</h1>
-      <h5 class="text-muted mt-0 mb-3">Iniciar Sesión</h5>
-      <div class="mb-3">
-        <label for="exampleInputEmail1" class="form-label">Correo Electronico</label>
-        <input type="email" class="form-control" name="usuario" onChange={(event)=>{ setCorreo(event.target.value)}}/>
-        <div id="emailHelp" class="form-text">Nunca compartiremos tu direccion de correo con nadie más.</div>
+      <div class="card card-body col-6 mx-auto p-4 loginCard">   
+        <div class="col-8 mx-auto">
+          <img class="" src={"./imgs/logo2.svg"} />
+        </div>
+        
+      <div class="mb-3 mt-4">
+        <div class="row">
+        <div class="col-3">
+          <label for="exampleInputEmail1" class="form-label">Correo Electronico</label>          
+        </div>
+        <div class="col">
+          <input type="email" class="form-control form" name="usuario" onChange={(event)=>{ setCorreo(event.target.value)}}/>
+          <div id="emailHelp" class="form-text">Nunca compartiremos tu direccion de correo con nadie más.</div>
+        </div>
+        </div>
+        
+
       </div>
       <div class="mb-3">
-        <label for="exampleInputPassword1" class="form-label">Contraseña</label>
-        <input type="password" class="form-control"  name="contrasenia" onChange={(event)=>{ setContrasenia(event.target.value)}}/>
+        <div class="row">
+          <div class="col-3">
+          <label for="exampleInputPassword1" class="form-label">Contraseña</label>
+          </div>
+          <div class="col">
+            <input type="password" class="form-control form"  name="contrasenia" onChange={(event)=>{ setContrasenia(event.target.value)}}/>
+          </div>
+        </div>
       </div>
       <div class="mb-3 form-check">
         <input type="checkbox" class="form-check-input" id="exampleCheck1"/>
         <label class="form-check-label" for="exampleCheck1">Recordarme</label>
       </div>
+      <div class="col text-center">
       <button type="submit" class="btn btn-primary" onClick={()=> iniciarSesion()}>Iniciar sesión</button>
+      </div>
     </div>
   </div> 
     );

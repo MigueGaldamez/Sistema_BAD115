@@ -2,3 +2,11 @@
   border-left: 3px solid #ee2b2b; 
 }
 
+.loginCard{
+border-top: 6px solid #DD4A48!important;
+}
+
+.fondoAzulOscuro{
+  background-color:#203239!important;
+  color:antiquewhite !important;
+}

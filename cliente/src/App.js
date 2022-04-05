@@ -1,4 +1,4 @@
-import './App.css';
+
 //NAV Y FOOTER
 import Navbar from './componentes/Navbar';
 import Footer from './componentes/Footer';

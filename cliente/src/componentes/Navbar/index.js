@@ -12,9 +12,9 @@ const Navbar = () => {
     }
   return (
     <>
-    <nav class="navbar navbar-expand-lg navbar-light bg-light px-4">
+    <nav class="navbar navbar-expand-lg px-4 fondoAzulOscuro py-2">
         <div class="container-fluid">
-            <a class="navbar-brand" href="#">Sistema BAD115</a>
+            <a class="navbar-brand text-light" href="#">Sistema BAD115</a>
             
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarText" aria-controls="navbarText" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
@@ -23,13 +23,13 @@ const Navbar = () => {
             {cookies.get('nombre')!=null &&
             <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                 <li class="nav-item">
-                    <NavLink to="/" class="nav-link active" href="#">Inicio</NavLink>
+                    <NavLink to="/" class="nav-link active text-light" href="#">Inicio</NavLink>
                 </li>       
                 <li class="nav-item">
-                    <NavLink to="/roles" class="nav-link " aria-current="page" href="#">Roles</NavLink>
+                    <NavLink to="/roles" class="nav-link  text-light" aria-current="page" href="#">Roles</NavLink>
                 </li>
                 <li class="nav-item">
-                    <NavLink to="/departamentos" class="nav-link " aria-current="page" href="#">Departamentos</NavLink>
+                    <NavLink to="/departamentos" class="nav-link  text-light" aria-current="page" href="#">Departamentos</NavLink>
                 </li>
                       
             </ul>
@@ -45,7 +45,7 @@ const Navbar = () => {
                       <div>                        <div class="collapse navbar-collapse" id="navbarNavDarkDropdown">
                         <ul class="navbar-nav">
                           <li class="nav-item dropdown">
-                            <a class="nav-link dropdown-toggle" href="#" id="navbarDarkDropdownMenuLink" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            <a class="nav-link dropdown-toggle text-light" href="#" id="navbarDarkDropdownMenuLink" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                             {cookies.get('nombre')}
                             </a>
                             <ul class="dropdown-menu dropdown-menu" aria-labelledby="navbarDarkDropdownMenuLink">
@@ -66,7 +66,7 @@ const Navbar = () => {
                   <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                  
                   <li class="nav-item">
-                      <NavLink to="/login" class="nav-link " aria-current="page" href="#">Iniciar Sesión</NavLink>
+                      <NavLink to="/login" class="nav-link text-light" aria-current="page" href="#">Iniciar Sesión</NavLink>
                   </li>
                         
               </ul>
