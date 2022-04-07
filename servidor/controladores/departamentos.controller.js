@@ -18,7 +18,7 @@ const crearDepartamento =  async (req, res) => {
     })
 };
 
-const actualiarDepartamento = async (req,res)=>{
+const actualizarDepartamento = async (req,res)=>{
     const id = req.body.iddepartamento;
     const { nombre } = req.body;
     sql = "UPDATE departamento SET nombre=$1 WHERE iddepartamento=$2";
@@ -40,6 +40,6 @@ const eliminarDepartamento =  async (req, res) => {
 module.exports = {
    crearDepartamento,
    obtenerDepartamentos,
-   actualiarDepartamento,
+   actualizarDepartamento,
    eliminarDepartamento,
 };

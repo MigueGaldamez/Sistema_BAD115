@@ -12,6 +12,7 @@ import Login from './paginas/login';
 import Cookies from 'universal-cookie';
 const cookies = new Cookies();
 
+
 function RequireAuth({ children, redirectTo }) {
   let isAutenticado = false;
   if(cookies.get('nombre')){

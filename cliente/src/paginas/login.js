@@ -1,6 +1,9 @@
 import React, { useState,useEffect,Component }from 'react';
 import Axios from 'axios';
 import Cookies from 'universal-cookie';
+import swal from 'sweetalert';
+var SHA256 = require("crypto-js/sha256");
+
 const cookies = new Cookies();
 
 const Login = () => { 
@@ -8,19 +11,33 @@ const Login = () => {
   const[contrasenia,setContrasenia]=useState("");
 
   const iniciarSesion=()=>{
-    Axios.post('http://localhost:3001/iniciarSesion', {correo: correo, contrasenia:contrasenia})
+    var contraseniaEncriptada = (SHA256(contrasenia)).toString();
+    console.log(contraseniaEncriptada);
+    Axios.post('http://localhost:3001/iniciarSesion', {correo: correo, contrasenia:contraseniaEncriptada})
     .then(response=>{
  
         if(response.data.length>0){
           var respuesta = response.data[0];
-          cookies.set('nombre', respuesta.nombre, {path: "/"});
-          window.location.href='./';
-          alert('Bienvenido'+respuesta.nombre)
+          cookies.set('nombre', respuesta.nombre + " | " +respuesta.correo, {path: "/"});
+          swal({
+            title: "Exito!",
+            text: "Bienvenido "+respuesta.nombre +"!",
+            icon: "success",
+            button: `Entendido`, 
+          }).then((result) => { 
+            window.location.href='./';
+           });
         }
     })
     .catch(error=>{      
       console.log(error);
-        alert('El usuario o la contraseña no son correctos');
+      swal({
+        title: "Error!",
+        text: "Usuario o contraseña incorrecto!",
+        icon: "error",
+        button: "Aww yiss!",
+      });
+        
     })
 
   }
@@ -30,11 +47,11 @@ const Login = () => {
         <div class="col-8 mx-auto">
           <img class="" src={"./imgs/logo2.svg"} />
         </div>
-        
+         
       <div class="mb-3 mt-4">
         <div class="row">
         <div class="col-3">
-          <label for="exampleInputEmail1" class="form-label">Correo Electronico</label>          
+          <label for="exampleInputEmail1" class="form-label">Correo Electronico </label>          
         </div>
         <div class="col">
           <input type="email" class="form-control form" name="usuario" onChange={(event)=>{ setCorreo(event.target.value)}}/>
