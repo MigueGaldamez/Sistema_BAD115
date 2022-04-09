@@ -17,40 +17,41 @@ export default function DatatableRoles({ data,eliminarRegistro,actualizarRegistr
   const columns = data[0] && Object.keys(data[0]);
   return (
     <>
-    <table class="table table-striped mt-4 table-hover " cellPadding={0} cellSpacing={0}>
+    <table class="table table-striped mt-3 table-hover " cellPadding={0} cellSpacing={0}>
       <thead class="table-dark">
         <tr>
-          {data[0] && columns.map((heading) => <th>{heading}</th>)}
+          {data[0] && columns.map((heading,index) => <th key={index}>{heading}</th>)}
           <th>Acciones</th>
         </tr>
       </thead>
       <tbody>
-        {data.map((row) =>{  const id = row['idrol'];  return(
-          <tr>
-           
-            {columns.map((column) => {
+        
+        {data.map((row,index) =>{  const id = row['idrol'];  return(
+          <tr key={index}>
+            {columns.map((column,index) => {
               
                 if(column!='idrol')
-            return(
-                
-              <td> <input type="text" class="form-control form-control-sm" onChange={(event)=>{
-                setNuevoNombre(event.target.value)
-                }} key={id} defaultValue={row[column]} /></td>
-             
-            )
-            if(column=='idrol')
-            return(
-                
-              <td>{row[column]}  </td>
-           
-            )})}
-            <td>
-             
-            <a  class="btn btn-success btn-sm mx-1" onClick={()=>{actualizarRegistro(id)}}>Actualizar</a>
-            <a class="btn btn-danger btn-sm mx-1" onClick={()=>{eliminarRegistro(id)}}>Eliminar</a>
-            </td>
+                return(              
+                  <td key={index}><input type="text" class="form-control form-control-sm" onChange={(event)=>{
+                    setNuevoNombre(event.target.value)
+                    }} key={id} defaultValue={row[column]} /></td>
+                )
+                if(column=='idrol')
+                return(
+                    
+                  <td key={index}>{row[column]}  </td>
+              
+                )})}
+              <td  >
+              <a class="btn btn-success btn-sm mx-1" onClick={()=>{actualizarRegistro(id)}}>Actualizar</a>
+              <a class="btn btn-danger btn-sm mx-1" onClick={()=>{eliminarRegistro(id)}}>Eliminar</a>
+              </td>
           </tr>
+          
         )})}
+         {data.length ==0 && 
+          <tr><td class="text-center">No hay registros que coincidan</td></tr>
+         }
       </tbody>
     </table>
     <Pagination

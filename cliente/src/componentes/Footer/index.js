@@ -4,9 +4,9 @@ import { NavLink} from "../Navbar/elementos";
 const Footer = () => {
   return (
     <>
-    <nav class="navbar fixed-bottom navbar-dark bg-dark py-0">
+    <nav class="navbar fixed-bottom  py-0 fondoAzulOscuro">
         <div class="container-fluid">
-            <a class="navbar-brand" href="#">Copyright 2022</a>
+            <a class="navbar-brand text-light" href="#">Copyright 2022</a>
         </div>
     </nav>      
     </>
