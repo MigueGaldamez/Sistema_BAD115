@@ -5,8 +5,10 @@ const { crearRol, obtenerRoles, actualizarRol, eliminarRol, } = require('../cont
 const { crearDepartamento, obtenerDepartamentos, actualizarDepartamento, eliminarDepartamento, } = require('../controladores/departamentos.controller');
 const { crearMunicipio, obtenerMunicipios, actualizarMunicipio, eliminarMunicipio, } = require('../controladores/municipios.controller');
 const { crearPoblacion, obtenerPoblaciones, actualizarPoblacion, eliminarPoblacion, } = require('../controladores/poblaciones.controller');
+const { crearLaboratorio, obtenerLaboratorios, actualizarLaboratorio, eliminarLaboratorio, } = require('../controladores/laboratorios.controller');
 
-const { obtenerUsuarios, iniciarSesion} = require('../controladores/usuarios.controller');
+const { obtenerUsuarios, iniciarSesion,} = require('../controladores/usuarios.controller');
+
 //siempre poner una coma al final
 
 //CRUD ROLES
@@ -36,5 +38,11 @@ router.delete('/poblaciones/:idpoblacion', eliminarPoblacion);
 //CRUD USUARIOS
 router.get('/usuarios', obtenerUsuarios);
 router.post('/iniciarSesion', iniciarSesion)
+
+//CRUD LABORATORIOS
+router.get('/laboratorios', obtenerLaboratorios);
+router.post('/laboratorios', crearLaboratorio);
+router.put('/laboratorios', actualizarLaboratorio)
+router.delete('/laboratorios/:idlaboratorio', eliminarLaboratorio);
 
 module.exports = router;

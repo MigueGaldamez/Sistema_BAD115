@@ -5,8 +5,8 @@ export default function DatatableRoles(
     eliminarRegistro,
     actualizarRegistro,
     setNuevoNombre,
-    setNuevoIdDepartamento,
-    departamentos, }) {
+    setNuevoIdMunicipio,
+    municipios, }) {
   
   const dataOriginal = data;
   const [paginaActual, setPaginaActual] = useState(1);
@@ -27,19 +27,19 @@ export default function DatatableRoles(
       <thead class="table-dark">
         <tr>
           {data[0] && columns.map((heading) => {
-             if(heading!='iddepartamento')
+             if(heading!='idmunicipio')
             return(<th>{heading}</th>)
             })}
           <th>Acciones</th>
         </tr>
       </thead>
       <tbody>
-        {data.map((row) =>{  const id = row['idmunicipio'];  return(
+        {data.map((row) =>{  const id = row['idlaboratorio'];  return(
           <tr>
            
             {columns.map((column) => {
               
-            if(column!='idmunicipio' && column!='iddepartamento' &&  column!='departamento')
+            if(column=='nombrelaboratorio')
             return(
                 
               <td> <input type="text" class="form-control form-control-sm" onChange={(event)=>{
@@ -47,19 +47,19 @@ export default function DatatableRoles(
                 }} key={id} defaultValue={row[column]} /></td>
              
             )
-            if(column=='departamento')
+            if(column=='municipio')
             return(
                 <td>
                   <select class="form-select form-select-sm" aria-label="Default select example" onChange={(event)=>{
-                setNuevoIdDepartamento(event.target.value)}}>
+                setNuevoIdMunicipio(event.target.value)}}>
                    
-                    {departamentos.map((departamento) => {
-                      if(row['iddepartamento']==departamento.iddepartamento)
+                    {municipios.map((municipio) => {
+                      if(row['idmunicipio']==municipio.idmunicipio)
                     
-                    return(  <option selected value={departamento.iddepartamento}>{departamento.departamento}</option>)
-                    if(row['iddepartamento']!=departamento.iddepartamento)
+                    return(  <option selected value={municipio.idmunicipio}>{municipio.municipio}</option>)
+                    if(row['idmunicipio']!=municipio.idmunicipio)
                     
-                    return(  <option  value={departamento.iddepartamento}>{departamento.departamento}</option>)
+                    return(  <option  value={municipio.idmunicipio}>{municipio.municipio}</option>)
                     })}
                   </select>
                 </td>

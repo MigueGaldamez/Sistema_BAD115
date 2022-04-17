@@ -17,7 +17,10 @@ const Roles = () => {
   //PARA LA BUSQUEDA
   const [q, setQ] = useState('');
   //TODAS LAS COLUMNAS
-  const columns =departamentoLista[0] && Object.keys(departamentoLista[0]);
+  const [columns] = useState([
+    'iddepartamento',
+    'departamento',
+  ]);
   //LAS COLUMNAS POR LAS QUE SEPUEDEN FILTRAR
   const [buscarColumnas, setBuscarColumnas] = useState([
     'iddepartamento',

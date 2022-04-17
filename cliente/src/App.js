@@ -12,11 +12,12 @@ import Login from './paginas/login';
 import Cookies from 'universal-cookie';
 import Municipios from './paginas/municipios/municipios';
 import Poblaciones from './paginas/poblaciones/poblaciones';
+import Laboratorios from './paginas/laboratorios/laboratorios';
 const cookies = new Cookies();
 
 
 function RequireAuth({ children, redirectTo }) {
-  let isAutenticado = false;
+  let isAutenticado = false;//aqui
   if(cookies.get('nombre')){
     isAutenticado = true;
   }
@@ -33,7 +34,8 @@ function App() {
           <Route path='/municipios' element={ <RequireAuth redirectTo="/login"><Municipios/></RequireAuth>} />
           
           <Route path='/poblaciones' element={ <RequireAuth redirectTo="/login"><Poblaciones/></RequireAuth>} />
-          <Route path='/municipios' element={ <RequireAuth redirectTo="/login"><Municipios/></RequireAuth>} />
+          <Route path='/laboratorios' element={ <RequireAuth redirectTo="/login"><Laboratorios/></RequireAuth>} />
+          
           <Route path='/municipios' element={ <RequireAuth redirectTo="/login"><Municipios/></RequireAuth>} />
           
 

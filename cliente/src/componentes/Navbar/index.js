@@ -12,7 +12,7 @@ const Navbar = () => {
     }
   return (
     <>
-    <nav class="navbar navbar-expand-lg px-4 fondoAzulOscuro py-1">
+    <nav class="navbar navbar-expand-lg px-4 fondoAzulOscuro py-1 sticky-top">
         <div class="container-fluid">
             <a class="navbar-brand text-light">Sistema BAD115</a>
             
@@ -36,6 +36,9 @@ const Navbar = () => {
                 </li>
                 <li class="nav-item">
                     <NavLink to="/poblaciones" class="nav-link  text-light" aria-current="page" href="#">Poblaciones</NavLink>
+                </li>
+                <li class="nav-item">
+                    <NavLink to="/laboratorios" class="nav-link  text-light" aria-current="page" href="#">Laboratorios</NavLink>
                 </li>
                       
             </ul>

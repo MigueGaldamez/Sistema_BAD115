@@ -12,7 +12,7 @@ const obtenerMunicipios = async(req,res)=>{
         municipio.departamento = responseHija.rows[0].departamento; 
       
     }
-    res.status(200).json(response.rows);
+    res.status(200).json(municipios);
 };
 
 const crearMunicipio =  async (req, res) => {

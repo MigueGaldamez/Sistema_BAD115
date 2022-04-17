@@ -1,6 +1,7 @@
 const express = require('express');
 const app = express();
 const cors = require('cors');
+const { iniciarBaseDatos,} = require('./controladores/controlador');
 app.use(cors());
 
 //
@@ -12,4 +13,5 @@ app.use(require('./rutas/index'));
 
 app.listen(3001,()=>{
     console.log("Yey, funcionaaa");
+    iniciarBaseDatos();
 })

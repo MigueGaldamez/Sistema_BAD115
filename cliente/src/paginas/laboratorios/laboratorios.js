@@ -4,44 +4,41 @@ import Axios from 'axios';
 import DatatableRoles from "./datatable";
 import { Modal } from 'bootstrap/dist/js/bootstrap.bundle.min';
 
-const Poblaciones = () => { 
-  //PARA los ERRORES
+const Laboratorios = () => { 
+    //PARA los ERRORES
   const[errores, setErrores] = useState([]);
   //PARA CADA ATRIBUTO
   const[nombre,setNombre]=useState("");
-  const[edadMinima,setEdadMinima]=useState(0);
-  const[edadMaxima,setEdadMaxima]=useState(0);
+  const[municipio,setMunicipio]=useState(0);
   //ESTE PARA CADA ATRIBUTO QUE SEPUEDE EDITAR
-  const[nuevoNombre,setNuevoNombre]=useState("");
-  const[nuevoEdadMinima,setNuevoEdadMinima]=useState(0);
-  const[nuevoEdadMaxima,setNuevoEdadMaxima]=useState(0);
+  const[nuevoNombre,setNuevoNombre]=useState(0);
+  const[nuevoIdMunicipio,setNuevoIdMunicipio]=useState(0);
   //LA LISTA QUEMOSTRAREMOS
-  const[poblacionLista, setPoblacionLista] = useState([]);
+  const[municipioLista, setMunicipioLista] = useState([]);
+  const[laboratorioLista, setLaboratorioLista] = useState([]);
   const[modalB, setModalB] = useState([]);
   //PARA LA BUSQUEDA
   const [q, setQ] = useState('');
   //TODAS LAS COLUMNAS
-  const [columns] =useState([
-    'idpoblacion',
-    'edadminimo',
-    'edadmaximo',
-    'poblacion'
+  const [columns] = useState([
+    'idlaboratorio',
+    'nombrelaboratorio',
+    'municipio'
   ]);
   //LAS COLUMNAS POR LAS QUE SEPUEDEN FILTRAR
   const [buscarColumnas, setBuscarColumnas] = useState([
-    'idpoblacion',
-    'edadminimo',
-    'edadmaximo',
-    'poblacion'
+    'idlaboratorio',
+    'nombrelaboratorio',
+    'municipio'
   ]);
-  
 
   const obtenerRegistros=()=>{
-    Axios.get('http://localhost:3001/poblaciones').then((response)=>{
-      setPoblacionLista(response.data);
-    });
+    Axios.get('http://localhost:3001/laboratorios').then((response)=>{
+      setLaboratorioLista(response.data);  });
+    Axios.get('http://localhost:3001/municipios').then((response)=>{
+      setMunicipioLista(response.data);  });
   };
- 
+
   const abrirModal=()=>{
     var modal = new Modal(document.getElementById('nuevoRegistro'));
     setModalB(modal);
@@ -52,23 +49,22 @@ const Poblaciones = () => {
     setErrores([]);
     //limpiamos los campos
     setNombre('');
-    setEdadMaxima(0);
-    setEdadMinima(0);
+    setMunicipio('');
     //limpiamos el formulario
     document.getElementById("formulario").reset();
     //cerramos el modal
     var modal = modalB;
     modal.hide();
   }
+
   //AGREGAR
   const agregarRegistro=(event)=>{    
     event.preventDefault();
-    Axios.post('http://localhost:3001/poblaciones',{
+    Axios.post('http://localhost:3001/laboratorios',{
       //TODOS LOS CAMPOS
       nombre:nombre,
-      edadmaximo:edadMaxima,
-      edadminimo:edadMinima,
-    }).then((response)=>{    
+      municipio:municipio,
+    }).then((response)=>{
       if(response.data.errores==null){      
         cerrarModal();
       }else{        
@@ -79,18 +75,18 @@ const Poblaciones = () => {
     });
   };
 
-  const eliminarRegistro=(idpoblacion)=>{
-    Axios.delete(`http://localhost:3001/poblaciones/${idpoblacion}`).then(()=>{
-      obtenerRegistros();
+  const eliminarRegistro=(idlaboratorio)=>{
+    Axios.delete(`http://localhost:3001/laboratorios/${idlaboratorio}`).then(()=>{
+      obtenerRegistros();  
     });
   };
 
-  const actualizaRegistro=(idpoblacion)=>{
-    Axios.put('http://localhost:3001/poblaciones',{nombre:nuevoNombre,edadmaximo:nuevoEdadMaxima,edadminimo:nuevoEdadMinima,idpoblacion:idpoblacion}).then(()=>{
-      obtenerRegistros();
+  const actualizaRegistro=(idlaboratorio)=>{
+    Axios.put('http://localhost:3001/laboratorios',{nombre:nuevoNombre,idlaboratorio:idlaboratorio,idmunicipio:nuevoIdMunicipio}).then(()=>{
+      obtenerRegistros();  
     });
   };
-
+  
   function buscar(rows) {
     return rows.filter((row) =>
       buscarColumnas.some(
@@ -103,64 +99,65 @@ const Poblaciones = () => {
     );
   }
 
+  
+
 
   //LEER LOS DATOS AL CARGAR
   useEffect(()=>{
    obtenerRegistros();
+ 
   },[]);
-
   return (
     <div class="container my-4">
-      <div class="modal fade" id="nuevoRegistro" tabIndex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true" data-bs-backdrop="static">
+      <div class="modal fade" id="nuevoRegistro" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true" data-bs-backdrop="static">
         <div class="modal-dialog">
           <div class="modal-content">
             <div class="modal-header">
               <h5 class="modal-title" id="exampleModalLabel">Nuevo Registro</h5>
-             
-              
-              <button type="button" class="btn-close" onClick={cerrarModal} aria-label="Close"></button>
+              <button type="button" class="btn-close"  onClick={cerrarModal} aria-label="Close"></button>
             </div>
             <form id="formulario" onSubmit={agregarRegistro}>
             <div class="modal-body">
-              
-                <label class="form-label">Nombre:</label>
-                <input type="text" class="form-control form-control-sm" placeholder='Ingrese una nueva poblacion' onChange={(event)=>{ setNombre(event.target.value)}}/>        
+                <label for="exampleInputEmail1" class="form-label">Laboratorio:</label>
+                <input type="email" class="form-control form-control-sm" placeholder='Ingrese un nuevo Municipio' onChange={(event)=>{ setNombre(event.target.value)}}/>        
                 { 
                 errores.nombre &&
-                <p>
-               <small class="text-danger">* {errores.nombre}</small></p>
+               <p><small class="text-danger">* {errores.nombre}</small></p>
               }
-               <label class="form-label mt-1">Edad Minima:</label>
-                <input type="number" min="1" max="99" class="form-control form-control-sm" placeholder='' onChange={(event)=>{ setEdadMinima(event.target.value)}}/>        
+              <label for="" class="form-label mt-3">Municipio:</label>
+              <select class="form-select form-select-sm" aria-label="Default select example" onChange={(event)=>{
+                setMunicipio(event.target.value)}}>
+                   <option selected>Seleccione un Municipio</option>
+                    {municipioLista.map((municipio) => {
+                     
+                    
+                    return(  <option  value={municipio.idmunicipio}>{municipio.municipio}</option>)
+                    })}
+                  </select>        
                 { 
-                errores.edadminimo &&
-                <p><small class="text-danger">* {errores.edadminimo}</small></p>
+                errores.municipio &&
+               <p><small class="text-danger">* {errores.municipio}</small></p>
               }
-              <label class="form-label mt-1">Edad Maxima:</label>
-                <input type="number" min="1" max="99" class="form-control form-control-sm" placeholder='' onChange={(event)=>{ setEdadMaxima(event.target.value)}}/>        
-                { 
-                errores.edadmaximo &&
-                <p><small class="text-danger">* {errores.edadmaximo}</small></p>
-              }
-              
             </div>
             <div class="modal-footer">
-              <button type="button" class="btn btn-secondary" onClick={cerrarModal} >Cancelar</button>
+              <button type="button" class="btn btn-secondary"  onClick={cerrarModal}>Cancelar</button>
               <button type="button" class="btn btn-primary" onClick={agregarRegistro}>Guardar</button>
-              
             </div>
             </form>
           </div>
         </div>
       </div>
       <div class="mt-4 mb-4">
-      <div class="row bordeLateral mb-3">
-        <h2 class="m-0"><span>Gestión de Poblaciones</span>
-          <button type="button" class="btn btn-primary btn-sm ms-3" onClick={abrirModal}>
+        <div class="row bordeLateral mb-3">
+        <h2 class="m-0"><span>Gestión de Laboratorios</span>
+        
+          <button type="button" class="btn btn-primary btn-sm ms-3"  onClick={abrirModal}>
             Nuevo Registro
           </button>
+              
           </h2>
         </div>
+         
           <div class="row">        
            
             <div class="col-12">
@@ -174,14 +171,14 @@ const Poblaciones = () => {
                               value={q}
                               onChange={(e) => setQ(e.target.value)}
                             />
-                            <small class="text-muted">Puede buscar por {columns && columns.map((column,index) => (<span key={index}>{column}, </span>))}</small>
+                            <small class="text-muted">Puede buscar por {columns && columns.map((column) => (<span>{column}, </span>))}</small>
                     </div>
                     <div class="col col-6 mt-2">
                       <label>Criterios</label>
                         <br/>
                       {columns &&
-                              columns.map((column,index) => (
-                                <div key={index} class="form-check form-check-inline">
+                              columns.map((column) => (
+                                <div class="form-check form-check-inline">
                                 <label>
                                   
                                   {column}
@@ -207,11 +204,15 @@ const Poblaciones = () => {
               </div>
             </div>
           </div>
-          <DatatableRoles  data={buscar(poblacionLista)} eliminarRegistro={eliminarRegistro} actualizarRegistro={actualizaRegistro} setNuevoNombre={setNuevoNombre} setNuevoEdadMaxima={setNuevoEdadMaxima} setNuevoEdadMinima={setNuevoEdadMinima}/>
-          
+          <DatatableRoles  data={buscar(laboratorioLista)} municipios={municipioLista} eliminarRegistro={eliminarRegistro} actualizarRegistro={actualizaRegistro} setNuevoNombre={setNuevoNombre} setNuevoIdMunicipio={setNuevoIdMunicipio}/>
+  
+
+
+
+
       </div>    
     </div>
   );
 };
   
-export default Poblaciones;
+export default Laboratorios;
