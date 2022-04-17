@@ -10,6 +10,8 @@ import Departamentos from './paginas/departamentos/departamentos';
 import Login from './paginas/login';
 //COOKIES
 import Cookies from 'universal-cookie';
+import Municipios from './paginas/municipios/municipios';
+import Poblaciones from './paginas/poblaciones/poblaciones';
 const cookies = new Cookies();
 
 
@@ -28,6 +30,12 @@ function App() {
           
           <Route path='/departamentos' element={ <RequireAuth redirectTo="/login"><Departamentos/></RequireAuth>} />
           <Route path='/roles' element={ <RequireAuth redirectTo="/login"><Roles/></RequireAuth>} />
+          <Route path='/municipios' element={ <RequireAuth redirectTo="/login"><Municipios/></RequireAuth>} />
+          
+          <Route path='/poblaciones' element={ <RequireAuth redirectTo="/login"><Poblaciones/></RequireAuth>} />
+          <Route path='/municipios' element={ <RequireAuth redirectTo="/login"><Municipios/></RequireAuth>} />
+          <Route path='/municipios' element={ <RequireAuth redirectTo="/login"><Municipios/></RequireAuth>} />
+          
 
           <Route exact path='/' exact element={<RequireAuth redirectTo="/login"><Inicio/></RequireAuth>} />
           

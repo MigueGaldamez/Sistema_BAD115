@@ -4,33 +4,41 @@ import Axios from 'axios';
 import DatatableRoles from "./datatable";
 import { Modal } from 'bootstrap/dist/js/bootstrap.bundle.min';
 
-const Roles = () => { 
+const Poblaciones = () => { 
   //PARA los ERRORES
   const[errores, setErrores] = useState([]);
   //PARA CADA ATRIBUTO
   const[nombre,setNombre]=useState("");
+  const[edadMinima,setEdadMinima]=useState(0);
+  const[edadMaxima,setEdadMaxima]=useState(0);
   //ESTE PARA CADA ATRIBUTO QUE SEPUEDE EDITAR
-  const[nuevoNombre,setNuevoNombre]=useState(0);
+  const[nuevoNombre,setNuevoNombre]=useState("");
+  const[nuevoEdadMinima,setNuevoEdadMinima]=useState(0);
+  const[nuevoEdadMaxima,setNuevoEdadMaxima]=useState(0);
   //LA LISTA QUEMOSTRAREMOS
-  const[rolLista, setRolLista] = useState([]);
+  const[poblacionLista, setPoblacionLista] = useState([]);
   const[modalB, setModalB] = useState([]);
   //PARA LA BUSQUEDA
   const [q, setQ] = useState('');
   //TODAS LAS COLUMNAS
   const [columns] =useState([
-    'idrol',
-    'nombrerol',
+    'idpoblacion',
+    'edadminimo',
+    'edadmaximo',
+    'poblacion'
   ]);
   //LAS COLUMNAS POR LAS QUE SEPUEDEN FILTRAR
   const [buscarColumnas, setBuscarColumnas] = useState([
-    'idrol',
-    'nombrerol',
+    'idpoblacion',
+    'edadminimo',
+    'edadmaximo',
+    'poblacion'
   ]);
   
 
-  const obtenerRoles=()=>{
-    Axios.get('http://localhost:3001/roles').then((response)=>{
-      setRolLista(response.data);
+  const obtenerRegistros=()=>{
+    Axios.get('http://localhost:3001/poblaciones').then((response)=>{
+      setPoblacionLista(response.data);
     });
   };
  
@@ -44,6 +52,8 @@ const Roles = () => {
     setErrores([]);
     //limpiamos los campos
     setNombre('');
+    setEdadMaxima(0);
+    setEdadMinima(0);
     //limpiamos el formulario
     document.getElementById("formulario").reset();
     //cerramos el modal
@@ -53,9 +63,11 @@ const Roles = () => {
   //AGREGAR
   const agregarRegistro=(event)=>{    
     event.preventDefault();
-    Axios.post('http://localhost:3001/roles',{
+    Axios.post('http://localhost:3001/poblaciones',{
       //TODOS LOS CAMPOS
       nombre:nombre,
+      edadmaximo:edadMaxima,
+      edadminimo:edadMinima,
     }).then((response)=>{    
       if(response.data.errores==null){      
         cerrarModal();
@@ -63,19 +75,19 @@ const Roles = () => {
         setErrores(response.data.errores);
       }
       //ACTUALIZAR DATOS
-      obtenerRoles();
+      obtenerRegistros();
     });
   };
 
-  const eliminarRegistro=(idrol)=>{
-    Axios.delete(`http://localhost:3001/roles/${idrol}`).then(()=>{
-      obtenerRoles();  
+  const eliminarRegistro=(idpoblacion)=>{
+    Axios.delete(`http://localhost:3001/poblaciones/${idpoblacion}`).then(()=>{
+      obtenerRegistros();
     });
   };
 
-  const actualizaRegistro=(idrol)=>{
-    Axios.put('http://localhost:3001/roles',{nombre:nuevoNombre,idrol:idrol}).then(()=>{
-      obtenerRoles();  
+  const actualizaRegistro=(idpoblacion)=>{
+    Axios.put('http://localhost:3001/poblaciones',{nombre:nuevoNombre,edadmaximo:nuevoEdadMaxima,edadminimo:nuevoEdadMinima,idpoblacion:idpoblacion}).then(()=>{
+      obtenerRegistros();
     });
   };
 
@@ -94,7 +106,7 @@ const Roles = () => {
 
   //LEER LOS DATOS AL CARGAR
   useEffect(()=>{
-   obtenerRoles();
+   obtenerRegistros();
   },[]);
 
   return (
@@ -112,10 +124,23 @@ const Roles = () => {
             <div class="modal-body">
               
                 <label class="form-label">Nombre:</label>
-                <input type="text" class="form-control form-control-sm" placeholder='Ingrese un nuevo Rol' onChange={(event)=>{ setNombre(event.target.value)}}/>        
+                <input type="text" class="form-control form-control-sm" placeholder='Ingrese una nueva poblacion' onChange={(event)=>{ setNombre(event.target.value)}}/>        
                 { 
                 errores.nombre &&
-               <small class="text-danger">* {errores.nombre}</small>
+                <p>
+               <small class="text-danger">* {errores.nombre}</small></p>
+              }
+               <label class="form-label mt-1">Edad Minima:</label>
+                <input type="number" min="1" max="99" class="form-control form-control-sm" placeholder='' onChange={(event)=>{ setEdadMinima(event.target.value)}}/>        
+                { 
+                errores.edadminimo &&
+                <p><small class="text-danger">* {errores.edadminimo}</small></p>
+              }
+              <label class="form-label mt-1">Edad Maxima:</label>
+                <input type="number" min="1" max="99" class="form-control form-control-sm" placeholder='' onChange={(event)=>{ setEdadMaxima(event.target.value)}}/>        
+                { 
+                errores.edadmaximo &&
+                <p><small class="text-danger">* {errores.edadmaximo}</small></p>
               }
               
             </div>
@@ -182,11 +207,11 @@ const Roles = () => {
               </div>
             </div>
           </div>
-          <DatatableRoles  data={buscar(rolLista)} eliminarRegistro={eliminarRegistro} actualizarRegistro={actualizaRegistro} setNuevoNombre={setNuevoNombre}/>
+          <DatatableRoles  data={buscar(poblacionLista)} eliminarRegistro={eliminarRegistro} actualizarRegistro={actualizaRegistro} setNuevoNombre={setNuevoNombre} setNuevoEdadMaxima={setNuevoEdadMaxima} setNuevoEdadMinima={setNuevoEdadMinima}/>
           
       </div>    
     </div>
   );
 };
   
-export default Roles;
+export default Poblaciones;

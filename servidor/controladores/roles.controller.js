@@ -17,11 +17,11 @@ const crearRol =  async (req, res) => {
             errores: erroresC,
         })
     }else{
-        const response = await sqlee.query('INSERT INTO rol (nombre) VALUES ($1)', [nombre]);
+        const response = await sqlee.query('INSERT INTO rol (nombrerol) VALUES ($1)', [nombre]);
         res.status(200).json({
             message: 'Añadido con Exito',
             body: {
-                user: {nombre}
+               rol: {nombre}
             }
         })
     }
@@ -31,7 +31,7 @@ const crearRol =  async (req, res) => {
 const actualizarRol = async (req,res)=>{
     const id = req.body.idrol;
     const { nombre } = req.body;
-    sql = "UPDATE rol SET nombre=$1 WHERE idrol=$2";
+    sql = "UPDATE rol SET nombrerol=$1 WHERE idrol=$2";
     const response = await sqlee.query(sql,[nombre,id]);
     res.status(200).json({
         "idrol":id,

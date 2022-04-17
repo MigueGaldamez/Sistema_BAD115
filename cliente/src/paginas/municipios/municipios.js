@@ -4,36 +4,41 @@ import Axios from 'axios';
 import DatatableRoles from "./datatable";
 import { Modal } from 'bootstrap/dist/js/bootstrap.bundle.min';
 
-const Roles = () => { 
-  //PARA los ERRORES
+const Municipios = () => { 
+    //PARA los ERRORES
   const[errores, setErrores] = useState([]);
   //PARA CADA ATRIBUTO
   const[nombre,setNombre]=useState("");
+  const[departamento,setDepartamento]=useState(0);
   //ESTE PARA CADA ATRIBUTO QUE SEPUEDE EDITAR
   const[nuevoNombre,setNuevoNombre]=useState(0);
+  const[nuevoIdDepartamento,setNuevoIdDepartamento]=useState(0);
   //LA LISTA QUEMOSTRAREMOS
-  const[rolLista, setRolLista] = useState([]);
+  const[municipioLista, setMunicipioLista] = useState([]);
+  const[departamentoLista, setDepartamentoLista] = useState([]);
   const[modalB, setModalB] = useState([]);
   //PARA LA BUSQUEDA
   const [q, setQ] = useState('');
   //TODAS LAS COLUMNAS
-  const [columns] =useState([
-    'idrol',
-    'nombrerol',
+  const [columns] = useState([
+    'idmunicipio',
+    'departamento',
+    'municipio'
   ]);
   //LAS COLUMNAS POR LAS QUE SEPUEDEN FILTRAR
   const [buscarColumnas, setBuscarColumnas] = useState([
-    'idrol',
-    'nombrerol',
+    'idmunicipio',
+    'departamento',
+    'municipio'
   ]);
-  
 
-  const obtenerRoles=()=>{
-    Axios.get('http://localhost:3001/roles').then((response)=>{
-      setRolLista(response.data);
-    });
+  const obtenerRegistros=()=>{
+    Axios.get('http://localhost:3001/municipios').then((response)=>{
+      setMunicipioLista(response.data);  });
+    Axios.get('http://localhost:3001/departamentos').then((response)=>{
+      setDepartamentoLista(response.data);  });
   };
- 
+
   const abrirModal=()=>{
     var modal = new Modal(document.getElementById('nuevoRegistro'));
     setModalB(modal);
@@ -44,41 +49,44 @@ const Roles = () => {
     setErrores([]);
     //limpiamos los campos
     setNombre('');
+    setDepartamento('');
     //limpiamos el formulario
     document.getElementById("formulario").reset();
     //cerramos el modal
     var modal = modalB;
     modal.hide();
   }
+
   //AGREGAR
   const agregarRegistro=(event)=>{    
     event.preventDefault();
-    Axios.post('http://localhost:3001/roles',{
+    Axios.post('http://localhost:3001/municipios',{
       //TODOS LOS CAMPOS
       nombre:nombre,
-    }).then((response)=>{    
+      departamento:departamento,
+    }).then((response)=>{
       if(response.data.errores==null){      
         cerrarModal();
       }else{        
         setErrores(response.data.errores);
       }
       //ACTUALIZAR DATOS
-      obtenerRoles();
+      obtenerRegistros();
     });
   };
 
-  const eliminarRegistro=(idrol)=>{
-    Axios.delete(`http://localhost:3001/roles/${idrol}`).then(()=>{
-      obtenerRoles();  
+  const eliminarRegistro=(idmunicipio)=>{
+    Axios.delete(`http://localhost:3001/municipios/${idmunicipio}`).then(()=>{
+      obtenerRegistros();  
     });
   };
 
-  const actualizaRegistro=(idrol)=>{
-    Axios.put('http://localhost:3001/roles',{nombre:nuevoNombre,idrol:idrol}).then(()=>{
-      obtenerRoles();  
+  const actualizaRegistro=(idmunicipio)=>{
+    Axios.put('http://localhost:3001/municipios',{nombre:nuevoNombre,idmunicipio:idmunicipio,iddepartamento:nuevoIdDepartamento}).then(()=>{
+      obtenerRegistros();  
     });
   };
-
+  
   function buscar(rows) {
     return rows.filter((row) =>
       buscarColumnas.some(
@@ -91,51 +99,65 @@ const Roles = () => {
     );
   }
 
+  
+
 
   //LEER LOS DATOS AL CARGAR
   useEffect(()=>{
-   obtenerRoles();
+   obtenerRegistros();
+ 
   },[]);
-
   return (
     <div class="container my-4">
-      <div class="modal fade" id="nuevoRegistro" tabIndex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true" data-bs-backdrop="static">
+      <div class="modal fade" id="nuevoRegistro" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true" data-bs-backdrop="static">
         <div class="modal-dialog">
           <div class="modal-content">
             <div class="modal-header">
               <h5 class="modal-title" id="exampleModalLabel">Nuevo Registro</h5>
-             
-              
-              <button type="button" class="btn-close" onClick={cerrarModal} aria-label="Close"></button>
+              <button type="button" class="btn-close"  onClick={cerrarModal} aria-label="Close"></button>
             </div>
             <form id="formulario" onSubmit={agregarRegistro}>
             <div class="modal-body">
-              
-                <label class="form-label">Nombre:</label>
-                <input type="text" class="form-control form-control-sm" placeholder='Ingrese un nuevo Rol' onChange={(event)=>{ setNombre(event.target.value)}}/>        
+                <label for="exampleInputEmail1" class="form-label">Municipio:</label>
+                <input type="email" class="form-control form-control-sm" placeholder='Ingrese un nuevo Municipio' onChange={(event)=>{ setNombre(event.target.value)}}/>        
                 { 
                 errores.nombre &&
                <small class="text-danger">* {errores.nombre}</small>
               }
-              
+              <label for="" class="form-label mt-3">Departamento:</label>
+              <select class="form-select form-select-sm" aria-label="Default select example" onChange={(event)=>{
+                setDepartamento(event.target.value)}}>
+                   <option selected>Seleccione un departamento</option>
+                    {departamentoLista.map((departamento) => {
+                     
+                    
+                    return(  <option  value={departamento.iddepartamento}>{departamento.departamento}</option>)
+                    })}
+                  </select>        
+                { 
+                errores.departamento &&
+               <small class="text-danger">* {errores.departamento}</small>
+              }
             </div>
             <div class="modal-footer">
-              <button type="button" class="btn btn-secondary" onClick={cerrarModal} >Cancelar</button>
+              <button type="button" class="btn btn-secondary"  onClick={cerrarModal}>Cancelar</button>
               <button type="button" class="btn btn-primary" onClick={agregarRegistro}>Guardar</button>
-              
             </div>
             </form>
           </div>
         </div>
       </div>
       <div class="mt-4 mb-4">
-      <div class="row bordeLateral mb-3">
-        <h2 class="m-0"><span>Gestión de Roles</span>
-          <button type="button" class="btn btn-primary btn-sm ms-3" onClick={abrirModal}>
+        <div class="row bordeLateral mb-3">
+        <h2 class="m-0"><span>Gestión de Municipios</span>
+        
+          <button type="button" class="btn btn-primary btn-sm ms-3"  onClick={abrirModal}>
             Nuevo Registro
           </button>
+              
           </h2>
         </div>
+         
           <div class="row">        
            
             <div class="col-12">
@@ -149,14 +171,14 @@ const Roles = () => {
                               value={q}
                               onChange={(e) => setQ(e.target.value)}
                             />
-                            <small class="text-muted">Puede buscar por {columns && columns.map((column,index) => (<span key={index}>{column}, </span>))}</small>
+                            <small class="text-muted">Puede buscar por {columns && columns.map((column) => (<span>{column}, </span>))}</small>
                     </div>
                     <div class="col col-6 mt-2">
                       <label>Criterios</label>
                         <br/>
                       {columns &&
-                              columns.map((column,index) => (
-                                <div key={index} class="form-check form-check-inline">
+                              columns.map((column) => (
+                                <div class="form-check form-check-inline">
                                 <label>
                                   
                                   {column}
@@ -182,11 +204,15 @@ const Roles = () => {
               </div>
             </div>
           </div>
-          <DatatableRoles  data={buscar(rolLista)} eliminarRegistro={eliminarRegistro} actualizarRegistro={actualizaRegistro} setNuevoNombre={setNuevoNombre}/>
-          
+          <DatatableRoles  data={buscar(municipioLista)} departamentos={departamentoLista} eliminarRegistro={eliminarRegistro} actualizarRegistro={actualizaRegistro} setNuevoNombre={setNuevoNombre} setNuevoIdDepartamento={setNuevoIdDepartamento}/>
+  
+
+
+
+
       </div>    
     </div>
   );
 };
   
-export default Roles;
+export default Municipios;

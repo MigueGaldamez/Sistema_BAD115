@@ -18,7 +18,7 @@ const Login = () => {
  
         if(response.data.length>0){
           var respuesta = response.data[0];
-          cookies.set('nombre', respuesta.nombre + " | " +respuesta.correo, {path: "/"});
+          cookies.set('nombre', respuesta.nombreusuario + " | " +respuesta.correousuario, {path: "/"});
           swal({
             title: "Exito!",
             text: "Bienvenido "+respuesta.nombre +"!",

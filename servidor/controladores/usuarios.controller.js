@@ -9,7 +9,7 @@ const obtenerUsuarios = async(req,res)=>{
 
 const iniciarSesion = async(req,res)=>{
     const { correo,contrasenia} = req.body;
-    sql = 'select * from usuario where correo=$1 and contrasenia =$2 limit 1';
+    sql = 'select * from usuario where correoUsuario=$1 and contrasenia =$2 limit 1';
     
     const response = await sqlee.query(sql, [
         correo,contrasenia

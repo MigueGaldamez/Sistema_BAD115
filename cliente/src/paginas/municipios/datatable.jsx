@@ -1,6 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import Pagination from '../../componentes/Paginacion/paginacion';
-export default function DatatableRoles({ data,eliminarRegistro,actualizarRegistro,setNuevoNombre }) {
+export default function DatatableRoles(
+  { data,
+    eliminarRegistro,
+    actualizarRegistro,
+    setNuevoNombre,
+    setNuevoIdDepartamento,
+    departamentos, }) {
   
   const dataOriginal = data;
   const [paginaActual, setPaginaActual] = useState(1);
@@ -20,17 +26,20 @@ export default function DatatableRoles({ data,eliminarRegistro,actualizarRegistr
     <table class="table table-striped mt-4 table-hover " cellPadding={0} cellSpacing={0}>
       <thead class="table-dark">
         <tr>
-          {data[0] && columns.map((heading) => <th>{heading}</th>)}
+          {data[0] && columns.map((heading) => {
+             if(heading!='iddepartamento')
+            return(<th>{heading}</th>)
+            })}
           <th>Acciones</th>
         </tr>
       </thead>
       <tbody>
-        {data.map((row) =>{  const id = row['iddepartamento'];  return(
+        {data.map((row) =>{  const id = row['idmunicipio'];  return(
           <tr>
            
             {columns.map((column) => {
               
-                if(column!='iddepartamento')
+            if(column!='idmunicipio' && column!='iddepartamento' &&  column!='departamento')
             return(
                 
               <td> <input type="text" class="form-control form-control-sm" onChange={(event)=>{
@@ -38,7 +47,28 @@ export default function DatatableRoles({ data,eliminarRegistro,actualizarRegistr
                 }} key={id} defaultValue={row[column]} /></td>
              
             )
-            if(column=='iddepartamento')
+            if(column=='departamento')
+            return(
+                <td>
+                  <select class="form-select form-select-sm" aria-label="Default select example" onChange={(event)=>{
+                setNuevoIdDepartamento(event.target.value)}}>
+                   
+                    {departamentos.map((departamento) => {
+                      if(row['iddepartamento']==departamento.iddepartamento)
+                    
+                    return(  <option selected value={departamento.iddepartamento}>{departamento.departamento}</option>)
+                    if(row['iddepartamento']!=departamento.iddepartamento)
+                    
+                    return(  <option  value={departamento.iddepartamento}>{departamento.departamento}</option>)
+                    })}
+                  </select>
+                </td>
+              /*<td> <input type="s" class="form-control form-control-sm" onChange={(event)=>{
+                setNuevoNombre(event.target.value)
+                }} key={id} defaultValue={row[column]} /></td>*/
+             
+            )
+            if(column=='idmunicipio')
             return(
                 
               <td>{row[column]}  </td>

@@ -9,19 +9,28 @@ const obtenerDepartamentos = async(req,res)=>{
 
 const crearDepartamento =  async (req, res) => {
     const { nombre } = req.body;
-    const response = await sqlee.query('INSERT INTO departamento (nombre) VALUES ($1)', [nombre]);
-    res.json({
-        message: 'Añadido con Exito',
-        body: {
-            user: {nombre}
-        }
-    })
+    var erroresC ={};
+    if(nombre==''){
+        erroresC.nombre = "Este campo es obligatorio";
+        res.status(200).json({
+            error:'hay error',
+            errores: erroresC,
+        })
+    }else{
+        const response =  await sqlee.query('INSERT INTO departamento (departamento) VALUES ($1)', [nombre]);
+        res.status(200).json({
+            message: 'Añadido con Exito',
+            body: {
+                departamento: {nombre}
+            }
+        })
+    }
 };
 
 const actualizarDepartamento = async (req,res)=>{
     const id = req.body.iddepartamento;
     const { nombre } = req.body;
-    sql = "UPDATE departamento SET nombre=$1 WHERE iddepartamento=$2";
+    sql = "UPDATE departamento SET departamento=$1 WHERE iddepartamento=$2";
     const response = await sqlee.query(sql,[nombre,id]);
     res.status(200).json({
         "iddepartamento":id,

@@ -31,6 +31,12 @@ const Navbar = () => {
                 <li class="nav-item">
                     <NavLink to="/departamentos" class="nav-link  text-light" aria-current="page" href="#">Departamentos</NavLink>
                 </li>
+                <li class="nav-item">
+                    <NavLink to="/municipios" class="nav-link  text-light" aria-current="page" href="#">Municipios</NavLink>
+                </li>
+                <li class="nav-item">
+                    <NavLink to="/poblaciones" class="nav-link  text-light" aria-current="page" href="#">Poblaciones</NavLink>
+                </li>
                       
             </ul>
             }
