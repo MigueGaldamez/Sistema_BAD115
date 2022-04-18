@@ -31,8 +31,7 @@ function App() {
           
           <Route path='/departamentos' element={ <RequireAuth redirectTo="/login"><Departamentos/></RequireAuth>} />
           <Route path='/roles' element={ <RequireAuth redirectTo="/login"><Roles/></RequireAuth>} />
-          <Route path='/municipios' element={ <RequireAuth redirectTo="/login"><Municipios/></RequireAuth>} />
-          
+          <Route path='/municipios' element={ <RequireAuth redirectTo="/login"><Municipios/></RequireAuth>} />        
           <Route path='/poblaciones' element={ <RequireAuth redirectTo="/login"><Poblaciones/></RequireAuth>} />
           <Route path='/laboratorios' element={ <RequireAuth redirectTo="/login"><Laboratorios/></RequireAuth>} />
           

@@ -3,14 +3,15 @@ import { useState,useEffect } from 'react';
 import Axios from 'axios';  
 import DatatableRoles from "./datatable";
 import { Modal } from 'bootstrap/dist/js/bootstrap.bundle.min';
+import swal from 'sweetalert';
 
 const Poblaciones = () => { 
   //PARA los ERRORES
   const[errores, setErrores] = useState([]);
   //PARA CADA ATRIBUTO
   const[nombre,setNombre]=useState("");
-  const[edadMinima,setEdadMinima]=useState(0);
-  const[edadMaxima,setEdadMaxima]=useState(0);
+  const[edadMinima,setEdadMinima]=useState(1);
+  const[edadMaxima,setEdadMaxima]=useState(2);
   //ESTE PARA CADA ATRIBUTO QUE SEPUEDE EDITAR
   const[nuevoNombre,setNuevoNombre]=useState("");
   const[nuevoEdadMinima,setNuevoEdadMinima]=useState(0);
@@ -71,24 +72,90 @@ const Poblaciones = () => {
     }).then((response)=>{    
       if(response.data.errores==null){      
         cerrarModal();
+        swal({
+          title: "Exito!",
+          text: "Guardado con exito",
+          icon: "success",
+          button: `Entendido`, 
+        });
       }else{        
         setErrores(response.data.errores);
       }
       //ACTUALIZAR DATOS
       obtenerRegistros();
-    });
+    }).catch(function (error) {
+      if(error.response!=null){
+       swal({
+         title: "Error!",
+         text: error.response.data.detail,
+         icon: "error",
+         button: "Aww yiss!",
+       });
+     }if(error.response==null){
+       swal({
+         title: "Error!",
+         text: "Error de conexion al servidor",
+         icon: "error",
+         button: "Aww yiss!",
+       });
+     }
+     });
   };
 
   const eliminarRegistro=(idpoblacion)=>{
     Axios.delete(`http://localhost:3001/poblaciones/${idpoblacion}`).then(()=>{
       obtenerRegistros();
-    });
+      swal({
+        title: "Exito!",
+        text: "Eliminado con exito",
+        icon: "success",
+        button: `Entendido`, 
+      });
+    }).catch(function (error) {
+      if(error.response!=null){
+       swal({
+         title: "Error!",
+         text: error.response.data.detail,
+         icon: "error",
+         button: "Aww yiss!",
+       });
+     }if(error.response==null){
+       swal({
+         title: "Error!",
+         text: "Error de conexion al servidor",
+         icon: "error",
+         button: "Aww yiss!",
+       });
+     }
+     });
   };
 
   const actualizaRegistro=(idpoblacion)=>{
     Axios.put('http://localhost:3001/poblaciones',{nombre:nuevoNombre,edadmaximo:nuevoEdadMaxima,edadminimo:nuevoEdadMinima,idpoblacion:idpoblacion}).then(()=>{
       obtenerRegistros();
-    });
+      swal({
+        title: "Exito!",
+        text: "Actualizado con exito",
+        icon: "success",
+        button: `Entendido`, 
+      })  
+    }).catch(function (error) {
+      if(error.response!=null){
+       swal({
+         title: "Error!",
+         text: error.response.data.detail,
+         icon: "error",
+         button: "Aww yiss!",
+       });
+     }if(error.response==null){
+       swal({
+         title: "Error!",
+         text: "Error de conexion al servidor",
+         icon: "error",
+         button: "Aww yiss!",
+       });
+     }
+     });;
   };
 
   function buscar(rows) {
@@ -131,13 +198,13 @@ const Poblaciones = () => {
                <small class="text-danger">* {errores.nombre}</small></p>
               }
                <label class="form-label mt-1">Edad Minima:</label>
-                <input type="number" min="1" max="99" class="form-control form-control-sm" placeholder='' onChange={(event)=>{ setEdadMinima(event.target.value)}}/>        
+                <input type="number" defaultValue={1} min="1" max="99" class="form-control form-control-sm" placeholder='' onChange={(event)=>{ setEdadMinima(event.target.value)}}/>        
                 { 
                 errores.edadminimo &&
                 <p><small class="text-danger">* {errores.edadminimo}</small></p>
               }
               <label class="form-label mt-1">Edad Maxima:</label>
-                <input type="number" min="1" max="99" class="form-control form-control-sm" placeholder='' onChange={(event)=>{ setEdadMaxima(event.target.value)}}/>        
+                <input type="number" min="1" max="99" defaultValue={2} class="form-control form-control-sm" placeholder='' onChange={(event)=>{ setEdadMaxima(event.target.value)}}/>        
                 { 
                 errores.edadmaximo &&
                 <p><small class="text-danger">* {errores.edadmaximo}</small></p>

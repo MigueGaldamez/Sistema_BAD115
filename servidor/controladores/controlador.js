@@ -13,9 +13,9 @@ const iniciarBaseDatos = async(req,res)=>{
   const response = await sqlee.query(sql);
   
   if(response.rows.length>0){
-
+     //Si tienre registros no hace nada por ahora.
   }else{
-   
+
     sqldeps = "INSERT INTO departamento (iddepartamento,departamento) VALUES(1, 'Ahuachapán'),(2, 'Santa Ana'),(3, 'Sonsonate'),(4, 'La Libertad'),(5, 'Chalatenango'),(6, 'San Salvador'),(7, 'Cuscatlán'),(8, 'La Paz'),(9, 'Cabañas'),(10, 'San Vicente'),(11, 'Usulután'),(12, 'Morazán'),(13, 'San Miguel'),(14, 'La Unión')";
     const departamentosResp =  await sqlee.query(sqldeps);
 
@@ -25,11 +25,21 @@ const iniciarBaseDatos = async(req,res)=>{
     sqllabo = "INSERT INTO laboratorio (idlaboratorio,idmunicipio,nombrelaboratorio) VALUES(1,1, 'Laboratorio Nacional')";
     const laboResp =  await sqlee.query(sqllabo);
 
-    sqlusuario = "INSERT INTO usuario (idlaboratorio,contrasenia,estado,nombreusuario,correousuario) VALUES(1,'d82494f05d6917ba02f7aaa29689ccb444bb73f20380876cb05d1f37537b7892',TRUE,'Administrador','administrador@hotmail.com')";
+    sqlusuario = "INSERT INTO usuario (idusuario,idlaboratorio,contrasenia,estado,nombreusuario,correousuario) VALUES(1,1,'d82494f05d6917ba02f7aaa29689ccb444bb73f20380876cb05d1f37537b7892',TRUE,'Administrador','administrador@hotmail.com')";
     const usuResp =  await sqlee.query(sqlusuario);
 
-    sqlusuario2 = "INSERT INTO usuario (idlaboratorio,contrasenia,estado,nombreusuario,correousuario) VALUES(1,'6e6cf51ea07f12ab08f338af53ff690d76a63a11202bed13b1cc768d3d10c174',TRUE,'Miguel Angel','migue.galdamez@hotmail.com')";
+    sqlusuario2 = "INSERT INTO usuario (idusuario,idlaboratorio,contrasenia,estado,nombreusuario,correousuario) VALUES(2,1,'6e6cf51ea07f12ab08f338af53ff690d76a63a11202bed13b1cc768d3d10c174',TRUE,'Miguel Angel','migue.galdamez@hotmail.com')";
     const usuResp2 =  await sqlee.query(sqlusuario2);
+
+    //SIRVEN PARA PONER AL DIA LOS SERIALES DESPUES DE LOS INSERT ANTERIORES
+    sqlSerialMunicipio = "SELECT setval(pg_get_serial_sequence('municipio', 'idmunicipio'), coalesce(max(idmunicipio),0) + 1, false) FROM municipio";
+    sqlSerialDepartamento = "SELECT setval(pg_get_serial_sequence('departamento', 'iddepartamento'), coalesce(max(iddepartamento),0) + 1, false) FROM departamento";
+    sqlSerialLaboratorio = "SELECT setval(pg_get_serial_sequence('laboratorio', 'idlaboratorio'), coalesce(max(idlaboratorio),0) + 1, false) FROM laboratorio";
+    sqlSerialUsuario = "SELECT setval(pg_get_serial_sequence('usuario', 'idusuario'), coalesce(max(idusuario),0) + 1, false) FROM usuario";
+    await sqlee.query(sqlSerialMunicipio);
+    await sqlee.query(sqlSerialDepartamento);
+    await sqlee.query(sqlSerialLaboratorio);
+    await sqlee.query(sqlSerialUsuario);
   }
 };
 

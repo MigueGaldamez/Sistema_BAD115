@@ -3,6 +3,7 @@ import { useState,useEffect } from 'react';
 import Axios from 'axios';  
 import DatatableRoles from "./datatable";
 import { Modal } from 'bootstrap/dist/js/bootstrap.bundle.min';
+import swal from 'sweetalert';
 
 const Roles = () => { 
   //PARA los ERRORES
@@ -59,24 +60,90 @@ const Roles = () => {
     }).then((response)=>{    
       if(response.data.errores==null){      
         cerrarModal();
+        swal({
+          title: "Exito!",
+          text: "Guardado con exito",
+          icon: "success",
+          button: `Entendido`, 
+        })
       }else{        
         setErrores(response.data.errores);
       }
       //ACTUALIZAR DATOS
       obtenerRoles();
-    });
+    }).catch(function (error) {
+      if(error.response!=null){
+       swal({
+         title: "Error!",
+         text: error.response.data.detail,
+         icon: "error",
+         button: "Aww yiss!",
+       });
+     }if(error.response==null){
+       swal({
+         title: "Error!",
+         text: "Error de conexion al servidor",
+         icon: "error",
+         button: "Aww yiss!",
+       });
+     }
+     });
   };
 
   const eliminarRegistro=(idrol)=>{
     Axios.delete(`http://localhost:3001/roles/${idrol}`).then(()=>{
       obtenerRoles();  
-    });
+      swal({
+        title: "Exito!",
+        text: "Eliminado con exito",
+        icon: "success",
+        button: `Entendido`, 
+      });    
+    }).catch(function (error) {
+      if(error.response!=null){
+       swal({
+         title: "Error!",
+         text: error.response.data.detail,
+         icon: "error",
+         button: "Aww yiss!",
+       });
+     }if(error.response==null){
+       swal({
+         title: "Error!",
+         text: "Error de conexion al servidor",
+         icon: "error",
+         button: "Aww yiss!",
+       });
+     }
+     });
   };
 
   const actualizaRegistro=(idrol)=>{
     Axios.put('http://localhost:3001/roles',{nombre:nuevoNombre,idrol:idrol}).then(()=>{
-      obtenerRoles();  
-    });
+      obtenerRoles(); 
+      swal({
+        title: "Exito!",
+        text: "Actualizado con exito",
+        icon: "success",
+        button: `Entendido`, 
+      });    
+    }).catch(function (error) {
+      if(error.response!=null){
+       swal({
+         title: "Error!",
+         text: error.response.data.detail,
+         icon: "error",
+         button: "Aww yiss!",
+       });
+     }if(error.response==null){
+       swal({
+         title: "Error!",
+         text: "Error de conexion al servidor",
+         icon: "error",
+         button: "Aww yiss!",
+       });
+     }
+     });
   };
 
   function buscar(rows) {
@@ -99,6 +166,8 @@ const Roles = () => {
 
   return (
     <div class="container my-4">
+      
+       {/* Modal para nuevo registro*/} 
       <div class="modal fade" id="nuevoRegistro" tabIndex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true" data-bs-backdrop="static">
         <div class="modal-dialog">
           <div class="modal-content">

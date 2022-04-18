@@ -3,6 +3,7 @@ import { useState,useEffect } from 'react';
 import Axios from 'axios';  
 import DatatableRoles from "./datatable";
 import { Modal } from 'bootstrap/dist/js/bootstrap.bundle.min';
+import swal from 'sweetalert';
 
 const Municipios = () => { 
     //PARA los ERRORES
@@ -67,24 +68,90 @@ const Municipios = () => {
     }).then((response)=>{
       if(response.data.errores==null){      
         cerrarModal();
+        swal({
+          title: "Exito!",
+          text: "Guardado con exito",
+          icon: "success",
+          button: `Entendido`, 
+        })
       }else{        
         setErrores(response.data.errores);
       }
       //ACTUALIZAR DATOS
       obtenerRegistros();
-    });
+    }).catch(function (error) {
+      if(error.response!=null){
+       swal({
+         title: "Error!",
+         text: error.response.data.detail,
+         icon: "error",
+         button: "Aww yiss!",
+       });
+     }if(error.response==null){
+       swal({
+         title: "Error!",
+         text: "Error de conexion al servidor",
+         icon: "error",
+         button: "Aww yiss!",
+       });
+     }
+     });
   };
 
   const eliminarRegistro=(idmunicipio)=>{
     Axios.delete(`http://localhost:3001/municipios/${idmunicipio}`).then(()=>{
-      obtenerRegistros();  
-    });
+      obtenerRegistros();
+      swal({
+        title: "Exito!",
+        text: "Eliminado con exito",
+        icon: "success",
+        button: `Entendido`, 
+      });  
+    }).catch(function (error) {
+      if(error.response!=null){
+       swal({
+         title: "Error!",
+         text: error.response.data.detail,
+         icon: "error",
+         button: "Aww yiss!",
+       });
+     }if(error.response==null){
+       swal({
+         title: "Error!",
+         text: "Error de conexion al servidor",
+         icon: "error",
+         button: "Aww yiss!",
+       });
+     }
+     });
   };
 
   const actualizaRegistro=(idmunicipio)=>{
     Axios.put('http://localhost:3001/municipios',{nombre:nuevoNombre,idmunicipio:idmunicipio,iddepartamento:nuevoIdDepartamento}).then(()=>{
-      obtenerRegistros();  
-    });
+      obtenerRegistros();
+      swal({
+        title: "Exito!",
+        text: "Actualizado con exito",
+        icon: "success",
+        button: `Entendido`, 
+      });    
+    }).catch(function (error) {
+      if(error.response!=null){
+       swal({
+         title: "Error!",
+         text: error.response.data.detail,
+         icon: "error",
+         button: "Aww yiss!",
+       });
+     }if(error.response==null){
+       swal({
+         title: "Error!",
+         text: "Error de conexion al servidor",
+         icon: "error",
+         button: "Aww yiss!",
+       });
+     }
+     });
   };
   
   function buscar(rows) {
