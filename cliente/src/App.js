@@ -13,6 +13,12 @@ import Cookies from 'universal-cookie';
 import Municipios from './paginas/municipios/municipios';
 import Poblaciones from './paginas/poblaciones/poblaciones';
 import Laboratorios from './paginas/laboratorios/laboratorios';
+import Profesiones from './paginas/profesiones/profesiones';
+import Usuarios from './paginas/usuarios/usuarios';
+import OpcionesPermisos from './paginas/opcionespermisos/opcionespermisos';
+import Areas from './paginas/areas/areas';
+import EstadosCiviles from './paginas/estadosciviles/estadosciviles';
+import Unidades from './paginas/unidades/unidades';
 const cookies = new Cookies();
 
 
@@ -33,12 +39,16 @@ function App() {
           <Route path='/roles' element={ <RequireAuth redirectTo="/login"><Roles/></RequireAuth>} />
           <Route path='/municipios' element={ <RequireAuth redirectTo="/login"><Municipios/></RequireAuth>} />        
           <Route path='/poblaciones' element={ <RequireAuth redirectTo="/login"><Poblaciones/></RequireAuth>} />
-          <Route path='/laboratorios' element={ <RequireAuth redirectTo="/login"><Laboratorios/></RequireAuth>} />
-          
-          <Route path='/municipios' element={ <RequireAuth redirectTo="/login"><Municipios/></RequireAuth>} />
+          <Route path='/laboratorios' element={ <RequireAuth redirectTo="/login"><Laboratorios/></RequireAuth>} />          
+          <Route path='/profesiones' element={ <RequireAuth redirectTo="/login"><Profesiones/></RequireAuth>} />
+          <Route path='/usuarios' element={ <RequireAuth redirectTo="/login"><Usuarios/></RequireAuth>} />
+          <Route path='/opcionespermisos' element={ <RequireAuth redirectTo="/login"><OpcionesPermisos/></RequireAuth>} />
+          <Route path='/areas' element={ <RequireAuth redirectTo="/login"><Areas/></RequireAuth>} />          
+          <Route path='/estadosciviles' element={ <RequireAuth redirectTo="/login"><EstadosCiviles/></RequireAuth>} />          
+          <Route path='/unidades' element={ <RequireAuth redirectTo="/login"><Unidades/></RequireAuth>} />
           
 
-          <Route exact path='/' exact element={<RequireAuth redirectTo="/login"><Inicio/></RequireAuth>} />
+          <Route exact path='/' element={<RequireAuth redirectTo="/login"><Inicio/></RequireAuth>} />
           
           
           <Route path='/login' element={<Login/>} />

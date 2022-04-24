@@ -13,5 +13,18 @@ export const NavLink = styled(Link)`
     color: #FFFFFF !important;
   }
 `;
+
+export const NavLinkDrop = styled(Link)`
+  color: #000000 !important;
+  display: flex;
+  align-items: center;
+  text-decoration: none;
+  padding: 0.2rem 0.9rem;
+  height: 100%;
+  cursor: pointer;
+  &.active {
+    border-left: 6px solid #4B7BE5;
+  }
+`;
   
 

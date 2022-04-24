@@ -3,7 +3,6 @@ import Axios from 'axios';
 import Cookies from 'universal-cookie';
 import swal from 'sweetalert';
 var SHA256 = require("crypto-js/sha256");
-
 const cookies = new Cookies();
 
 const Login = () => { 
@@ -19,6 +18,7 @@ const Login = () => {
         if(response.data.length>0){
           var respuesta = response.data[0];
           cookies.set('nombre', respuesta.nombreusuario + " | ", {path: "/"});
+          cookies.set('usuario',respuesta);
           swal({
             title: "Exito!",
             text: "Bienvenido "+respuesta.nombreusuario +"!",
@@ -30,10 +30,10 @@ const Login = () => {
         }
     })
     .catch(error=>{      
-      console.log(error);
+     
       swal({
         title: "Error!",
-        text: "Usuario o contraseña incorrecto!",
+        text: error.response.data,
         icon: "error",
         button: "Aww yiss!",
       });
