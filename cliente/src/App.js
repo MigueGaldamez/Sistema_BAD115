@@ -24,7 +24,7 @@ const cookies = new Cookies();
 
 
 function RequireAuth({ children, redirectTo }) {
-  let isAutenticado = false;//aqui
+  let isAutenticado = true;//aqui
   if(cookies.get('nombre')){
     isAutenticado = true;
   }

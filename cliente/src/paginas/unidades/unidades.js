@@ -35,7 +35,7 @@ const Unidades = () => {
   
 
   const obtenerRegistros=()=>{
-    Axios.get('http://localhost:3001/unidades').then((response)=>{
+    Axios.get(`http://${process.env.REACT_APP_SERVER_IP}/unidades`).then((response)=>{
       setUnidadLista(response.data);
     });
   };
@@ -60,7 +60,7 @@ const Unidades = () => {
   //AGREGAR
   const agregarRegistro=(event)=>{    
     event.preventDefault();
-    Axios.post('http://localhost:3001/unidades',{
+    Axios.post(`http://${process.env.REACT_APP_SERVER_IP}/unidades`,{
       //TODOS LOS CAMPOS
       nombre:nombre,
       simbolo:simbolo,
@@ -98,7 +98,7 @@ const Unidades = () => {
   };
 
   const eliminarRegistro=(idunidad)=>{
-    Axios.delete(`http://localhost:3001/unidades/${idunidad}`).then(()=>{
+    Axios.delete(`http://${process.env.REACT_APP_SERVER_IP}/unidades/${idunidad}`).then(()=>{
       obtenerRegistros();
       swal({
         title: "Exito!",
@@ -126,7 +126,7 @@ const Unidades = () => {
   };
 
   const actualizaRegistro=(idunidad)=>{
-    Axios.put('http://localhost:3001/unidades',{nombre:nuevoNombre,simbolo:nuevoSimbolo,idunidad:idunidad}).then(()=>{
+    Axios.put(`http://${process.env.REACT_APP_SERVER_IP}/unidades`,{nombre:nuevoNombre,simbolo:nuevoSimbolo,idunidad:idunidad}).then(()=>{
       obtenerRegistros();
       swal({
         title: "Exito!",

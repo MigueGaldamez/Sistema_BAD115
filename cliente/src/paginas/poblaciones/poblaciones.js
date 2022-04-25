@@ -38,7 +38,7 @@ const Poblaciones = () => {
   
 
   const obtenerRegistros=()=>{
-    Axios.get('http://localhost:3001/poblaciones').then((response)=>{
+    Axios.get(`http://${process.env.REACT_APP_SERVER_IP}/poblaciones`).then((response)=>{
       setPoblacionLista(response.data);
     });
   };
@@ -64,7 +64,7 @@ const Poblaciones = () => {
   //AGREGAR
   const agregarRegistro=(event)=>{    
     event.preventDefault();
-    Axios.post('http://localhost:3001/poblaciones',{
+    Axios.post(`http://${process.env.REACT_APP_SERVER_IP}/poblaciones`,{
       //TODOS LOS CAMPOS
       nombre:nombre,
       edadmaximo:edadMaxima,
@@ -103,7 +103,7 @@ const Poblaciones = () => {
   };
 
   const eliminarRegistro=(idpoblacion)=>{
-    Axios.delete(`http://localhost:3001/poblaciones/${idpoblacion}`).then(()=>{
+    Axios.delete(`http://${process.env.REACT_APP_SERVER_IP}/poblaciones/${idpoblacion}`).then(()=>{
       obtenerRegistros();
       swal({
         title: "Exito!",
@@ -131,7 +131,7 @@ const Poblaciones = () => {
   };
 
   const actualizaRegistro=(idpoblacion)=>{
-    Axios.put('http://localhost:3001/poblaciones',{nombre:nuevoNombre,edadmaximo:nuevoEdadMaxima,edadminimo:nuevoEdadMinima,idpoblacion:idpoblacion}).then(()=>{
+    Axios.put(`http://${process.env.REACT_APP_SERVER_IP}/poblaciones`,{nombre:nuevoNombre,edadmaximo:nuevoEdadMaxima,edadminimo:nuevoEdadMinima,idpoblacion:idpoblacion}).then(()=>{
       obtenerRegistros();
       swal({
         title: "Exito!",

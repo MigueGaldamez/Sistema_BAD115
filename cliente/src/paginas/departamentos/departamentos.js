@@ -29,7 +29,7 @@ const Departamentos = () => {
   ]);
 
   const obtenerRegistros=()=>{
-    Axios.get('http://localhost:3001/departamentos').then((response)=>{
+    Axios.get(`http://${process.env.REACT_APP_SERVER_IP}/departamentos`).then((response)=>{
       setDepartamentoLista(response.data);  });
   };
 
@@ -53,7 +53,7 @@ const Departamentos = () => {
   //AGREGAR
   const agregarRegistro=(event)=>{    
     event.preventDefault();
-    Axios.post('http://localhost:3001/departamentos',{
+    Axios.post(`http://${process.env.REACT_APP_SERVER_IP}/departamentos`,{
       //TODOS LOS CAMPOS
       nombre:nombre,
     }).then((response)=>{
@@ -90,7 +90,7 @@ const Departamentos = () => {
   };
 
   const eliminarRegistro=(iddepartamento)=>{
-    Axios.delete(`http://localhost:3001/departamentos/${iddepartamento}`).then(()=>{
+    Axios.delete(`http://${process.env.REACT_APP_SERVER_IP}/departamentos/${iddepartamento}`).then(()=>{
       obtenerRegistros();
       swal({
         title: "Exito!",
@@ -118,7 +118,7 @@ const Departamentos = () => {
   };
 
   const actualizaRegistro=(iddepartamento)=>{
-    Axios.put('http://localhost:3001/departamentos',{nombre:nuevoNombre,iddepartamento:iddepartamento}).then(()=>{
+    Axios.put(`http://${process.env.REACT_APP_SERVER_IP}/departamentos`,{nombre:nuevoNombre,iddepartamento:iddepartamento}).then(()=>{
       obtenerRegistros();
       swal({
         title: "Exito!",

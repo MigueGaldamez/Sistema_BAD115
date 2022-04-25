@@ -34,9 +34,9 @@ const Municipios = () => {
   ]);
 
   const obtenerRegistros=()=>{
-    Axios.get('http://localhost:3001/municipios').then((response)=>{
+    Axios.get(`http://${process.env.REACT_APP_SERVER_IP}/municipios`).then((response)=>{
       setMunicipioLista(response.data);  });
-    Axios.get('http://localhost:3001/departamentos').then((response)=>{
+    Axios.get(`http://${process.env.REACT_APP_SERVER_IP}/departamentos`).then((response)=>{
       setDepartamentoLista(response.data);  });
   };
 
@@ -61,7 +61,7 @@ const Municipios = () => {
   //AGREGAR
   const agregarRegistro=(event)=>{    
     event.preventDefault();
-    Axios.post('http://localhost:3001/municipios',{
+    Axios.post(`http://${process.env.REACT_APP_SERVER_IP}/municipios`,{
       //TODOS LOS CAMPOS
       nombre:nombre,
       departamento:departamento,
@@ -99,7 +99,7 @@ const Municipios = () => {
   };
 
   const eliminarRegistro=(idmunicipio)=>{
-    Axios.delete(`http://localhost:3001/municipios/${idmunicipio}`).then(()=>{
+    Axios.delete(`http://${process.env.REACT_APP_SERVER_IP}/municipios/${idmunicipio}`).then(()=>{
       obtenerRegistros();
       swal({
         title: "Exito!",
@@ -127,7 +127,7 @@ const Municipios = () => {
   };
 
   const actualizaRegistro=(idmunicipio)=>{
-    Axios.put('http://localhost:3001/municipios',{nombre:nuevoNombre,idmunicipio:idmunicipio,iddepartamento:nuevoIdDepartamento}).then(()=>{
+    Axios.put(`http://${process.env.REACT_APP_SERVER_IP}/municipios`,{nombre:nuevoNombre,idmunicipio:idmunicipio,iddepartamento:nuevoIdDepartamento}).then(()=>{
       obtenerRegistros();
       swal({
         title: "Exito!",

@@ -34,9 +34,9 @@ const Laboratorios = () => {
   ]);
 
   const obtenerRegistros=()=>{
-    Axios.get('http://localhost:3001/laboratorios').then((response)=>{
+    Axios.get(`http://${process.env.REACT_APP_SERVER_IP}/laboratorios`).then((response)=>{
       setLaboratorioLista(response.data);  });
-    Axios.get('http://localhost:3001/municipios').then((response)=>{
+    Axios.get(`http://${process.env.REACT_APP_SERVER_IP}/municipios`).then((response)=>{
       setMunicipioLista(response.data);  });
   };
 
@@ -61,7 +61,7 @@ const Laboratorios = () => {
   //AGREGAR
   const agregarRegistro=(event)=>{    
     event.preventDefault();
-    Axios.post('http://localhost:3001/laboratorios',{
+    Axios.post(`http://${process.env.REACT_APP_SERVER_IP}/laboratorios`,{
       //TODOS LOS CAMPOS
       nombre:nombre,
       municipio:municipio,
@@ -99,7 +99,7 @@ const Laboratorios = () => {
   };
 
   const eliminarRegistro=(idlaboratorio)=>{
-    Axios.delete(`http://localhost:3001/laboratorios/${idlaboratorio}`).then((res)=>{
+    Axios.delete(`http://${process.env.REACT_APP_SERVER_IP}/laboratorios/${idlaboratorio}`).then((res)=>{
       obtenerRegistros();
       swal({
         title: "Exito!",
@@ -127,7 +127,7 @@ const Laboratorios = () => {
   };
 
   const actualizaRegistro=(idlaboratorio)=>{
-    Axios.put('http://localhost:3001/laboratorios',{nombre:nuevoNombre,idlaboratorio:idlaboratorio,idmunicipio:nuevoIdMunicipio}).then(()=>{
+    Axios.put(`http://${process.env.REACT_APP_SERVER_IP}/laboratorios`,{nombre:nuevoNombre,idlaboratorio:idlaboratorio,idmunicipio:nuevoIdMunicipio}).then(()=>{
       obtenerRegistros();
       swal({
         title: "Exito!",
