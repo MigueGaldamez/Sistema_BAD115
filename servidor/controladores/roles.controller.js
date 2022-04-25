@@ -5,7 +5,18 @@ const obtenerRoles = async(req,res)=>{
     try{
         sql = 'SELECT * FROM rol order by idrol asc';
         const response = await sqlee.query(sql);
-        res.status(200).json(response.rows);
+        roles = response.rows;
+        for(const rol of roles){
+            sql2 = 'SELECT * FROM permiso where idrol = ($1)';
+            const responseHija = await sqlee.query(sql2,[rol.idrol]);
+            valores =  responseHija.rows;
+            var array = Object.keys(valores)
+            .map(function(key) {
+                return valores[key].idopcionpermiso;
+            });
+            rol.permisos = array;       
+        }
+        res.status(200).json(roles);
     }catch(error){
         res.status(500).json(error);
     }
@@ -50,6 +61,28 @@ const actualizarRol = async (req,res)=>{
     }
 };
 
+const actualizarRolPermisos = async (req,res)=>{
+    const id = req.body.idrol;
+    const { permisos } = req.body;
+
+    try{
+        sql = "DELETE from permiso WHERE idrol=$1";
+        const response = await sqlee.query(sql,[id]);
+        //console.log(response.rows);
+        for (const permiso of permisos) {
+            sql2 = "Insert into permiso(idopcionpermiso,idrol) VALUES($1,$2)";
+            const response2 = await sqlee.query(sql2,[permiso,id]);
+        };
+        sql2 = "Select from permiso WHERE idrol=$1";
+        const response2 = await sqlee.query(sql2,[id]);
+
+        res.status(200).json(response2.rows);
+    }catch(error){
+        res.status(500).json(error);
+    }
+};
+
+
 const eliminarRol =  async (req, res) => {
     const idrol = parseInt(req.params.idrol);
     try{
@@ -68,4 +101,5 @@ module.exports = {
    obtenerRoles,
    actualizarRol,
    eliminarRol,
+   actualizarRolPermisos,
 };

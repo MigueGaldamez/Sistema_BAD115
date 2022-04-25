@@ -14,7 +14,9 @@ const Roles = () => {
   const[nuevoNombre,setNuevoNombre]=useState(0);
   //LA LISTA QUEMOSTRAREMOS
   const[rolLista, setRolLista] = useState([]);
+  const[permisoLista, setPermisoLista] = useState([]);
   const[modalB, setModalB] = useState([]);
+  const[nuevosPermisos,setNuevosPermisos]=useState([]);
   //PARA LA BUSQUEDA
   const [q, setQ] = useState('');
   //TODAS LAS COLUMNAS
@@ -32,6 +34,9 @@ const Roles = () => {
   const obtenerRoles=()=>{
     Axios.get('http://localhost:3001/roles').then((response)=>{
       setRolLista(response.data);
+    });
+    Axios.get('http://localhost:3001/opcionespermisos').then((response)=>{
+      setPermisoLista(response.data);
     });
   };
  
@@ -145,6 +150,34 @@ const Roles = () => {
      }
      });
   };
+ 
+  const actualizaPermisos=(idrol)=>{
+    Axios.post('http://localhost:3001/rolesPermisos',{permisos:nuevosPermisos,idrol:idrol}).then(()=>{
+      obtenerRoles(); 
+      swal({
+        title: "Exito!",
+        text: "Guardado con exito",
+        icon: "success",
+        button: `Entendido`, 
+      })
+    }).catch(function (error) {
+      if(error.response!=null){
+       swal({
+         title: "Error!",
+         text: error.response.data.detail,
+         icon: "error",
+         button: "Aww yiss!",
+       });
+     }if(error.response==null){
+       swal({
+         title: "Error!",
+         text: "Error de conexion al servidor",
+         icon: "error",
+         button: "Aww yiss!",
+       });
+     }
+     });
+  };
 
   function buscar(rows) {
     return rows.filter((row) =>
@@ -158,6 +191,7 @@ const Roles = () => {
     );
   }
 
+  
 
   //LEER LOS DATOS AL CARGAR
   useEffect(()=>{
@@ -199,7 +233,7 @@ const Roles = () => {
       </div>
       <div class="mt-4 mb-4">
       <div class="row bordeLateral mb-3">
-        <h2 class="m-0"><span>Gestión de Roles</span>
+        <h2 class="m-0"><span>Gestión de Roles </span>
           <button type="button" class="btn btn-primary btn-sm ms-3" onClick={abrirModal}>
             Nuevo Registro
           </button>
@@ -210,6 +244,7 @@ const Roles = () => {
             <div class="col-12">
               <div class="card h-100 p-3 px-4">       
                 <h5>Busqueda</h5>
+                
                 <div class="row">
                     <div class="col col-6">
                      
@@ -251,7 +286,7 @@ const Roles = () => {
               </div>
             </div>
           </div>
-          <DatatableRoles  data={buscar(rolLista)} eliminarRegistro={eliminarRegistro} actualizarRegistro={actualizaRegistro} setNuevoNombre={setNuevoNombre}/>
+          <DatatableRoles actualizaPermisos={actualizaPermisos} nuevosPermisos={nuevosPermisos} setNuevosPermisos={setNuevosPermisos} permisos={permisoLista} data={buscar(rolLista)} eliminarRegistro={eliminarRegistro} actualizarRegistro={actualizaRegistro} setNuevoNombre={setNuevoNombre}/>
           
       </div>    
     </div>

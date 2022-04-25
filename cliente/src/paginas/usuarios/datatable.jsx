@@ -9,11 +9,20 @@ export default function DatatableRoles(
     setNuevoLaboratorio,
     setNuevaContrasenia,
     setNuevoEstado,
-   laboratorios, }) {
+   laboratorios,
+  setNuevosRoles,
+  roles,
+  actualizaRoles,
+  nuevosRoles,
+ }) {
   
   const dataOriginal = data;
   const [paginaActual, setPaginaActual] = useState(1);
   const [registrosXpagina] = useState(15);
+
+  const [usuarioM, setUsuarioM] = useState([]);
+  const [usuarioIdM, setUsuarioIdM] = useState([]);
+  const [rolesM, setRolesM] = useState([]);
 
   //Obtener los actuales 
   const indexUltimoRegistro = paginaActual * registrosXpagina;
@@ -23,6 +32,23 @@ export default function DatatableRoles(
   //Cambiar de pagina 
   const paginate = numeroPagina => setPaginaActual(numeroPagina);
 
+  const establevervalores= (usuario,roles,id) => {
+    setRolesM(roles);
+    setUsuarioM(usuario);
+    setUsuarioIdM(id);
+    setNuevosRoles(roles);
+  };
+
+  const manejarChecks= (event) => {
+    var updatedList = [...nuevosRoles];
+    
+    if (event.target.checked) {
+      updatedList = [...nuevosRoles, parseInt(event.target.value)];
+    } else {
+      updatedList.splice(nuevosRoles.indexOf(parseInt(event.target.value)), 1);
+    }
+    setNuevosRoles(updatedList);
+  };
   const columns = data[0] && Object.keys(data[0]);
   return (
     <>
@@ -30,7 +56,7 @@ export default function DatatableRoles(
       <thead class="table-dark">
         <tr>
           {data[0] && columns.map((heading) => {
-             if(heading!='contrasenia' && heading!='idlaboratorio' &&   heading!='infolaboratorio' )
+             if(heading!='contrasenia' && heading!='idlaboratorio'  && heading!='roles'  &&   heading!='infolaboratorio' && heading!='idusuario' )
             return(<th>{heading}</th>)
             })}
           <th>Acciones</th>
@@ -92,15 +118,12 @@ export default function DatatableRoles(
 
              
             )
-            if(column=='idusuario')
-            return(
-                
-              <td>{row[column]}  </td>
-           
-            )})}
+            })}
             <td  >
               <a class="btn btn-success btn-sm mx-1" onClick={()=>{actualizarRegistro(id)}}>Actualizar</a>
               <a class="btn btn-danger btn-sm mx-1" data-bs-toggle="modal" data-bs-target={'#eliminarModal'+id} >Eliminar</a>
+              <a class="btn btn-warning btn-sm mx-1" data-bs-toggle="modal" data-bs-target='#rolesM' onClick={()=>{establevervalores(row['nombreusuario'],row['roles'],row['idusuario'])}} >Editar Roles</a>
+              
               </td>
               {/* Modal para eliminar */}
               <div class="modal fade" id={'eliminarModal'+id} tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
@@ -137,8 +160,81 @@ export default function DatatableRoles(
          {data.length ==0 && 
           <tr><td class="text-center">No hay registros que coincidan</td></tr>
          }
+       
       </tbody>
     </table>
+     {/* Modal para permisos */}
+     <div class="modal fade" id='rolesM' tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                <div class="modal-dialog">
+                  <div class="modal-content">
+                    <div class="modal-header">
+                      <h5 class="modal-title" id="exampleModalLabel">Modificar Permisos</h5>
+                      <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                   
+                      <h6><span>¿El Usuario <span class="text-primary text-decoration-underline">{usuarioM}</span> tiene los siguientes roles:</span></h6>
+                    
+                  
+                  
+                      {rolesM.map((permiso,index) => 
+                      {
+                        if(index==0)
+                        {
+                          return(
+                            <div class="row px-4 pt-3" key={permiso}>
+                               {roles.map((rol,index) => 
+                                {
+                                  var permitido = true;
+                              
+                                  if(rolesM.includes(rol.idrol)){
+                                    permitido = true;
+                                  }else
+                                  {permitido=false;}
+                                  return(
+                                    <div class="form-check col col-6" key={rol}>
+                                    <input class="form-check-input" type="checkbox" value={rol.idrol} id="flexCheckChecked" defaultChecked={permitido} onChange={manejarChecks} />
+                                    <label class="form-check-label" for="flexCheckChecked">
+                                    {rol.nombrerol}
+                                   
+                                    </label>
+                                  </div>
+                                    )
+                                })}
+                            </div>
+                          )
+                        }
+                        
+                      })}
+                      {rolesM.length==0 && 
+                      <div class="row px-4 pt-3">
+                      {roles.map((rol,index) => 
+                       {
+                         var permitido = false;
+                     
+                      
+                         return(
+                           <div class="form-check col col-6" key={rol}>
+                           <input class="form-check-input" type="checkbox" value={rol.idrol} id="flexCheckChecked" defaultChecked={permitido} onChange={manejarChecks} />
+                           <label class="form-check-label" for="flexCheckChecked">
+                           {rol.nombrerol}
+                          
+                           </label>
+                         </div>
+                           )
+                       })}
+                   </div>}
+                     
+              
+                    </div>
+                    <div class="modal-footer">
+                      <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                      <button type="button" class="btn btn-primary" data-bs-dismiss="modal" onClick={()=>{actualizaRoles(usuarioIdM)}}  >Guardar Cambios</button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              {/* FIN MODAL*/}
     <Pagination 
       registrosPorPagina={registrosXpagina}
       registrosTotales={dataOriginal.length}

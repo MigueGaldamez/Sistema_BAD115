@@ -174,8 +174,8 @@ const OpcionesPermisos = () => {
             </div>
             <form id="formulario" onSubmit={agregarRegistro}>
             <div class="modal-body">
-                <label for="exampleInputEmail1" class="form-label">Nombre:</label>
-                <input type="email" class="form-control form-control-sm" placeholder='Ingrese una nueva opcion de permiso' onChange={(event)=>{ setNombre(event.target.value)}}/>        
+                <label  class="form-label">Nombre:</label>
+                <input type="text" class="form-control form-control-sm" placeholder='Ingrese una nueva opcion de permiso' onChange={(event)=>{ setNombre(event.target.value)}}/>        
                 { 
                 errores.nombre &&
                <small class="text-danger">* {errores.nombre}</small>

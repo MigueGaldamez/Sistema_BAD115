@@ -1,7 +1,7 @@
 const { Router } = require('express');
 const router = Router();
 
-const { crearRol, obtenerRoles, actualizarRol, eliminarRol, } = require('../controladores/roles.controller');
+const { crearRol, obtenerRoles, actualizarRol, eliminarRol,actualizarRolPermisos, } = require('../controladores/roles.controller');
 const { crearDepartamento, obtenerDepartamentos, actualizarDepartamento, eliminarDepartamento, } = require('../controladores/departamentos.controller');
 const { crearMunicipio, obtenerMunicipios, actualizarMunicipio, eliminarMunicipio, } = require('../controladores/municipios.controller');
 const { crearPoblacion, obtenerPoblaciones, actualizarPoblacion, eliminarPoblacion, } = require('../controladores/poblaciones.controller');
@@ -11,11 +11,13 @@ const { crearOpcionPermiso, obtenerOpcionesPermisos, actualizarOpcionPermiso, el
 const { crearArea, obtenerAreas, actualizarArea, eliminarArea, } = require('../controladores/areas.controller');
 
 const { crearUnidad, obtenerUnidades, actualizarUnidad, eliminarUnidad, } = require('../controladores/unidades.controller');
+const { crearLaboratorista, obtenerLaboratoristas, actualizarLaboratorista, eliminarLaboratorista, } = require('../controladores/laboratoristas.controller');
+const { crearPermiso, obtenerPermisos, actualizarPermiso, eliminarPermiso, } = require('../controladores/permisos.controller');
 
 const { crearEstadoCivil, obtenerEstadosCiviles, actualizarEstadoCivil, eliminarEstadoCivil, } = require('../controladores/estadosciviles.controller');
 
 
-const { obtenerUsuarios, iniciarSesion,crearUsuario,actualizarUsuario,eliminarUsuario,} = require('../controladores/usuarios.controller');
+const { obtenerUsuarios, iniciarSesion,crearUsuario,actualizarUsuario,actualizarUsuarioRoles,eliminarUsuario,obtenerUsuariosLibres} = require('../controladores/usuarios.controller');
 
 //siempre poner una coma al final
 
@@ -24,6 +26,8 @@ router.get('/roles', obtenerRoles);
 router.post('/roles', crearRol);
 router.put('/roles', actualizarRol)
 router.delete('/roles/:idrol', eliminarRol);
+router.post('/rolesPermisos', actualizarRolPermisos);
+
 
 //CRUD DEPARTAMENTOS
 router.get('/departamentos', obtenerDepartamentos);
@@ -45,11 +49,12 @@ router.delete('/poblaciones/:idpoblacion', eliminarPoblacion);
 
 //CRUD USUARIOS
 router.get('/usuarios', obtenerUsuarios);
+router.get('/usuariosLibres', obtenerUsuariosLibres);
 router.post('/iniciarSesion', iniciarSesion)
 router.post('/usuarios', crearUsuario);
 router.put('/usuarios', actualizarUsuario)
 router.delete('/usuarios/:idusuario', eliminarUsuario);
-
+router.post('/usuariosroles', actualizarUsuarioRoles);
 
 //CRUD LABORATORIOS
 router.get('/laboratorios', obtenerLaboratorios);
@@ -86,5 +91,17 @@ router.get('/unidades', obtenerUnidades);
 router.post('/unidades', crearUnidad);
 router.put('/unidades', actualizarUnidad)
 router.delete('/unidades/:idunidad', eliminarUnidad);
+
+//CRUD LABORATORISTAS
+router.get('/laboratoristas', obtenerLaboratoristas);
+router.post('/laboratoristas', crearLaboratorista);
+router.put('/laboratoristas', actualizarLaboratorista)
+router.delete('/laboratoristas/:idlaboratorista', eliminarLaboratorista);
+
+//CRUD PERMISOS
+router.get('/permisos', obtenerPermisos);
+router.post('/permisos', crearPermiso);
+router.put('/permisos', actualizarPermiso)
+router.delete('/permisos/:idpermiso', eliminarPermiso);
 
 module.exports = router;

@@ -19,6 +19,7 @@ import OpcionesPermisos from './paginas/opcionespermisos/opcionespermisos';
 import Areas from './paginas/areas/areas';
 import EstadosCiviles from './paginas/estadosciviles/estadosciviles';
 import Unidades from './paginas/unidades/unidades';
+import Laboratoristas from './paginas/laboratoristas/laboratoristas';
 const cookies = new Cookies();
 
 
@@ -46,6 +47,7 @@ function App() {
           <Route path='/areas' element={ <RequireAuth redirectTo="/login"><Areas/></RequireAuth>} />          
           <Route path='/estadosciviles' element={ <RequireAuth redirectTo="/login"><EstadosCiviles/></RequireAuth>} />          
           <Route path='/unidades' element={ <RequireAuth redirectTo="/login"><Unidades/></RequireAuth>} />
+          <Route path='/laboratoristas' element={ <RequireAuth redirectTo="/login"><Laboratoristas/></RequireAuth>} />
           
 
           <Route exact path='/' element={<RequireAuth redirectTo="/login"><Inicio/></RequireAuth>} />

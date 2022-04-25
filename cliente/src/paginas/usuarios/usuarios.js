@@ -25,6 +25,9 @@ const Usuarios = () => {
   const[nuevoEstado,setNuevoEstado]=useState(null);
   const[nuevoCorreo,setNuevoCorreo]=useState("");
   const[nuevoConfirmarC,setNuevoConfirmarC]=useState("");
+
+  const[nuevosRoles,setNuevosRoles]=useState([]);
+  const[rolLista, setRolLista] = useState([]);
   //LA LISTA QUEMOSTRAREMOS
   const[usuarioLista, setUsuarioLista] = useState([]);
   const[laboratorioLista, setLaboratorioLista] = useState([]);
@@ -58,6 +61,9 @@ const Usuarios = () => {
       setUsuarioLista(response.data);  });
     Axios.get('http://localhost:3001/laboratorios').then((response)=>{
       setLaboratorioLista(response.data);  });
+      Axios.get('http://localhost:3001/roles').then((response)=>{
+        setRolLista(response.data);
+      });
   };
 
   const abrirModal=()=>{
@@ -184,6 +190,34 @@ const Usuarios = () => {
      });
   };
   
+  const actualizaRoles=(idusuario)=>{
+    Axios.post('http://localhost:3001/usuariosroles',{roles:nuevosRoles,idusuario:idusuario}).then(()=>{
+      obtenerRegistros(); 
+      swal({
+        title: "Exito!",
+        text: "Guardado con exito",
+        icon: "success",
+        button: `Entendido`, 
+      })
+    }).catch(function (error) {
+      if(error.response!=null){
+       swal({
+         title: "Error!",
+         text: error.response.data.detail,
+         icon: "error",
+         button: "Aww yiss!",
+       });
+     }if(error.response==null){
+       swal({
+         title: "Error!",
+         text: "Error de conexion al servidor",
+         icon: "error",
+         button: "Aww yiss!",
+       });
+     }
+     });
+  };
+
   function buscar(rows) {
     return rows.filter((row) =>
       buscarColumnas.some(
@@ -308,10 +342,10 @@ const Usuarios = () => {
            
             <div class="col-12">
               <div class="card h-100 p-3 px-4">       
-                <h5>Busqueda</h5>
+              
                 <div class="row">
                     <div class="col col-6">
-                     
+                    <h5>Busqueda</h5>
                       <input class="form-control form-control-sm"
                               type='text'
                               value={q}
@@ -319,8 +353,8 @@ const Usuarios = () => {
                             />
                             <small class="text-muted">Puede buscar por {columns && columns.map((column) => (<span>{column}, </span>))}</small>
                     </div>
-                    <div class="col col-6 mt-2">
-                      <label>Criterios</label>
+                    <div class="col col-6">
+                      <label><b>Criterios:</b></label>
                         <br/>
                       {columns &&
                               columns.map((column) => (
@@ -350,14 +384,14 @@ const Usuarios = () => {
               </div>
             </div>
           </div>
-          <DatatableRoles  data={buscar(usuarioLista)} laboratorios={laboratorioLista} eliminarRegistro={eliminarRegistro} actualizarRegistro={actualizaRegistro} setNuevoNombre={setNuevoNombre} setNuevaContrasenia={setNuevaContrasenia} setNuevoCorreo={setNuevoCorreo} setNuevoEstado={setNuevoEstado} setNuevoLaboratorio={setNuevoLaboratorio}/>
+          <DatatableRoles nuevosRoles={nuevosRoles} setNuevosRoles={setNuevosRoles} actualizaRoles={actualizaRoles} roles={rolLista} data={buscar(usuarioLista)} laboratorios={laboratorioLista} eliminarRegistro={eliminarRegistro} actualizarRegistro={actualizaRegistro} setNuevoNombre={setNuevoNombre} setNuevaContrasenia={setNuevaContrasenia} setNuevoCorreo={setNuevoCorreo} setNuevoEstado={setNuevoEstado} setNuevoLaboratorio={setNuevoLaboratorio}/>
   
 
 
 
 
       </div>    
-    </div>
+    </div> 
   );
 };
   

@@ -27,8 +27,7 @@ const Navbar = () => {
                 <li class="nav-item">
                     <NavLink to="/roles" class="nav-link  text-light" aria-current="page" href="#">Roles</NavLink>
                 </li>
-                <li class="nav-item">
-                </li>
+                
                 <li class="nav-item">
                     <NavLink to="/laboratorios" class="nav-link  text-light" aria-current="page" href="#">Laboratorios</NavLink>
                 </li>
@@ -66,6 +65,9 @@ const Navbar = () => {
                 </li>
                 <li class="nav-item">
                     <NavLink to="/opcionespermisos" class="nav-link  text-light" aria-current="page" href="#">Opciones Permisos</NavLink>
+                </li>
+                <li class="nav-item">
+                    <NavLink to="/laboratoristas" class="nav-link  text-light" aria-current="page" href="#">Laboratoristas</NavLink>
                 </li>
                 
                  

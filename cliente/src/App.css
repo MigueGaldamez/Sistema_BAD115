@@ -10,3 +10,8 @@ border-top: 6px solid #DD4A48!important;
   background-color:#203239!important;
   color:antiquewhite !important;
 }
+
+td{
+  padding-top: 9px !important;
+  padding-bottom: 9px !important;
+}

@@ -9,17 +9,46 @@ generarAuthToken = function() {
 }
 
 const obtenerUsuarios = async(req,res)=>{
-    /*tokens = req.app.get("authTokens");*/
     valor = req.headers.authorization;
-    //console.log(valor);
-    /*console.log(tokens);
-    usuario = tokens.find(x => x.token == valor);
-    console.log(usuario);
-    //console.log(tokens);/*/
-   
+ 
     try{
         
         sql = 'SELECT * FROM usuario order by idusuario asc';
+        const response = await sqlee.query(sql);
+        usuarios = response.rows;
+
+        for(const usuario of usuarios){
+            sql2 = 'SELECT * FROM laboratorio where idlaboratorio=$1 limit 1';
+            const responseHija = await sqlee.query(sql2,[usuario.idlaboratorio]);
+            usuario.laboratorio = responseHija.rows[0].nombrelaboratorio;
+            usuario.infolaboratorio = responseHija.rows[0]; 
+
+            sql3 = 'SELECT * FROM detallerol where idusuario=$1';
+            const responseHija2 = await sqlee.query(sql3,[usuario.idusuario]);
+           
+         
+            valores =  responseHija2.rows;
+            var array = Object.keys(valores)
+            .map(function(key) {
+                return valores[key].idrol;
+            });
+            usuario.roles = array; 
+        }
+
+        res.status(200).json(usuarios);
+    }catch(error){
+        console.log(error);
+        res.status(500).json(error);
+    }
+ 
+};
+
+const obtenerUsuariosLibres = async(req,res)=>{
+    valor = req.headers.authorization;
+ 
+    try{
+        
+        sql = 'select * from usuario where idusuario not in(SELECT idusuario FROM laboratorista) order by idusuario asc';
         const response = await sqlee.query(sql);
         usuarios = response.rows;
 
@@ -35,6 +64,7 @@ const obtenerUsuarios = async(req,res)=>{
     }catch(error){
         res.status(500).json(error);
     }
+    
  
 };
 
@@ -145,6 +175,26 @@ const actualizarUsuario = async (req,res)=>{
     }
 };
 
+const actualizarUsuarioRoles = async (req,res)=>{
+    const id = req.body.idusuario;
+    const { roles } = req.body;
+    try{
+        sql = "DELETE from detallerol WHERE idusuario=$1";
+        const response = await sqlee.query(sql,[id]);
+        //console.log(response.rows);
+        for (const rol of roles) {
+            sql2 = "Insert into detallerol(idrol,idusuario) VALUES($1,$2)";
+            const response2 = await sqlee.query(sql2,[rol,id]);
+        };
+        sql2 = "Select from detallerol WHERE idusuario=$1";
+        const response2 = await sqlee.query(sql2,[id]);
+
+        res.status(200).json(response2.rows);
+    }catch(error){
+        res.status(500).json(error);
+    }
+};
+
 const eliminarUsuario =  async (req, res) => {
     const id = parseInt(req.params.idusuario);
     try{
@@ -166,4 +216,6 @@ module.exports = {
    actualizarUsuario,
    eliminarUsuario,
    generarAuthToken,
+   obtenerUsuariosLibres,
+   actualizarUsuarioRoles,
 };
