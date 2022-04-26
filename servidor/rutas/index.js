@@ -15,6 +15,8 @@ const { crearLaboratorista, obtenerLaboratoristas, actualizarLaboratorista, elim
 const { crearPermiso, obtenerPermisos, actualizarPermiso, eliminarPermiso, } = require('../controladores/permisos.controller');
 
 const { crearEstadoCivil, obtenerEstadosCiviles, actualizarEstadoCivil, eliminarEstadoCivil, } = require('../controladores/estadosciviles.controller');
+const { crearPaciente, obtenerPacientes, actualizarPaciente, eliminarPaciente, } = require('../controladores/pacientes.controller');
+
 
 
 const { obtenerUsuarios, iniciarSesion,crearUsuario,actualizarUsuario,actualizarUsuarioRoles,eliminarUsuario,obtenerUsuariosLibres} = require('../controladores/usuarios.controller');
@@ -103,5 +105,11 @@ router.get('/permisos', obtenerPermisos);
 router.post('/permisos', crearPermiso);
 router.put('/permisos', actualizarPermiso)
 router.delete('/permisos/:idpermiso', eliminarPermiso);
+
+//CRUD PACIENTES
+router.get('/pacientes', obtenerPacientes);
+router.post('/pacientes', crearPaciente);
+router.put('/pacientes', actualizarPaciente)
+router.delete('/pacientes/:idpaciente', eliminarPaciente);
 
 module.exports = router;

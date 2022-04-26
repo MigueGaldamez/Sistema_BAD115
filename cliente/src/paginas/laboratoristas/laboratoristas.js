@@ -364,7 +364,7 @@ const Laboratoristas = () => {
 
                   <hr></hr>
                   <h5>Datos de Laborista:</h5>
-                <div class="row mt-2">
+                <div class="row mt-2 px-3">
                   <div class="col col-6">
                         <label for="" class="form-label">Profesion:</label>
                         <select class="form-select form-select-sm" aria-label="Default select example" onChange={(event)=>{

@@ -69,7 +69,9 @@ const Navbar = () => {
                 <li class="nav-item">
                     <NavLink to="/laboratoristas" class="nav-link  text-light" aria-current="page" href="#">Laboratoristas</NavLink>
                 </li>
-                
+                <li class="nav-item">
+                    <NavLink to="/pacientes" class="nav-link  text-light" aria-current="page" href="#">Pacientes</NavLink>
+                </li>
                  
              
             </ul>

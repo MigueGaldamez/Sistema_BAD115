@@ -20,11 +20,12 @@ import Areas from './paginas/areas/areas';
 import EstadosCiviles from './paginas/estadosciviles/estadosciviles';
 import Unidades from './paginas/unidades/unidades';
 import Laboratoristas from './paginas/laboratoristas/laboratoristas';
+import Pacientes from './paginas/pacientes/pacientes';
 const cookies = new Cookies();
 
 
 function RequireAuth({ children, redirectTo }) {
-  let isAutenticado = true;//aqui
+  let isAutenticado = false;//aqui
   if(cookies.get('nombre')){
     isAutenticado = true;
   }
@@ -48,6 +49,7 @@ function App() {
           <Route path='/estadosciviles' element={ <RequireAuth redirectTo="/login"><EstadosCiviles/></RequireAuth>} />          
           <Route path='/unidades' element={ <RequireAuth redirectTo="/login"><Unidades/></RequireAuth>} />
           <Route path='/laboratoristas' element={ <RequireAuth redirectTo="/login"><Laboratoristas/></RequireAuth>} />
+          <Route path='/pacientes' element={ <RequireAuth redirectTo="/login"><Pacientes/></RequireAuth>} />
           
 
           <Route exact path='/' element={<RequireAuth redirectTo="/login"><Inicio/></RequireAuth>} />
