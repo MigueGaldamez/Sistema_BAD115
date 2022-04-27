@@ -2,6 +2,7 @@
 //NAV Y FOOTER
 import Navbar from './componentes/Navbar';
 import Footer from './componentes/Footer';
+
 import { BrowserRouter as Router, Routes, Route,Navigate} from 'react-router-dom';
 //PAGINAS
 import Inicio from './paginas/home';

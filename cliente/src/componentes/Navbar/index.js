@@ -11,7 +11,8 @@ const Navbar = () => {
     }
   return (
     <>
-    <nav class="navbar navbar-expand-lg px-4 fondoAzulOscuro py-1 sticky-top">
+ 
+    <nav class="navbar navbar-expand-lg px-4 fondoAzulOscuro py-1 sticky-top navbar-dark">
         <div class="container-fluid">
             <a class="navbar-brand text-light">Sistema BAD115</a>
             

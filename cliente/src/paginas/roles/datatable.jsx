@@ -40,7 +40,7 @@ export default function DatatableRoles({ actualizaPermisos,nuevosPermisos,data,e
   return (
     <>
     
-    <table class="table table-striped mt-3 table-hover " cellPadding={0} cellSpacing={0}>
+    <table class="table table-striped mt-3 table-hover table-responsive-lg" cellPadding={0} cellSpacing={0}>
       <thead class="table-dark">
         <tr>
         {data[0] && columns.map((heading) => {

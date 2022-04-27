@@ -16,7 +16,15 @@ const obtenerPacientes = async(req,res)=>{
             sql3 = 'SELECT * FROM estadocivil where idestado=($1) limit 1';
             const responseHija2 = await sqlee.query(sql3,[paciente.idestado]);
             paciente.estadocivil = responseHija2.rows[0].estadocivil; 
+
+            sql4 = 'SELECT * FROM contactoemergencia where idpaciente=($1) limit 1';
+            const responseHija3 = await sqlee.query(sql4,[paciente.idpaciente]);
+            paciente.contactoemergencia= responseHija3.rows[0]; 
         
+            sql5 = 'SELECT * FROM numerotelefono where idpaciente=($1)';
+            const responseHija4 = await sqlee.query(sql5,[paciente.idpaciente]);
+            paciente.numeros= responseHija4.rows; 
+
         }
         res.status(200).json(pacientes);
     }catch(error){
