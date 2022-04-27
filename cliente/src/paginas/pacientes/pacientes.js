@@ -8,6 +8,7 @@ import swal from 'sweetalert';
 const Pacientes = () => { 
     //PARA los ERRORES
   const[errores, setErrores] = useState([]);
+  const[erroresA, setErroresA] = useState([]);
   //PARA CADA ATRIBUTO
   const[nombre,setNombre]=useState("");
   const[correo,setCorreo]=useState("");
@@ -22,25 +23,34 @@ const Pacientes = () => {
   const[identificadorEmergencias,setIdentificadorEmergencias]=useState("");  
   const[numeroEmergencias,setNumeroEmergencias]=useState(0);
   const[contactos,setContactos]=useState([]);
+  const[contactosA,setContactosA]=useState([]);
   const[paso,setPaso]=useState(1);
+  const[pasoA,setPasoA]=useState(1);
 
   //ESTE PARA CADA ATRIBUTO QUE SEPUEDE EDITAR
   const[nuevoNombre,setNuevoNombre]=useState("");
-  const[nuevoIdMunicipio,setNuevoIdMunicipio]=useState(0);
+  const[nuevoMunicipio,setNuevoMunicipio]=useState(0);
   const[nuevoApellido,setNuevoApellido]=useState("");
   const[nuevaDireccion,setNuevaDireccion]=useState("");
   const[nuevoCorreo,setNuevoCorreo]=useState("");
   const[nuevaFechaNacimiento,setNuevaFechaNacimiento]=useState("");
   const[nuevoEstado,setNuevoEstado]=useState(0);
+  const[nuevoContactos,setNuevoContactos]=useState([]);
+  const[nuevoestadoCivil,setNuevoEstadoCivil]=useState(0);  
+  const[nuevoidentificadorEmergencias,setNuevoIdentificadorEmergencias]=useState("");  
+  const[nuevonumeroEmergencias,setNuevoNumeroEmergencias]=useState(0);
+  const[nuevoidentificador,setNuevoidentificador]=useState("");  
+  const[nuevoNumero,setNuevoNumero]=useState(0);
   //LA LISTA QUEMOSTRAREMOS
   const[municipioLista, setMunicipioLista] = useState([]);
   const[pacienteLista, setPacienteLista] = useState([]);
   const[estadoCivilLista, setEstadoCivilLista] = useState([]);
   const[modalB, setModalB] = useState([]);
+  const[modalA, setModalA] = useState([]);
   //PARA LA BUSQUEDA
   const [q, setQ] = useState('');
   //TODAS LAS COLUMNAS
-  const [columns] = useState([
+  const [columns,setColumns] = useState([
     'apellido',
     'nombrepaciente',
     'municipio',
@@ -56,9 +66,10 @@ const Pacientes = () => {
 
   const obtenerRegistros=()=>{
     Axios.get(`http://${process.env.REACT_APP_SERVER_IP}/pacientes`).then((response)=>{
-      setPacienteLista(response.data);  });
-    Axios.get(`http://${process.env.REACT_APP_SERVER_IP}/estadosciviles`).then((response)=>{
-      setEstadoCivilLista(response.data);  });
+     setPacienteLista([]);
+    setPacienteLista(response.data);  });
+    Axios.get(`http://${process.env.REACT_APP_SERVER_IP}/estadosciviles`).then((response)=>{ 
+    setEstadoCivilLista(response.data);  });
     Axios.get(`http://${process.env.REACT_APP_SERVER_IP}/municipios`).then((response)=>{
       setMunicipioLista(response.data);  });
   };
@@ -89,6 +100,32 @@ const Pacientes = () => {
     modal.hide();
   }
 
+  const abrirModalActualizacion=()=>{
+    var modal = new Modal(document.getElementById('actualizarDetalles'));
+    setModalA(modal);
+    modal.show();
+  }
+  const cerrarModalActualizacion=()=>{
+    //Limpiamos los errores
+    setErroresA([]);
+    //limpiamos los campos
+    setNuevoNombre('');
+    setNuevoContactos([]);
+    setNuevoMunicipio(0);
+    setNuevoApellido('');
+    setNuevaDireccion('');
+    setNuevaFechaNacimiento('');
+    setNuevoCorreo('');
+    setNuevoEstadoCivil(0);
+    setNuevoNumeroEmergencias(0);
+    setNuevoIdentificadorEmergencias('');
+    //limpiamos el formulario
+    document.getElementById("formularioActu").reset();
+    //cerramos el modal
+    var modal = modalA;
+    modal.hide();
+  }
+
   //AGREGAR
   const agregarRegistro=(event)=>{    
     event.preventDefault();
@@ -107,7 +144,7 @@ const Pacientes = () => {
 
     }).then((response)=>{
       if(response.data.errores==null){      
-        cerrarModal();
+        cerrarModalActualizacion();
         swal({
           title: "Exito!",
           text: "Guardado con exito",
@@ -137,7 +174,51 @@ const Pacientes = () => {
      }
      });
   };
-
+  const actualizaDetalles=(idpaciente)=>{
+    Axios.put(`http://${process.env.REACT_APP_SERVER_IP}/pacientes`,{
+      nombre:nuevoNombre,
+      idpaciente:idpaciente,
+      idmunicipio:nuevoMunicipio,
+      apellido:nuevoApellido,
+      direccion:nuevaDireccion,
+      fechaNacimiento:nuevaFechaNacimiento,
+      correo:nuevoCorreo,
+      estado:nuevoEstado,
+      identificadorEmergencias:nuevoidentificadorEmergencias,
+      numeroEmergencias:nuevonumeroEmergencias,
+      contactos:contactosA,
+      completo:1,
+    }).then((response)=>{
+      if(response.data.errores==null){      
+        cerrarModalActualizacion();
+        swal({
+          title: "Exito!",
+          text: "Actualizado con exito",
+          icon: "success",
+          button: `Entendido`, 
+        })
+      }else{        
+        setErroresA(response.data.errores);
+      }
+      
+    }).catch(function (error) {
+      if(error.response!=null){
+       swal({
+         title: "Error!",
+         text: error.response.data.detail,
+         icon: "error",
+         button: "Aww yiss!",
+       });
+     }if(error.response==null){
+       swal({
+         title: "Error!",
+         text: "Error de conexion al servidor",
+         icon: "error",
+         button: "Aww yiss!",
+       });
+     }
+     });
+  }
   const eliminarRegistro=(idpaciente)=>{
     Axios.delete(`http://${process.env.REACT_APP_SERVER_IP}/pacientes/${idpaciente}`).then((res)=>{
       obtenerRegistros();
@@ -167,7 +248,7 @@ const Pacientes = () => {
   };
 
   const actualizaRegistro=(idpaciente)=>{
-    Axios.put(`http://${process.env.REACT_APP_SERVER_IP}/pacientes`,{nombre:nuevoNombre,idpaciente:idpaciente,idmunicipio:nuevoIdMunicipio}).then(()=>{
+    Axios.put(`http://${process.env.REACT_APP_SERVER_IP}/pacientes`,{nombre:nuevoNombre,idpaciente:idpaciente,idmunicipio:nuevoMunicipio, estado:nuevoEstado,apellido:nuevoApellido,completo:0}).then(()=>{
       obtenerRegistros();
       swal({
         title: "Exito!",
@@ -234,6 +315,37 @@ const Pacientes = () => {
     }   
   }
 
+  //PARA ACTUALIAZION
+  const eliminarNumeroActu=(index)=>{
+    contactosA.splice(index,1);
+    setNuevoNumero("");
+    setNuevoidentificador("");
+    setNuevoidentificador(0);
+    var error = erroresA;
+    error.numero = "";
+    error.identificador="";
+    setErroresA(error);
+  }
+  const agregarNumeroActu=()=>{
+    if(contactosA.length>=3){
+      var error = erroresA;
+      error.numero = "Solamente se pueden agregar un maximo de 3 números";
+      error.identificador = "Solamente se pueden agregar un maximo de 3 números";
+      setErroresA(error);
+      setNuevoNumero(0);
+      setNuevoidentificador(0);
+      document.getElementById("numeroformAct").reset();
+    }else{
+      var numeroNuevo={};
+      numeroNuevo.numero = nuevoNumero;
+      numeroNuevo.nombreidentificador = nuevoidentificador;
+      contactosA.push(numeroNuevo);
+      setNuevoNumero(0);
+      setNuevoidentificador(0);
+      document.getElementById("numeroformAct").reset();
+    }   
+  }
+
 
   //LEER LOS DATOS AL CARGAR
   useEffect(()=>{
@@ -286,7 +398,7 @@ const Pacientes = () => {
       <div class="bordeLateral"><h6>Información General:</h6></div>
         <div class="col col-6">
                 <label for="exampleInputEmail1" class="form-label">Nombres del Paciente:</label>
-                <input type="text" class="form-control form-control-sm" placeholder='Ingrese los nombres del paciente' onChange={(event)=>{ setNombre(event.target.value)}}/>        
+                <input  type="text" class="form-control form-control-sm" placeholder='Ingrese los nombres del paciente' onChange={(event)=>{ setNombre(event.target.value)}}/>        
                 { 
                 errores.nombre &&
                <p><small class="text-danger">* {errores.nombre}</small></p>
@@ -451,7 +563,7 @@ const Pacientes = () => {
         <h2 class="m-0"><span>Gestión de Pacientes</span>
         
           <button type="button" class="btn btn-primary btn-sm ms-3"  onClick={abrirModal}>
-            Nuevo Registro
+            Nuevo Registro 
           </button>
               
           </h2>
@@ -465,6 +577,7 @@ const Pacientes = () => {
                 <div class="row">
                     <div class="col col-5">
                     <h5>Busqueda</h5>
+                   
                       <input class="form-control form-control-sm"
                               type='text'
                               value={q}
@@ -502,7 +615,34 @@ const Pacientes = () => {
               </div>
             </div>
           </div>
-          <DatatableRoles estados={estadoCivilLista} setNuevaDireccion={setNuevaDireccion} setNuevoApellido={setNuevoApellido} setNuevaFechaNacimiento={setNuevaFechaNacimiento} setNuevoCorreo={setNuevoCorreo} setNuevoEstado={setNuevoEstado} data={buscar(pacienteLista)} municipios={municipioLista} eliminarRegistro={eliminarRegistro} actualizarRegistro={actualizaRegistro} setNuevoNombre={setNuevoNombre} setNuevoIdMunicipio={setNuevoIdMunicipio}/>
+          <DatatableRoles 
+          setContactosA ={setContactosA}
+          agregarNumeroActu ={agregarNumeroActu}
+          eliminarNumeroActu ={eliminarNumeroActu}
+          setNuevoEstadoCivil={setNuevoEstadoCivil}
+          setNuevoNumero = {setNuevoNumero}
+          setNuevoNumeroEmergencias = {setNuevoNumeroEmergencias}
+          setNuevoidentificador= {setNuevoidentificador}
+          setNuevoIdentificadorEmergencias={setNuevoIdentificadorEmergencias}
+          contactosA={contactosA}
+          setPasoA={setPasoA}
+          pasoA={pasoA}
+          erroresA={erroresA}
+          actualizaDetalles={actualizaDetalles}
+          estados={estadoCivilLista} 
+          setNuevaDireccion={setNuevaDireccion} 
+          setNuevoApellido={setNuevoApellido} 
+          setNuevaFechaNacimiento={setNuevaFechaNacimiento} 
+          setNuevoCorreo={setNuevoCorreo} 
+          setNuevoEstado={setNuevoEstado} 
+          data={buscar(pacienteLista)} 
+          municipios={municipioLista} 
+          eliminarRegistro={eliminarRegistro} 
+          actualizarRegistro={actualizaRegistro} 
+          setNuevoNombre={setNuevoNombre} 
+          setNuevoMunicipio={setNuevoMunicipio}
+          cerrarModalActualizacion={cerrarModalActualizacion}
+          abrirModalActualizacion={abrirModalActualizacion}/>
 
       </div>    
     </div>

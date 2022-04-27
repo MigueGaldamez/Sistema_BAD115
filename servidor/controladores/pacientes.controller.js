@@ -111,24 +111,112 @@ const crearPaciente =  async (req, res) => {
 };
 
 const actualizarPaciente = async (req,res)=>{
-    const id = req.body.idlaboratorio;
-    var { nombre,idmunicipio } = req.body;
+    const id = req.body.idpaciente;
+    const completo = req.body.completo;
+    var { nombre,idmunicipio,apellido,direccion,fechaNacimiento,correo,estado,identificadorEmergencias,numeroEmergencias,contactos } = req.body;
+    var erroresC ={};
+    var correcto = true;
     try{
-        registroSQL = 'SELECT * FROM laboratorio where idlaboratorio=$1 limit 1';
+        registroSQL = 'SELECT * FROM paciente where idpaciente=$1 limit 1';
         const responseRe = await sqlee.query(registroSQL,[id]);
         registro = responseRe.rows[0];
-        
-        if(nombre==''){
-            nombre = registro.nombrelaboratorio;
-        }if(idmunicipio<=0){
-            idmunicipio = registro.idmunicipio;
+       
+        if(completo==1){
+            if(nombre==''){
+                erroresC.nombre = "Este campo es obligatorio";  
+                correcto =false;
+            }
+            if(apellido==''){
+                erroresC.apellido = "Este campo es obligatorio";  
+                correcto =false;
+            }
+            if(correo==''){
+                erroresC.correo = "Este campo es obligatorio";  
+                correcto =false;
+            }
+            if(idmunicipio==0 || idmunicipio == ''){
+                erroresC.municipio = "Este campo es obligatorio";
+                correcto =false;  
+            }
+            if(estado==0 || estado == ''){
+                erroresC.estado = "Este campo es obligatorio";
+                correcto =false;  
+            }
+            if(direccion==''){
+                erroresC.direccion = "Este campo es obligatorio";
+                correcto =false;  
+            }
+            if(fechaNacimiento==''){
+                erroresC.fechaNacimiento = "Este campo es obligatorio";
+                correcto =false;  
+            }
+            if(contactos.length<=0){
+                erroresC.numero = "Debe ingresar al menos un número de contacto";
+                erroresC.identificador = "Debe ingresar al menos un número de contacto";
+                correcto =false;  
+            }
+            if(numeroEmergencias==''){
+                erroresC.numeroEmergencias = "Este campo es obligatorio";
+                correcto =false;  
+            }
+            if(identificadorEmergencias=='' || identificadorEmergencias<=0){
+                erroresC.identificadorEmergencias = "Este campo es obligatorio";
+                correcto =false;  
+            }
+            if(correcto==false)
+            {
+                res.status(200).json({
+                    error:'hay error',
+                    errores: erroresC,
+                })
+            }else{
+                sql = "UPDATE paciente SET nombrepaciente=$1, apellido=$2, idmunicipio=$3, direccion=$4, fechanacimiento=$5,correopaciente=$6, idestado=$7 WHERE idpaciente=$8 ";
+                const response = await sqlee.query(sql,[nombre,apellido,idmunicipio,direccion,fechaNacimiento,correo,estado,id]);
+                
+                sql2 = "UPDATE contactoemergencia SET telefono=$1, nombrecontacto=$2 WHERE idpaciente=$3 ";
+                const response2 = await sqlee.query(sql2,[numeroEmergencias,identificadorEmergencias,id]);
+
+                sql3 = "DELETE FROM numerotelefono WHERE idpaciente=$1 ";
+                const response3 = await sqlee.query(sql3,[id]);
+                
+                for(const numero of contactos){
+                    const response4 = await sqlee.query('INSERT INTO numerotelefono (idpaciente,numero,nombreidentificador) VALUES ($1,$2,$3)', 
+                    [id,numero.numero,numero.nombreidentificador]);
+                 }
+
+                res.status(200).json({
+                    message: 'Añadido con Exito',
+                    body: {
+                        paciente: response
+                    }
+                })
+            }
+        }else if(completo==0){
+            if(nombre==''){
+               nombre = registro.nombrepaciente;
+            }
+            if(apellido==''){
+                apellido =registro.apellido;
+            }
+            if(idmunicipio==0 || idmunicipio == ''){
+               idmunicipio = registro.idmunicipio;
+            }
+            if(estado==0 || estado == ''){
+               estado = registro.idestado;  
+            }
+            sql = "UPDATE paciente SET nombrepaciente=$1, apellido=$2, idmunicipio=$3, idestado=$4 WHERE idpaciente=$5 ";
+            const response = await sqlee.query(sql,[nombre,apellido,idmunicipio,estado,id]);
+            res.status(200).json({
+                message: 'Añadido con Exito',
+                body: {
+                    paciente: response
+                }
+            })
         }
-        sql = "UPDATE laboratorio SET nombrelaboratorio=$1, idmunicipio=$2 WHERE idlaboratorio=$3";
-        const response = await sqlee.query(sql,[nombre,idmunicipio,id]);
-        res.status(200).json({
-            laboratorio:{response}
-        })
+        
+        
     }catch(error){
+        console.log(error);
         res.status(500).json(error);
     }
 };
