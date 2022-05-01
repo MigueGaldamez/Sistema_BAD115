@@ -15,3 +15,62 @@ td{
   padding-top: 9px !important;
   padding-bottom: 9px !important;
 }
+/*
+CARDS*/
+#cardsinicio .c-details span {
+  font-weight: 300;
+  font-size: 13px
+}
+
+#cardsinicio .icon {
+  width: 60px;
+  height: 60px;
+  border-radius: 15px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 39px;
+
+}
+#cardsinicio .icon-primary{
+  color: #1266F1 !important; 
+  background-color: #e5edfa !important;
+}
+#cardsinicio .icon-success{
+  color: #02b875 !important;
+  background-color: #ebfcf5 !important;
+}
+#cardsinicio .icon-warning{
+  color: #f0ad4e !important;
+  background-color: #f5dfbf !important;
+}
+#cardsinicio .icon-danger{
+  color: #d9534f !important;
+  background-color: #f8d6d5 !important;
+}
+#cardsinicio .badge{
+  padding-left:3px;
+  padding-right: 3px;
+}
+
+#cardsinicio .badge span {
+  background-color: #e5edfa;
+  width: 70px;
+  height: 30px;
+  padding-bottom: 3px;
+  padding-top: 3px;
+  border-radius: 5px;
+  display: flex;
+  color: #1266F1;
+  justify-content: center;
+  align-items: center;
+
+}
+#cardsinicio .text1 {
+  font-size: 14px;
+  font-weight: 600
+}
+
+#cardsinicio .text2 {
+  color: #a5aec0
+}

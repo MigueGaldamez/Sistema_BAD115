@@ -36,7 +36,6 @@ const Usuarios = () => {
   const [q, setQ] = useState('');
   //TODAS LAS COLUMNAS
   const [columns] = useState([
-    'idusuario',
     'laboratorio',
     'estado',
     'correousuario',
@@ -44,7 +43,6 @@ const Usuarios = () => {
   ]);
   //LAS COLUMNAS POR LAS QUE SEPUEDEN FILTRAR
   const [buscarColumnas, setBuscarColumnas] = useState([
-    'idusuario',
     'laboratorio',
     'estado',
     'correousuario',
