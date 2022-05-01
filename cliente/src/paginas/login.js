@@ -3,25 +3,26 @@ import Axios from 'axios';
 import Cookies from 'universal-cookie';
 import swal from 'sweetalert';
 var SHA256 = require("crypto-js/sha256");
-
 const cookies = new Cookies();
 
 const Login = () => { 
+ console.log(process.env.REACT_APP_SERVER_IP);
   const[correo,setCorreo]=useState("");
   const[contrasenia,setContrasenia]=useState("");
 
   const iniciarSesion=()=>{
     var contraseniaEncriptada = (SHA256(contrasenia)).toString();
     console.log(contraseniaEncriptada);
-    Axios.post('http://localhost:3001/iniciarSesion', {correo: correo, contrasenia:contraseniaEncriptada})
+    Axios.post(`http://${process.env.REACT_APP_SERVER_IP}/iniciarSesion`, {correo: correo, contrasenia:contraseniaEncriptada})
     .then(response=>{
  
         if(response.data.length>0){
           var respuesta = response.data[0];
-          cookies.set('nombre', respuesta.nombre + " | " +respuesta.correo, {path: "/"});
+          cookies.set('nombre', respuesta.nombreusuario + " | ", {path: "/"});
+          cookies.set('usuario',respuesta);
           swal({
             title: "Exito!",
-            text: "Bienvenido "+respuesta.nombre +"!",
+            text: "Bienvenido "+respuesta.nombreusuario +"!",
             icon: "success",
             button: `Entendido`, 
           }).then((result) => { 
@@ -30,10 +31,10 @@ const Login = () => {
         }
     })
     .catch(error=>{      
-      console.log(error);
+     
       swal({
         title: "Error!",
-        text: "Usuario o contraseña incorrecto!",
+        text: error.response.data,
         icon: "error",
         button: "Aww yiss!",
       });
@@ -43,8 +44,8 @@ const Login = () => {
   }
   return (
     <div class="container mt-4">
-      <div class="card card-body col-6 mx-auto p-4 loginCard">   
-        <div class="col-8 mx-auto">
+      <div class="card card-body col-sm-12 col-md-6 mx-auto p-4 loginCard">   
+        <div class="col-sm-12 col-md-8 mx-auto">
           <img class="" src={"./imgs/logo2.svg"} />
         </div>
          
@@ -76,7 +77,7 @@ const Login = () => {
         <label class="form-check-label" for="exampleCheck1">Recordarme</label>
       </div>
       <div class="col text-center">
-      <button type="submit" class="btn btn-primary" onClick={()=> iniciarSesion()}>Iniciar sesión</button>
+      <button  class="btn btn-primary" onClick={()=> iniciarSesion()}>Iniciar sesión</button>
       </div>
     </div>
   </div> 

@@ -3,10 +3,7 @@ import { useState,useEffect } from 'react';
 import Axios from 'axios';  
 import DatatableRoles from "./datatable";
 import { Modal } from 'bootstrap/dist/js/bootstrap.bundle.min';
-
-
-import Cookies from 'universal-cookie';
-const cookies = new Cookies();
+import swal from 'sweetalert';
 
 const Roles = () => { 
   //PARA los ERRORES
@@ -17,21 +14,29 @@ const Roles = () => {
   const[nuevoNombre,setNuevoNombre]=useState(0);
   //LA LISTA QUEMOSTRAREMOS
   const[rolLista, setRolLista] = useState([]);
+  const[permisoLista, setPermisoLista] = useState([]);
   const[modalB, setModalB] = useState([]);
+  const[nuevosPermisos,setNuevosPermisos]=useState([]);
   //PARA LA BUSQUEDA
   const [q, setQ] = useState('');
   //TODAS LAS COLUMNAS
-  const columns =rolLista[0] && Object.keys(rolLista[0]);
+  const [columns] =useState([
+    'idrol',
+    'nombrerol',
+  ]);
   //LAS COLUMNAS POR LAS QUE SEPUEDEN FILTRAR
   const [buscarColumnas, setBuscarColumnas] = useState([
     'idrol',
-    'nombre',
+    'nombrerol',
   ]);
   
 
   const obtenerRoles=()=>{
-    Axios.get('http://localhost:3001/roles').then((response)=>{
+    Axios.get(`http://${process.env.REACT_APP_SERVER_IP}/roles`).then((response)=>{
       setRolLista(response.data);
+    });
+    Axios.get(`http://${process.env.REACT_APP_SERVER_IP}/opcionespermisos`).then((response)=>{
+      setPermisoLista(response.data);
     });
   };
  
@@ -54,30 +59,125 @@ const Roles = () => {
   //AGREGAR
   const agregarRegistro=(event)=>{    
     event.preventDefault();
-    Axios.post('http://localhost:3001/roles',{
+    Axios.post(`http://${process.env.REACT_APP_SERVER_IP}/roles`,{
       //TODOS LOS CAMPOS
       nombre:nombre,
     }).then((response)=>{    
       if(response.data.errores==null){      
         cerrarModal();
+        swal({
+          title: "Exito!",
+          text: "Guardado con exito",
+          icon: "success",
+          button: `Entendido`, 
+        })
       }else{        
         setErrores(response.data.errores);
       }
       //ACTUALIZAR DATOS
       obtenerRoles();
-    });
+    }).catch(function (error) {
+      if(error.response!=null){
+       swal({
+         title: "Error!",
+         text: error.response.data.detail,
+         icon: "error",
+         button: "Aww yiss!",
+       });
+     }if(error.response==null){
+       swal({
+         title: "Error!",
+         text: "Error de conexion al servidor",
+         icon: "error",
+         button: "Aww yiss!",
+       });
+     }
+     });
   };
 
   const eliminarRegistro=(idrol)=>{
-    Axios.delete(`http://localhost:3001/roles/${idrol}`).then(()=>{
+    Axios.delete(`http://${process.env.REACT_APP_SERVER_IP}/roles/${idrol}`).then(()=>{
       obtenerRoles();  
-    });
+      swal({
+        title: "Exito!",
+        text: "Eliminado con exito",
+        icon: "success",
+        button: `Entendido`, 
+      });    
+    }).catch(function (error) {
+      if(error.response!=null){
+       swal({
+         title: "Error!",
+         text: error.response.data.detail,
+         icon: "error",
+         button: "Aww yiss!",
+       });
+     }if(error.response==null){
+       swal({
+         title: "Error!",
+         text: "Error de conexion al servidor",
+         icon: "error",
+         button: "Aww yiss!",
+       });
+     }
+     });
   };
 
   const actualizaRegistro=(idrol)=>{
-    Axios.put('http://localhost:3001/roles',{nombre:nuevoNombre,idrol:idrol}).then(()=>{
-      obtenerRoles();  
-    });
+    Axios.put(`http://${process.env.REACT_APP_SERVER_IP}/roles`,{nombre:nuevoNombre,idrol:idrol})
+    .then(()=>{
+      obtenerRoles(); 
+      swal({
+        title: "Exito!",
+        text: "Actualizado con exito",
+        icon: "success",
+        button: `Entendido`, 
+      });    
+    }).catch(function (error) {
+      if(error.response!=null){
+       swal({
+         title: "Error!",
+         text: error.response.data.detail,
+         icon: "error",
+         button: "Aww yiss!",
+       });
+     }if(error.response==null){
+       swal({
+         title: "Error!",
+         text: "Error de conexion al servidor",
+         icon: "error",
+         button: "Aww yiss!",
+       });
+     }
+     });
+  };
+ 
+  const actualizaPermisos=(idrol)=>{
+    Axios.post(`http://${process.env.REACT_APP_SERVER_IP}/rolesPermisos`,{permisos:nuevosPermisos,idrol:idrol}).then(()=>{
+      obtenerRoles(); 
+      swal({
+        title: "Exito!",
+        text: "Guardado con exito",
+        icon: "success",
+        button: `Entendido`, 
+      })
+    }).catch(function (error) {
+      if(error.response!=null){
+       swal({
+         title: "Error!",
+         text: error.response.data.detail,
+         icon: "error",
+         button: "Aww yiss!",
+       });
+     }if(error.response==null){
+       swal({
+         title: "Error!",
+         text: "Error de conexion al servidor",
+         icon: "error",
+         button: "Aww yiss!",
+       });
+     }
+     });
   };
 
   function buscar(rows) {
@@ -92,18 +192,17 @@ const Roles = () => {
     );
   }
 
+  
 
   //LEER LOS DATOS AL CARGAR
   useEffect(()=>{
    obtenerRoles();
-
-   if(!cookies.get('nombre')){
-    window.location.href="./login";
-    }
   },[]);
 
   return (
     <div class="container my-4">
+      
+       {/* Modal para nuevo registro*/} 
       <div class="modal fade" id="nuevoRegistro" tabIndex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true" data-bs-backdrop="static">
         <div class="modal-dialog">
           <div class="modal-content">
@@ -135,7 +234,7 @@ const Roles = () => {
       </div>
       <div class="mt-4 mb-4">
       <div class="row bordeLateral mb-3">
-        <h2 class="m-0"><span>Gestión de Roles</span>
+        <h2 class="m-0"><span>Gestión de Roles </span>
           <button type="button" class="btn btn-primary btn-sm ms-3" onClick={abrirModal}>
             Nuevo Registro
           </button>
@@ -146,6 +245,7 @@ const Roles = () => {
             <div class="col-12">
               <div class="card h-100 p-3 px-4">       
                 <h5>Busqueda</h5>
+                
                 <div class="row">
                     <div class="col col-6">
                      
@@ -187,7 +287,7 @@ const Roles = () => {
               </div>
             </div>
           </div>
-          <DatatableRoles  data={buscar(rolLista)} eliminarRegistro={eliminarRegistro} actualizarRegistro={actualizaRegistro} setNuevoNombre={setNuevoNombre}/>
+          <DatatableRoles actualizaPermisos={actualizaPermisos} nuevosPermisos={nuevosPermisos} setNuevosPermisos={setNuevosPermisos} permisos={permisoLista} data={buscar(rolLista)} eliminarRegistro={eliminarRegistro} actualizarRegistro={actualizaRegistro} setNuevoNombre={setNuevoNombre}/>
           
       </div>    
     </div>

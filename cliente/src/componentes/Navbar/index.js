@@ -1,9 +1,8 @@
 import React from "react";
-import { NavLink} from "./elementos";
+import { NavLink,NavLinkDrop} from "./elementos";
 import Cookies from 'universal-cookie';
+import { Link as Link } from "react-router-dom";
 const cookies = new Cookies();
-
-
 
 const Navbar = () => {
     const cerrarSesion=()=>{    
@@ -12,7 +11,8 @@ const Navbar = () => {
     }
   return (
     <>
-    <nav class="navbar navbar-expand-lg px-4 fondoAzulOscuro py-1">
+ 
+    <nav class="navbar navbar-expand-lg px-4 fondoAzulOscuro py-1 sticky-top navbar-dark">
         <div class="container-fluid">
             <a class="navbar-brand text-light">Sistema BAD115</a>
             
@@ -28,10 +28,53 @@ const Navbar = () => {
                 <li class="nav-item">
                     <NavLink to="/roles" class="nav-link  text-light" aria-current="page" href="#">Roles</NavLink>
                 </li>
+                
                 <li class="nav-item">
-                    <NavLink to="/departamentos" class="nav-link  text-light" aria-current="page" href="#">Departamentos</NavLink>
+                    <NavLink to="/laboratorios" class="nav-link  text-light" aria-current="page" href="#">Laboratorios</NavLink>
                 </li>
-                      
+                <li class="nav-item">
+                    <NavLink to="/usuarios" class="nav-link  text-light" aria-current="page" href="#">Usuarios</NavLink>
+                </li>
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle text-light" href="#" id="navbarDarkDropdownMenuLink" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        Catalogos
+                    </a>
+                    <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+                        <li>
+                            <NavLinkDrop to="/departamentos" class="dropdown-item" aria-current="page" href="#">Departamentos</NavLinkDrop>
+                        </li>
+                        <li>
+                            <NavLinkDrop to="/municipios" class="dropdown-item" aria-current="page" href="#">Municipios</NavLinkDrop>
+                        </li>
+                        <li>
+                            <NavLinkDrop to="/poblaciones" class="dropdown-item" aria-current="page" href="#">Poblaciones</NavLinkDrop>
+                        </li>
+                        <li>
+                            <NavLinkDrop to="/profesiones" class="dropdown-item" aria-current="page" href="#">Profesiones</NavLinkDrop>
+                        </li>
+                        <li>
+                            <NavLinkDrop to="/areas" class="dropdown-item" aria-current="page" href="#">Areas</NavLinkDrop>
+                        </li>
+                        <li>
+                            <NavLinkDrop to="/unidades" class="dropdown-item" aria-current="page" href="#">Unidades</NavLinkDrop>
+                        </li>
+                        <li>
+                            <NavLinkDrop to="/estadosciviles" class="dropdown-item" aria-current="page" href="#">Estados Civil</NavLinkDrop>
+                        </li>
+                        
+                    </ul>
+                </li>
+                <li class="nav-item">
+                    <NavLink to="/opcionespermisos" class="nav-link  text-light" aria-current="page" href="#">Opciones Permisos</NavLink>
+                </li>
+                <li class="nav-item">
+                    <NavLink to="/laboratoristas" class="nav-link  text-light" aria-current="page" href="#">Laboratoristas</NavLink>
+                </li>
+                <li class="nav-item">
+                    <NavLink to="/pacientes" class="nav-link  text-light" aria-current="page" href="#">Pacientes</NavLink>
+                </li>
+                 
+             
             </ul>
             }
              {cookies.get('nombre')==null &&
