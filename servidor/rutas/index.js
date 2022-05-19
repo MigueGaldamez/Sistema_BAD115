@@ -17,7 +17,7 @@ const { crearPermiso, obtenerPermisos, actualizarPermiso, eliminarPermiso, } = r
 const { crearEstadoCivil, obtenerEstadosCiviles, actualizarEstadoCivil, eliminarEstadoCivil, } = require('../controladores/estadosciviles.controller');
 const { crearPaciente, obtenerPacientes, actualizarPaciente, eliminarPaciente, } = require('../controladores/pacientes.controller');
 
-
+const { obtenerChequeos, crearChequeo, actualizarChequeo, eliminarChequeo, /*obtenerChequeosPaciente,*/ } = require('../controladores/chequeos.controller');
 
 const { obtenerUsuarios, iniciarSesion,crearUsuario,actualizarUsuario,actualizarUsuarioRoles,eliminarUsuario,obtenerUsuariosLibres} = require('../controladores/usuarios.controller');
 
@@ -111,5 +111,12 @@ router.get('/pacientes', obtenerPacientes);
 router.post('/pacientes', crearPaciente);
 router.put('/pacientes', actualizarPaciente)
 router.delete('/pacientes/:idpaciente', eliminarPaciente);
+
+//CRUD CHEQUEO
+router.delete('/chequeos/:idchequeo', eliminarChequeo);
+router.get('/chequeos', obtenerChequeos);
+//router.get('/chequeos/:idpaciente', obtenerChequeosPaciente);
+router.post('/chequeos', crearChequeo);
+router.put('/chequeos', actualizarChequeo)
 
 module.exports = router;

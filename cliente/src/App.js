@@ -22,6 +22,8 @@ import EstadosCiviles from './paginas/estadosciviles/estadosciviles';
 import Unidades from './paginas/unidades/unidades';
 import Laboratoristas from './paginas/laboratoristas/laboratoristas';
 import Pacientes from './paginas/pacientes/pacientes';
+import Chequeos from './paginas/chequeos/chequeos';
+
 const cookies = new Cookies();
 
 
@@ -51,6 +53,7 @@ function App() {
           <Route path='/unidades' element={ <RequireAuth redirectTo="/login"><Unidades/></RequireAuth>} />
           <Route path='/laboratoristas' element={ <RequireAuth redirectTo="/login"><Laboratoristas/></RequireAuth>} />
           <Route path='/pacientes' element={ <RequireAuth redirectTo="/login"><Pacientes/></RequireAuth>} />
+          <Route path='/chequeos' element={ <RequireAuth redirectTo="/login"><Chequeos/></RequireAuth>} />
           
 
           <Route exact path='/' element={<RequireAuth redirectTo="/login"><Inicio/></RequireAuth>} />
