@@ -1,0 +1,313 @@
+import React, { useState, useEffect } from 'react';
+import Pagination from '../../componentes/Paginacion/paginacion';
+import Moment from 'moment';
+export default function DatatableRoles({ 
+  data, 
+  resultadosLista,
+  areas, 
+  eliminarRegistro,
+  actualizarRegistro,
+  setNuevoNombreExamen,
+  setNuevaArea, 
+  abrirModalRegistro, 
+  abrirModalVerResultados,
+  setNuevoNombre, 
+  setNuevoApellido, 
+  setNuevaFechaNacimiento,
+  obtenerParametros,
+  obtenerResultados,
+  parametroLista,
+  intervalosLista,
+  opcionesLista,
+  guardar,
+  modificar,
+  eliminar
+  }) {
+  
+  const dataOriginal = data;
+
+  const [valores, setvalores] = useState([]);
+  const [valoresResultado, setvaloresResultado] = useState([]);
+
+
+  const columns = data[0] && Object.keys(data[0]);
+
+  const abrirModalRegistrar=(id)=>{
+    var result = dataOriginal.find(obj => {
+      return obj.iddetalle === id;
+    })
+
+    obtenerParametros(result.idexamen);
+    setvalores(result);
+    abrirModalRegistro();
+  }
+
+  const abrirModalResultados=(id)=>{
+    //console.log(dataOriginal);
+    var result = dataOriginal.find(obj => {
+      return obj.iddetalle === id;
+    })
+
+    obtenerParametros(result.idexamen);
+    obtenerResultados(result.iddetalle);
+    setvalores(result);
+    abrirModalVerResultados();
+  }
+  
+  return (
+    <>
+    <table class="table table-striped mt-0 table-hover table-responsive-lg" cellPadding={0} cellSpacing={0}>
+      <thead class="table-dark">
+        <tr>
+        {data[0] && columns.map((heading) => {
+             if(heading!='idarea' && heading!='iddetalle'  && heading!='idexamen' && heading!='idchequeo' && heading!='idpaciente' && heading!='idlaboratorio' 
+             && heading!='idusuario' && heading!='fechachequeo'  && heading!='horachequeo' && heading!='archivo' && heading!='estadochequeo' && heading!='idmunicipio' 
+             && heading!='idestado' && heading!='nombrepaciente'  && heading!='apellido' && heading!='direccion' && heading!='fechanacimiento' && heading!='correopaciente'
+             && heading!='observaciones' && heading!='fechaingreso'  && heading!='horaingreso' && heading!='idmuestra' && heading!='nombrelaboratorio'
+             && heading!='idresultado' && heading!='idparametro'  && heading!='valor' && heading!='positivo' && heading!='comentario' && heading!='presencia')
+            return(<th>{heading}</th>)
+            })}
+          <th>Acciones</th>
+        </tr>
+      </thead>
+      <tbody>
+      {data.map((row) =>{  const id = row['iddetalle']; const idarea = row['idarea'];  return(
+          <tr>
+           
+            {columns.map((column) => {
+            
+            if(column=='nombreexamen')
+            return(
+                
+              <td>{row[column]}</td>
+           
+            )
+
+            if(column=='nombrearea')
+            return(
+                
+              <td>{row[column]}</td>
+           
+            )
+            if(column=='estadoexamen')
+            return(
+                
+              <td>
+                {row[column]==true?
+                <label class="form-check-label" for="flexCheckDefault">Finalizado</label>
+                :<label class="form-check-label" for="flexCheckDefault">Pendiente</label>}
+              </td>
+           
+            )
+            })}
+
+            <td>
+            {row['idmuestra']==null?<p class="mx-1"><i>No se encontró muestra</i></p>: null}
+            {(row['idmuestra']!=null && row['estadoexamen']==false)?<a class="btn btn-success btn-sm mx-1" onClick={()=>{abrirModalRegistrar(id)}}>Registrar resultados</a>: null}
+            {(row['estadoexamen']==true)?<a class="btn btn-success btn-sm mx-1" onClick={()=>{abrirModalResultados(id)}}>Ver resultados</a>: null}
+            </td>
+
+            
+          </tr>
+        )})}
+        {data.length ==0 && 
+        <tr><td class="text-center">Debe seleccionar un paciente</td></tr>
+        }
+      </tbody>
+    </table>
+    {/* modal de registro de examen  */}
+    <div class="modal fade" id="registrarResultados" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true"  data-bs-backdrop="static">
+      <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="exampleModalLabel">Registro de resultados de {valores.nombreexamen}</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+            <div class="row px-2">
+              <div class="bordeLateral"><h6>Información del paciente:</h6></div>
+              <div class="col col-12">
+                <p class="m-0 mt-1 ml-2"><b>Nombre: </b>{valores.nombrepaciente + ' ' + valores.apellido}</p>
+              </div>
+              <div class="col col-4">
+                <p class="m-0 ml-2"><b>Edad: </b>{Moment().diff(valores.fechanacimiento, 'years')} años </p> 
+                <p class="m-0 ml-2"><b>Genero: </b></p>
+                
+              </div>
+              <div class="col col-8">
+                <p class="m-0 ml-2"><b>Ingreso de muestra: </b>{Moment(valores.fechaingreso).format('DD/MM/YYYY')} {valores.horaingreso}</p>
+                <p class="m-0 ml-2"><b>Laboratorio: </b>{valores.nombrelaboratorio}</p>
+                <p class="m-0"></p>
+              </div>
+            </div>
+            <br></br>
+            <form id="formulario">
+              <div class="row px-2">
+                <div class="bordeLateral"><h6>Resultados:</h6></div>
+                
+                {parametroLista.map((row) =>{  const id = row['idparametro'];  return(
+                  
+                    row['tipo']==1?
+                    <div class="col col-4">
+                      <div class="mt-3">
+                          <label for="exampleInput" class="form-label">{row['parametro']}</label>
+                          <select id={row["parametro"]} class="form-select form-select-sm" aria-label="Default select example" onChange="">
+                              <option value='0' selected>Seleccione una opcion </option>
+                                {opcionesLista.map((opcion) => {
+                                
+                                if(opcion.idparametro === row['idparametro']){
+                                    return(  <option value={opcion.idopcion}>{opcion.opcion}</option>)
+                                }
+                              
+                                })}
+                          </select>
+                      </div>
+                    </div>
+                    : row['tipo']==2?
+                    <div class="col col-4">
+                      <div class="mt-3">
+                          <label for="exampleInput" class="form-label">{row['parametro']}</label>
+                          {intervalosLista.map((intervalo) => {
+                                
+                            if(intervalo.idparametro === row['idparametro']){
+                                return(  
+                                  <div class="input-group input-group-sm">
+                                    <input id={row["parametro"]} type="text" class="form-control" aria-label="dfg"></input>
+                                    <span class="input-group-text">{intervalo.simbolo}</span>
+                                  </div>
+                                )
+                            }
+                          })}
+                          
+                      </div>
+                    </div>
+                    : null  
+                  
+                )})}
+              </div>
+              <div>
+                <p id="errores"></p>
+              </div>
+            </form>
+            
+          </div>
+          <div class="modal-footer">
+            <a type="btn" class="btn btn-secondary" data-bs-dismiss="modal" >Cancelar</a>
+            <a type="btn btn-success" class="btn btn-primary" onClick={()=>{guardar(valores.iddetalle)}}>Guardar</a>
+          </div>
+        </div>
+      </div>
+    </div>
+    {/* FINAL modal de registro de examen  */}
+
+    {/* modal de mostrar resultados de examen  */}
+    <div class="modal fade" id="verResultados" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true" data-bs-backdrop="static">
+      <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="exampleModalLabel">Resultados de {valores.nombreexamen}</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+            <div class="row px-2">
+              <div class="bordeLateral"><h6>Información del paciente:</h6></div>
+              <div class="col col-12">
+                <p class="m-0 mt-1 ml-2"><b>Nombre: </b>{valores.nombrepaciente + ' ' + valores.apellido}</p>
+              </div>
+              <div class="col col-5">
+                <p class="m-0 ml-2"><b>Edad: </b>{Moment().diff(valores.fechanacimiento, 'years')} años </p> 
+                <p class="m-0 ml-2"><b>Genero: </b></p>
+                <p class="m-0 ml-2"><b>Fecha resultados: </b></p>
+              </div>
+              <div class="col col-7">
+                <p class="m-0 ml-2"><b>Ingreso de muestra: </b>{Moment(valores.fechaingreso).format('DD/MM/YYYY')} {valores.horaingreso}</p>
+                <p class="m-0 ml-2"><b>Laboratorio: </b>{valores.nombrelaboratorio}</p>
+                <p class="m-0 ml-2"><b>Laboratorista: </b></p>
+              </div>
+            </div>
+            <br></br>
+
+            <form id="mod_formulario">
+              <div class="row px-2">
+                <div class="bordeLateral"><h6>Resultados:</h6></div>
+                
+                {parametroLista.map((row) =>{  const id = row['idparametro'];  return(
+                  
+                    row['tipo']==1?
+                    <div class="col col-4">
+                      <div class="mt-3">
+                          <label for="exampleInput" class="form-label">{row['parametro']}</label>
+                          <select id={'mod_'+row["parametro"]} class="form-select form-select-sm" aria-label="Default select example" onChange="">
+                              <option value='0' selected>Seleccione una opcion </option>
+
+                                {opcionesLista.map((opcion) => {
+                                
+                                if((opcion.idparametro === row['idparametro'] /*&& opcion.opcion === valores.comentario*/)){
+                                    
+                                  return(  
+                                      resultadosLista.map((result) => {
+                                        if(id===result.idparametro && opcion.opcion === result.comentario){
+                                          return(<option value={opcion.idopcion} selected>{opcion.opcion}</option>)
+                                        }
+                                        if(id===result.idparametro && opcion.opcion !== result.comentario){
+                                          return(<option value={opcion.idopcion}>{opcion.opcion}</option>)
+                                        }
+                                      })
+                                    )
+                                }
+                              
+                                })}
+                          </select>
+                      </div>
+                    </div>
+                    : row['tipo']==2?
+                    <div class="col col-4">
+                      <div class="mt-3">
+                          <label for="exampleInput" class="form-label">{row['parametro']}</label>
+                          {intervalosLista.map((intervalo) => {
+                                
+                            if(intervalo.idparametro === row['idparametro']){
+                                return(  
+                                  resultadosLista.map((result) => {
+                                    if(result.idparametro === id){
+                                      return(
+                                      <div class="input-group input-group-sm">
+                                        <input defaultValue={result.valor} id={'mod_'+row["parametro"]} type="text" class="form-control" aria-label="dfg"></input>
+                                        <span class="input-group-text">{intervalo.simbolo}</span>
+                                      </div>)
+                                    }
+                                  })
+                                
+                                )
+                            }
+                        
+                          })}
+                          
+                          
+                      </div>
+                    </div>
+                    : null  
+                  
+                )})}
+              </div>
+              <div>
+                <p id="mod_errores"></p>
+              </div>
+            </form>
+            
+          </div>
+          <div class="modal-footer">
+            
+            <a type="btn btn-success" class="btn btn-success col-auto me-auto " onClick={()=>{/*guardar(valores.iddetalle)*/}}>Generar PDF</a>
+            <a type="btn" class="btn btn-secondary col-auto" data-bs-dismiss="modal" >Cancelar</a>
+            <a type="btn btn-danger" class="btn btn-danger col-auto" onClick={()=>{eliminar(valores.iddetalle)}}>Eliminar</a>
+            <a type="btn btn-success" class="btn btn-primary col-auto" onClick={()=>{modificar(valores.iddetalle)}}>Modificar</a>
+          </div>
+        </div>
+      </div>
+    </div>
+    {/* FINAL modal mostrar resultados de examen  */}
+
+    </>
+  );
+}

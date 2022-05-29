@@ -15,12 +15,13 @@ const { crearLaboratorista, obtenerLaboratoristas, actualizarLaboratorista, elim
 const { crearPermiso, obtenerPermisos, actualizarPermiso, eliminarPermiso, } = require('../controladores/permisos.controller');
 
 const { crearEstadoCivil, obtenerEstadosCiviles, actualizarEstadoCivil, eliminarEstadoCivil, } = require('../controladores/estadosciviles.controller');
-const { crearPaciente, obtenerPacientes, actualizarPaciente, eliminarPaciente, } = require('../controladores/pacientes.controller');
+const { crearPaciente, obtenerPacientes, actualizarPaciente, eliminarPaciente, obtenerPacienteExamenes,} = require('../controladores/pacientes.controller');
 
 const { obtenerChequeos, crearChequeo, actualizarChequeo, eliminarChequeo, /*obtenerChequeosPaciente,*/ } = require('../controladores/chequeos.controller');
-const { obtenerExamenes, crearExamen, actualizarExamen, eliminarExamen, } = require('../controladores/examenes.controller');
 
 const { obtenerUsuarios, iniciarSesion,crearUsuario,actualizarUsuario,actualizarUsuarioRoles,eliminarUsuario,obtenerUsuariosLibres} = require('../controladores/usuarios.controller');
+
+const { obtenerOrdenes, obtenerParametros, obtenerOpciones, guardarResultado, obtenerIntervalos, validarResultado, obtenerResultados, actualizarResultado, eliminarResultado, } = require('../controladores/detalleChequeo.controller');
 
 //siempre poner una coma al final
 
@@ -112,6 +113,7 @@ router.get('/pacientes', obtenerPacientes);
 router.post('/pacientes', crearPaciente);
 router.put('/pacientes', actualizarPaciente)
 router.delete('/pacientes/:idpaciente', eliminarPaciente);
+router.get('/pacientesPacienteExamenes', obtenerPacienteExamenes);
 
 //CRUD CHEQUEO
 router.delete('/chequeos/:idchequeo', eliminarChequeo);
@@ -120,10 +122,16 @@ router.get('/chequeos', obtenerChequeos);
 router.post('/chequeos', crearChequeo);
 router.put('/chequeos', actualizarChequeo)
 
-//CRUD EXAMENES
-router.delete('/examenes/:idexamen', eliminarExamen);
-router.get('/examenes', obtenerExamenes);
-router.post('/examenes', crearExamen);
-router.put('/examenes', actualizarExamen)
+//REGISTRO DE RESULTADOS
+router.get('/ordenes/:idchequeo', obtenerOrdenes);
+router.get('/parametros/:idexamen', obtenerParametros);
+router.get('/opciones', obtenerOpciones);
+router.get('/intervalos', obtenerIntervalos);
+router.post('/validarResultados', validarResultado);
+router.post('/resultados', guardarResultado);
+router.put('/resultados', actualizarResultado);
+router.get('/resultados/:iddetalle', obtenerResultados);
+router.delete('/resultados/:iddetalle', eliminarResultado);
+
 
 module.exports = router;
