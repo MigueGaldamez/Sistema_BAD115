@@ -25,56 +25,71 @@ const Navbar = () => {
                 <li class="nav-item">
                     <NavLink to="/" class="nav-link active text-light" href="#">Inicio</NavLink>
                 </li>       
-                <li class="nav-item">
-                    <NavLink to="/roles" class="nav-link  text-light" aria-current="page" href="#">Roles</NavLink>
-                </li>
+              
                 
                 <li class="nav-item">
                     <NavLink to="/laboratorios" class="nav-link  text-light" aria-current="page" href="#">Laboratorios</NavLink>
                 </li>
-                <li class="nav-item">
-                    <NavLink to="/usuarios" class="nav-link  text-light" aria-current="page" href="#">Usuarios</NavLink>
-                </li>
+               
                 <li class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle text-light" href="#" id="navbarDarkDropdownMenuLink" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                         Catalogos
                     </a>
                     <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
-                        <li>
+                        <li class="nav-item">
                             <NavLinkDrop to="/departamentos" class="dropdown-item" aria-current="page" href="#">Departamentos</NavLinkDrop>
                         </li>
-                        <li>
+                        <li class="nav-item">
                             <NavLinkDrop to="/municipios" class="dropdown-item" aria-current="page" href="#">Municipios</NavLinkDrop>
                         </li>
-                        <li>
+                        <li class="nav-item">
                             <NavLinkDrop to="/poblaciones" class="dropdown-item" aria-current="page" href="#">Poblaciones</NavLinkDrop>
                         </li>
-                        <li>
+                        <li class="nav-item">
                             <NavLinkDrop to="/profesiones" class="dropdown-item" aria-current="page" href="#">Profesiones</NavLinkDrop>
                         </li>
-                        <li>
+                        <li class="nav-item">
                             <NavLinkDrop to="/areas" class="dropdown-item" aria-current="page" href="#">Areas</NavLinkDrop>
                         </li>
-                        <li>
+                        <li class="nav-item">
                             <NavLinkDrop to="/unidades" class="dropdown-item" aria-current="page" href="#">Unidades</NavLinkDrop>
                         </li>
-                        <li>
+                        <li class="nav-item">
                             <NavLinkDrop to="/estadosciviles" class="dropdown-item" aria-current="page" href="#">Estados Civil</NavLinkDrop>
                         </li>
                         
                     </ul>
                 </li>
-                <li class="nav-item">
-                    <NavLink to="/opcionespermisos" class="nav-link  text-light" aria-current="page" href="#">Opciones Permisos</NavLink>
-                </li>
+               
                 <li class="nav-item">
                     <NavLink to="/laboratoristas" class="nav-link  text-light" aria-current="page" href="#">Laboratoristas</NavLink>
                 </li>
                 <li class="nav-item">
                     <NavLink to="/pacientes" class="nav-link  text-light" aria-current="page" href="#">Pacientes</NavLink>
                 </li>
-                 
-             
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle text-light" href="#" id="navbarDarkDropdownMenuLink" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        Usuarios y permisos
+                    </a>
+                    <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+
+                        <li class="nav-item">
+                            <NavLinkDrop to="/roles" class="dropdown-item" aria-current="page" href="#">Roles</NavLinkDrop>
+                        </li>
+                        <li class="nav-item">
+                            <NavLinkDrop to="/usuarios" class="dropdown-item" aria-current="page" href="#">Usuarios</NavLinkDrop>
+                        </li>  
+                        <li class="nav-item">
+                            <NavLinkDrop to="/opcionespermisos" class="dropdown-item" aria-current="page" href="#">Opciones Permisos</NavLinkDrop>
+                        </li> 
+                    </ul>
+                </li>
+                <li class="nav-item">
+                    <NavLink to="/chequeos" class="nav-link  text-light" aria-current="page" href="#">Chequeos</NavLink>
+                </li>
+                <li class="nav-item">
+                    <NavLink to="/parametros" class="nav-link  text-light" aria-current="page" href="#">Parametros</NavLink>
+                </li>
             </ul>
             }
              {cookies.get('nombre')==null &&

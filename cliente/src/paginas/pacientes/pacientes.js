@@ -4,6 +4,7 @@ import Axios from 'axios';
 import DatatableRoles from "./datatable";
 import { Modal } from 'bootstrap/dist/js/bootstrap.bundle.min';
 import swal from 'sweetalert';
+import Cookies from 'universal-cookie';
 
 const Pacientes = () => { 
     //PARA los ERRORES
@@ -65,6 +66,7 @@ const Pacientes = () => {
   ]);
 
   const obtenerRegistros=()=>{
+
     Axios.get(`http://${process.env.REACT_APP_SERVER_IP}/pacientes`).then((response)=>{
      setPacienteLista([]);
     setPacienteLista(response.data);  });
@@ -144,7 +146,7 @@ const Pacientes = () => {
 
     }).then((response)=>{
       if(response.data.errores==null){      
-        cerrarModalActualizacion();
+        cerrarModal();
         swal({
           title: "Exito!",
           text: "Guardado con exito",
@@ -357,7 +359,7 @@ const Pacientes = () => {
       <div class="modal fade" id="nuevoRegistro" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true" data-bs-backdrop="static">
         <div class="modal-dialog modal-lg">
           <div class="modal-content">
-            <div class="modal-header">
+            <div class="modal-header">  
               <h5 class="modal-title" id="exampleModalLabel">Nuevo Registro</h5>
               <button type="button" class="btn-close"  onClick={cerrarModal} aria-label="Close"></button>
             </div>
