@@ -137,15 +137,15 @@ const guardarResultado =  async (req, res) => {
             const response1 =  await sqlee.query('select * from opcion where idopcion = $1 limit 1',[idopcion]);
             var valorOpcion = response1.rows[0].opcion;
 
-            response =  await sqlee.query('INSERT INTO resultado (idparametro, iddetalle, valor, positivo, comentario, presencia) '+
-            'VALUES ($1,$2,$3,$4,$5,$6) ',
-            [idparametro, iddetalle, valor, positivo, valorOpcion, presencia]);
+            response =  await sqlee.query('INSERT INTO resultado (idparametro, iddetalle, valor, positivo, opcion, comentario, presencia) '+
+            'VALUES ($1,$2,$3,$4,$5,$6,$7) ',
+            [idparametro, iddetalle, 0, positivo, valorOpcion, comentario, presencia]);
         
         } else if(tipo==2){
-
-            response =  await sqlee.query('INSERT INTO resultado (idparametro, iddetalle, valor, positivo, comentario, presencia) '+
-            'VALUES ($1,$2,$3,$4,$5,$6) ',
-            [idparametro, iddetalle, valor, positivo, comentario, presencia]);
+            var opcion ="";
+            response =  await sqlee.query('INSERT INTO resultado (idparametro, iddetalle, valor, positivo, opcion, comentario, presencia) '+
+            'VALUES ($1,$2,$3,$4,$5,$6,$7) ',
+            [idparametro, iddetalle, valor, positivo, opcion, comentario, presencia]);
         
         }
         
@@ -198,13 +198,13 @@ const actualizarResultado =  async (req, res) => {
             const response1 =  await sqlee.query('select * from opcion where idopcion = $1 limit 1',[idopcion]);
             var valorOpcion = response1.rows[0].opcion;
 
-            response =  await sqlee.query('UPDATE resultado SET comentario = $1 WHERE iddetalle = $2 AND idparametro = $3',
-            [valorOpcion, iddetalle, idparametro ]);
+            response =  await sqlee.query('UPDATE resultado SET opcion = $1, comentario = $2 WHERE iddetalle = $3 AND idparametro = $4',
+            [valorOpcion, comentario, iddetalle, idparametro ]);
         
         } else if(tipo==2){
 
-            response =  await sqlee.query('UPDATE resultado SET valor = $1 WHERE iddetalle = $2 AND idparametro = $3',
-            [valor, iddetalle, idparametro]);
+            response =  await sqlee.query('UPDATE resultado SET valor = $1, comentario = $2 WHERE iddetalle = $3 AND idparametro = $4',
+            [valor, comentario, iddetalle, idparametro]);
         
         }
 

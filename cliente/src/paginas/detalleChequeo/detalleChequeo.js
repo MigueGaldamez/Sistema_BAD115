@@ -171,7 +171,7 @@ const DetalleChequeo = () => {
             iddetalle:iddetalle,
             valor: document.getElementById(element.parametro).value,
             positivo:true,
-            comentario:"",
+            comentario: document.getElementById('comentario_'+element.parametro).value,
             presencia:1,
           };
           registros.push(data);
@@ -267,7 +267,7 @@ const DetalleChequeo = () => {
             iddetalle:iddetalle,
             valor: document.getElementById('mod_'+element.parametro).value,
             positivo:true,
-            comentario:"",
+            comentario:document.getElementById('mod_comentario_'+element.parametro).value,
             presencia:1,
           };
           registros.push(data);

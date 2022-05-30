@@ -118,7 +118,7 @@ export default function DatatableRoles({
     </table>
     {/* modal de registro de examen  */}
     <div class="modal fade" id="registrarResultados" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true"  data-bs-backdrop="static">
-      <div class="modal-dialog modal-lg">
+      <div class="modal-dialog modal-xl">
         <div class="modal-content">
           <div class="modal-header">
             <h5 class="modal-title" id="exampleModalLabel">Registro de resultados de {valores.nombreexamen}</h5>
@@ -149,36 +149,72 @@ export default function DatatableRoles({
                 {parametroLista.map((row) =>{  const id = row['idparametro'];  return(
                   
                     row['tipo']==1?
-                    <div class="col col-4">
-                      <div class="mt-3">
+                    <div class="col col-6">
+                      <div class="mt-3 ml-3">
                           <label for="exampleInput" class="form-label">{row['parametro']}</label>
-                          <select id={row["parametro"]} class="form-select form-select-sm" aria-label="Default select example" onChange="">
-                              <option value='0' selected>Seleccione una opcion </option>
-                                {opcionesLista.map((opcion) => {
+                          <div class="row">
+                            <div class="col col-5">
+                              <select id={row["parametro"]} class="form-select form-select-sm" aria-label="Default select example" onChange="">
+                                <option value='0' selected>Seleccione una opcion </option>
+                                  {opcionesLista.map((opcion) => {
+                                  
+                                  if(opcion.idparametro === row['idparametro']){
+                                      return(  <option value={opcion.idopcion}>{opcion.opcion}</option>)
+                                  }
                                 
-                                if(opcion.idparametro === row['idparametro']){
-                                    return(  <option value={opcion.idopcion}>{opcion.opcion}</option>)
-                                }
-                              
-                                })}
-                          </select>
+                                  })}
+                              </select>
+                            </div>
+                            <div class="col col-6">
+                              <input type="text" id={'comentario_'+row["parametro"]} class="form-control form-control-sm"  aria-label="dfg"/>
+                            </div>
+                            <div class="col col-12">
+                              {opcionesLista.map((opcion) => {
+                                  if((opcion.idparametro === row['idparametro'] && opcion.referencia === true)){
+                                            
+                                    return(  
+                                      <p class="m-0 ml-3 text-black-50 fs-6 fst-italic">Valor de referencia: {opcion.opcion}</p>
+                                    )
+                                  }
+                              })}
+                            </div>
+                          </div> 
+                          
+
                       </div>
                     </div>
                     : row['tipo']==2?
-                    <div class="col col-4">
-                      <div class="mt-3">
+                    <div class="col col-6">
+                      <div class="mt-3 ml-3">
                           <label for="exampleInput" class="form-label">{row['parametro']}</label>
-                          {intervalosLista.map((intervalo) => {
-                                
-                            if(intervalo.idparametro === row['idparametro']){
-                                return(  
-                                  <div class="input-group input-group-sm">
-                                    <input id={row["parametro"]} type="text" class="form-control" aria-label="dfg"></input>
-                                    <span class="input-group-text">{intervalo.simbolo}</span>
-                                  </div>
-                                )
-                            }
-                          })}
+                          <div class="row">
+                            <div class="col col-5">
+                              {intervalosLista.map((intervalo) => {
+                                  
+                                  if(intervalo.idparametro === row['idparametro']){
+                                      return(  
+                                        <div class="input-group input-group-sm">
+                                          <input id={row["parametro"]} type="text" class="form-control" aria-label="dfg"></input>
+                                          <span class="input-group-text">{intervalo.simbolo}</span>
+                                        </div>
+                                      )
+                                  }
+                               })}
+                            </div>
+                            <div class="col col-6">
+                              <input type="text" id={'comentario_'+row["parametro"]} class="form-control form-control-sm"  aria-label="dfg"/>
+                            </div>
+                            <div class="col col-12">
+                              {intervalosLista.map((intervalo) => {
+                                  if(intervalo.idparametro === row['idparametro']){
+                                    return(  
+                                    <p class="m-0 ml-3 text-black-50 fs-6 fst-italic">Valor de referencia: {intervalo.valorminimo} - {intervalo.valormaximo}</p>
+                                    )
+                                  }
+                              })}
+                            </div>
+                          </div> 
+                          
                           
                       </div>
                     </div>
@@ -203,7 +239,7 @@ export default function DatatableRoles({
 
     {/* modal de mostrar resultados de examen  */}
     <div class="modal fade" id="verResultados" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true" data-bs-backdrop="static">
-      <div class="modal-dialog modal-lg">
+      <div class="modal-dialog modal-xl">
         <div class="modal-content">
           <div class="modal-header">
             <h5 class="modal-title" id="exampleModalLabel">Resultados de {valores.nombreexamen}</h5>
@@ -235,54 +271,101 @@ export default function DatatableRoles({
                 {parametroLista.map((row) =>{  const id = row['idparametro'];  return(
                   
                     row['tipo']==1?
-                    <div class="col col-4">
-                      <div class="mt-3">
+                    <div class="col col-6">
+                      <div class="mt-3 ml-3">
                           <label for="exampleInput" class="form-label">{row['parametro']}</label>
-                          <select id={'mod_'+row["parametro"]} class="form-select form-select-sm" aria-label="Default select example" onChange="">
-                              <option value='0' selected>Seleccione una opcion </option>
+                          <div class="row">
+                            <div class="col col-5">
+                              <select id={'mod_'+row["parametro"]} class="form-select form-select-sm" aria-label="Default select example" onChange="">
+                                <option value='0' selected>Seleccione una opcion </option>
 
-                                {opcionesLista.map((opcion) => {
+                                  {opcionesLista.map((opcion) => {
+                                  
+                                  if((opcion.idparametro === row['idparametro'] /*&& opcion.opcion === valores.comentario*/)){
+                                      
+                                    return(  
+                                        resultadosLista.map((result) => {
+                                          if(id===result.idparametro && opcion.opcion === result.opcion){
+                                            return(<option value={opcion.idopcion} selected>{opcion.opcion}</option>)
+                                          }
+                                          if(id===result.idparametro && opcion.opcion !== result.opcion){
+                                            return(<option value={opcion.idopcion}>{opcion.opcion}</option>)
+                                          }
+                                        })
+                                      )
+                                  }
                                 
-                                if((opcion.idparametro === row['idparametro'] /*&& opcion.opcion === valores.comentario*/)){
-                                    
-                                  return(  
-                                      resultadosLista.map((result) => {
-                                        if(id===result.idparametro && opcion.opcion === result.comentario){
-                                          return(<option value={opcion.idopcion} selected>{opcion.opcion}</option>)
-                                        }
-                                        if(id===result.idparametro && opcion.opcion !== result.comentario){
-                                          return(<option value={opcion.idopcion}>{opcion.opcion}</option>)
-                                        }
-                                      })
-                                    )
+                                  })}
+                              </select>
+                            </div>
+                            <div class="col col-6">
+                              {resultadosLista.map((result) => {
+                                if(id===result.idparametro){
+                                  return(<input defaultValue={result.comentario} type="text" id={'mod_comentario_'+row["parametro"]} class="form-control form-control-sm"  aria-label="dfg"/>)
                                 }
-                              
-                                })}
-                          </select>
+                              })}
+                            
+                            </div>
+                          
+                            <div class="col col-12">
+                              {opcionesLista.map((opcion) => {
+                                if((opcion.idparametro === row['idparametro'] && opcion.referencia === true)){
+                                          
+                                  return(  
+                                    <p class="m-0 ml-3 text-black-50 fs-6 fst-italic">Valor de referencia: {opcion.opcion}</p>
+                                  )
+                                }
+                              })}
+                                
+                            </div>
+                          </div>
                       </div>
                     </div>
                     : row['tipo']==2?
-                    <div class="col col-4">
-                      <div class="mt-3">
+                    <div class="col col-6">
+                      <div class="mt-3 ml-3">
                           <label for="exampleInput" class="form-label">{row['parametro']}</label>
-                          {intervalosLista.map((intervalo) => {
-                                
-                            if(intervalo.idparametro === row['idparametro']){
-                                return(  
-                                  resultadosLista.map((result) => {
-                                    if(result.idparametro === id){
-                                      return(
-                                      <div class="input-group input-group-sm">
-                                        <input defaultValue={result.valor} id={'mod_'+row["parametro"]} type="text" class="form-control" aria-label="dfg"></input>
-                                        <span class="input-group-text">{intervalo.simbolo}</span>
-                                      </div>)
-                                    }
-                                  })
-                                
-                                )
-                            }
-                        
-                          })}
+                          <div class="row">
+                            <div class="col col-5">
+                              {intervalosLista.map((intervalo) => {
+                                  
+                                  if(intervalo.idparametro === row['idparametro']){
+                                      return(  
+                                        resultadosLista.map((result) => {
+                                          if(result.idparametro === id){
+                                            return(
+                                            <div class="input-group input-group-sm">
+                                              <input defaultValue={result.valor} id={'mod_'+row["parametro"]} type="text" class="form-control" aria-label="dfg"></input>
+                                              <span class="input-group-text">{intervalo.simbolo}</span>
+                                            </div>)
+                                          }
+                                        })
+                                      
+                                      )
+                                  }
+                              
+                                })}
+                            </div>
+                            <div class="col col-6">
+                              {resultadosLista.map((result) => {
+                                  if(result.idparametro === id){
+                                    return(<input  defaultValue={result.comentario} type="text" id={'mod_comentario_'+row["parametro"]} class="form-control form-control-sm"  aria-label="dfg"/>)
+                                  }
+                                })
+                              }
+                              
+                            </div>
+                            <div class="col col-12">
+                              {intervalosLista.map((intervalo) => {
+                                if(intervalo.idparametro === row['idparametro']){
+                                  return(  
+                                  <p class="m-0 ml-3 text-black-50 fs-6 fst-italic">Valor de referencia: {intervalo.valorminimo} - {intervalo.valormaximo}</p>
+                                  )
+                                }
+                            })}
+                            </div>
+                          </div> 
+                          
                           
                           
                       </div>
