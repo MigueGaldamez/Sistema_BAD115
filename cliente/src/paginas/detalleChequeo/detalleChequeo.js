@@ -30,7 +30,6 @@ const DetalleChequeo = () => {
   const[intervalosLista, setIntervalosLista] = useState([]);
 
   const columns = pacientesLista[0] && Object.keys(pacientesLista[0]);
-  var iddetalle = 0;
 
   const[modalB, setModalB] = useState([]);
   const[modalRegistro, setModalRegistro] = useState([]);
@@ -58,11 +57,11 @@ const DetalleChequeo = () => {
       setPacientesLista(response.data);
     });
 
-    Axios.get(`http://${process.env.REACT_APP_SERVER_IP}/opciones`).then((response)=>{
+    Axios.get(`http://${process.env.REACT_APP_SERVER_IP}/opcionesResultados`).then((response)=>{
       setOpcionesLista(response.data);
     });
 
-    Axios.get(`http://${process.env.REACT_APP_SERVER_IP}/intervalos`).then((response)=>{
+    Axios.get(`http://${process.env.REACT_APP_SERVER_IP}/intervalosResultados`).then((response)=>{
       setIntervalosLista(response.data);
     });
     
@@ -76,7 +75,7 @@ const DetalleChequeo = () => {
 
   
   const obtenerParametros=(id)=>{
-    Axios.get(`http://${process.env.REACT_APP_SERVER_IP}/parametros/${id}`).then((response)=>{
+    Axios.get(`http://${process.env.REACT_APP_SERVER_IP}/parametrosResultados/${id}`).then((response)=>{
       setParametrosLista(response.data);
     });
   };
@@ -134,7 +133,7 @@ const DetalleChequeo = () => {
     
   }
 
-  const guardar=(iddetalle)=>{
+  const guardar=(iddetalle, idchequeo)=>{
     var aux = "";
     var cont = 0;
     var registros = [];
@@ -188,11 +187,12 @@ const DetalleChequeo = () => {
                 positivo: element.positivo,
                 comentario: element.comentario,
                 presencia: element.presencia,
+                fecharegistro:Moment().format('YYYY-MM-DD'),
+                horaregistro:Moment().format('HH:mm'),
               })
             });
 
-            obtenerTabla(iddetalle);
-            iddetalle = 0;
+            obtenerTabla(idchequeo);
             cerrarModal();
             swal({
               title: "Exito!",
@@ -229,7 +229,7 @@ const DetalleChequeo = () => {
     
   }
 
-  const modificar=(iddetalle)=>{
+  const modificar=(iddetalle, idchequeo)=>{
     
     var aux = "";
     var cont = 0;
@@ -283,11 +283,12 @@ const DetalleChequeo = () => {
                 positivo: element.positivo,
                 comentario: element.comentario,
                 presencia: element.presencia,
+                fecharegistro:Moment().format('YYYY-MM-DD'),
+                horaregistro:Moment().format('HH:mm'),
               })
             });
 
-            obtenerTabla(iddetalle);
-            iddetalle = 0;
+            obtenerTabla(idchequeo);
             cerrarModalResultados();
             swal({
               title: "Exito!",
@@ -324,7 +325,7 @@ const DetalleChequeo = () => {
     
   }
 
-  const eliminar=(iddetalle)=>{
+  const eliminar=(iddetalle, idchequeo)=>{
     swal({
       title: "Eliminar resultados de examen",
       text: "¿Esta seguro que desea eliminar este examen?",
@@ -340,8 +341,7 @@ const DetalleChequeo = () => {
             icon: "success",
             button: `Entendido`, 
           });
-          obtenerTabla(iddetalle);
-          iddetalle = 0;
+          obtenerTabla(idchequeo);
           cerrarModalResultados();
           //ACTUALIZAR DATOS
           //obtenerRegistros();
@@ -405,7 +405,6 @@ const DetalleChequeo = () => {
                       <div class="list-group">
                       {pacientesLista.map((row) =>{  
                         const id = row['idcheq'];  
-                        iddetalle = id;
                       return(
                         <button class="list-group-item d-flex list-group-item-action justify-content-between align-items-start"
                         onClick={()=>{obtenerTabla(id)}}>

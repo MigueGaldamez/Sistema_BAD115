@@ -21,7 +21,9 @@ const { obtenerChequeos, crearChequeo, actualizarChequeo, eliminarChequeo, /*obt
 
 const { obtenerUsuarios, iniciarSesion,crearUsuario,actualizarUsuario,actualizarUsuarioRoles,eliminarUsuario,obtenerUsuariosLibres} = require('../controladores/usuarios.controller');
 
-const { obtenerOrdenes, obtenerParametros, obtenerOpciones, guardarResultado, obtenerIntervalos, validarResultado, obtenerResultados, actualizarResultado, eliminarResultado, } = require('../controladores/detalleChequeo.controller');
+const { obtenerOrdenes, obtenerParametrosResultados, obtenerOpcionesResultados, guardarResultado, obtenerIntervalosResultados, validarResultado, obtenerResultados, actualizarResultado, eliminarResultado, } = require('../controladores/detalleChequeo.controller');
+
+const { crearMuestra, eliminarMuestra} = require('../controladores/muestras.controller');
 
 //siempre poner una coma al final
 
@@ -124,14 +126,17 @@ router.put('/chequeos', actualizarChequeo)
 
 //REGISTRO DE RESULTADOS
 router.get('/ordenes/:idchequeo', obtenerOrdenes);
-router.get('/parametros/:idexamen', obtenerParametros);
-router.get('/opciones', obtenerOpciones);
-router.get('/intervalos', obtenerIntervalos);
+router.get('/parametrosResultados/:idexamen', obtenerParametrosResultados);
+router.get('/opcionesResultados', obtenerOpcionesResultados);
+router.get('/intervalosResultados', obtenerIntervalosResultados);
 router.post('/validarResultados', validarResultado);
 router.post('/resultados', guardarResultado);
 router.put('/resultados', actualizarResultado);
 router.get('/resultados/:iddetalle', obtenerResultados);
 router.delete('/resultados/:iddetalle', eliminarResultado);
 
+//CRUD MUESTRA
+router.post('/muestras', crearMuestra);
+router.delete('/muestras/:iddetalle', eliminarMuestra);
 
 module.exports = router;

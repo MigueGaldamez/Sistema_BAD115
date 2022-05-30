@@ -4,7 +4,7 @@ const { sqlee } = require('./controlador');
 const obtenerOrdenes = async(req,res)=>{
     const id = parseInt(req.params.idchequeo);
     try{
-        sql = 'SELECT * FROM detallechequeo ' + 
+        sql = 'SELECT detallechequeo.iddetalle as iddetalle, detallechequeo.idexamen as idexamen, detallechequeo.idchequeo as idchequeo, estadoexamen, fecharegistro, horaregistro, examen.idarea as idarea, nombreexamen, examen.idarea, nombrearea, chequeo.idpaciente as idpaciente, chequeo.idlaboratorio as idlaboratorio, idusuario, fechachequeo, horachequeo, archivo, estadochequeo, idestado, nombrepaciente, apellido, direccion, fechanacimiento, correopaciente, genero, idmuestra, observaciones, fechaingreso, horaingreso, nombrelaboratorio FROM detallechequeo ' + 
         'join examen on examen.idexamen = detallechequeo.idexamen ' + 
         'join area on area.idarea = examen.idarea ' + 
         'join chequeo on chequeo.idchequeo = detallechequeo.idchequeo ' +
@@ -25,7 +25,7 @@ const obtenerOrdenes = async(req,res)=>{
   
 };
 
-const obtenerParametros = async(req,res)=>{
+const obtenerParametrosResultados = async(req,res)=>{
     const id = parseInt(req.params.idexamen);
     try{
         sql = 'select * from parametro ' +
@@ -43,7 +43,7 @@ const obtenerParametros = async(req,res)=>{
   
 };
 
-const obtenerOpciones = async(req,res)=>{
+const obtenerOpcionesResultados = async(req,res)=>{
     try{
         sql = 'select * from opcion';
         const response = await sqlee.query(sql);
@@ -58,7 +58,7 @@ const obtenerOpciones = async(req,res)=>{
   
 };
 
-const obtenerIntervalos = async(req,res)=>{
+const obtenerIntervalosResultados = async(req,res)=>{
     try{
         sql = 'select * from intervalo join unidad on unidad.idunidad = intervalo.idunidad';
         const response = await sqlee.query(sql);
@@ -122,7 +122,7 @@ const validarResultado =  async (req, res) => {
 };
 
 const guardarResultado =  async (req, res) => {
-    const {tipo, idparametro, iddetalle, valor, positivo, comentario, presencia} = req.body;
+    const {tipo, idparametro, iddetalle, valor, positivo, comentario, presencia, fecharegistro, horaregistro} = req.body;
     var idopcion = 0;
     var response = null;
     var erroresC ={};
@@ -138,21 +138,19 @@ const guardarResultado =  async (req, res) => {
             var valorOpcion = response1.rows[0].opcion;
 
             response =  await sqlee.query('INSERT INTO resultado (idparametro, iddetalle, valor, positivo, comentario, presencia) '+
-            'SELECT $1,$2,$3,$4,$5,$6 ' +
-            'WHERE NOT EXISTS (SELECT idparametro FROM resultado WHERE idparametro = $1 ) ',
+            'VALUES ($1,$2,$3,$4,$5,$6) ',
             [idparametro, iddetalle, valor, positivo, valorOpcion, presencia]);
         
         } else if(tipo==2){
 
             response =  await sqlee.query('INSERT INTO resultado (idparametro, iddetalle, valor, positivo, comentario, presencia) '+
-            'SELECT $1,$2,$3,$4,$5,$6 ' +
-            'WHERE NOT EXISTS (SELECT idparametro FROM resultado WHERE idparametro = $1 ) ',
+            'VALUES ($1,$2,$3,$4,$5,$6) ',
             [idparametro, iddetalle, valor, positivo, comentario, presencia]);
         
         }
         
-        sql = "UPDATE detallechequeo SET estadoExamen=true WHERE iddetalle=$1 ";
-        response = await sqlee.query(sql,[iddetalle]);     
+        sql = "UPDATE detallechequeo SET estadoExamen=true, fecharegistro=$1, horaregistro=$2 WHERE iddetalle=$3 ";
+        response = await sqlee.query(sql,[fecharegistro, horaregistro, iddetalle]);     
         
         res.status(200).json({
             message: 'Añadido con Exito',
@@ -187,7 +185,7 @@ const obtenerResultados = async(req,res)=>{
 };
 
 const actualizarResultado =  async (req, res) => {
-    const {tipo, idparametro, iddetalle, valor, positivo, comentario, presencia} = req.body;
+    const {tipo, idparametro, iddetalle, valor, positivo, comentario, presencia, fecharegistro, horaregistro} = req.body;
     var idopcion = 0;
     var response = null;
     var erroresC ={};
@@ -209,6 +207,9 @@ const actualizarResultado =  async (req, res) => {
             [valor, iddetalle, idparametro]);
         
         }
+
+        sql = "UPDATE detallechequeo SET fecharegistro=$1, horaregistro=$2 WHERE iddetalle=$3 ";
+        response = await sqlee.query(sql,[fecharegistro, horaregistro, iddetalle]); 
         
         res.status(200).json({
             message: 'Añadido con Exito',
@@ -238,11 +239,11 @@ const eliminarResultado =  async (req, res) => {
 
 module.exports = {
     obtenerOrdenes,
-    obtenerParametros,
-    obtenerOpciones,
+    obtenerParametrosResultados,
+    obtenerOpcionesResultados,
     validarResultado,
     guardarResultado,
-    obtenerIntervalos,
+    obtenerIntervalosResultados,
     obtenerResultados,
     actualizarResultado,
     eliminarResultado,

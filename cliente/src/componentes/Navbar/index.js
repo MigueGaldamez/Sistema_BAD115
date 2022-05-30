@@ -76,6 +76,9 @@ const Navbar = () => {
                 <li class="nav-item">
                     <NavLink to="/resultados" class="nav-link  text-light" aria-current="page" href="#">Resultados</NavLink>
                 </li>
+                <li class="nav-item">
+                    <NavLink to="/muestras" class="nav-link  text-light" aria-current="page" href="#">Muestras</NavLink>
+                </li>
              
             </ul>
             }

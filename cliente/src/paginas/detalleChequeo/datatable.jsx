@@ -64,7 +64,8 @@ export default function DatatableRoles({
              && heading!='idusuario' && heading!='fechachequeo'  && heading!='horachequeo' && heading!='archivo' && heading!='estadochequeo' && heading!='idmunicipio' 
              && heading!='idestado' && heading!='nombrepaciente'  && heading!='apellido' && heading!='direccion' && heading!='fechanacimiento' && heading!='correopaciente'
              && heading!='observaciones' && heading!='fechaingreso'  && heading!='horaingreso' && heading!='idmuestra' && heading!='nombrelaboratorio'
-             && heading!='idresultado' && heading!='idparametro'  && heading!='valor' && heading!='positivo' && heading!='comentario' && heading!='presencia')
+             && heading!='idresultado' && heading!='idparametro'  && heading!='valor' && heading!='positivo' && heading!='comentario' && heading!='presencia' 
+             && heading!='genero' && heading!='fecharegistro' && heading!='horaregistro')
             return(<th>{heading}</th>)
             })}
           <th>Acciones</th>
@@ -131,11 +132,11 @@ export default function DatatableRoles({
               </div>
               <div class="col col-4">
                 <p class="m-0 ml-2"><b>Edad: </b>{Moment().diff(valores.fechanacimiento, 'years')} años </p> 
-                <p class="m-0 ml-2"><b>Genero: </b></p>
+                <p class="m-0 ml-2"><b>Genero: </b>{valores.genero}</p>
                 
               </div>
               <div class="col col-8">
-                <p class="m-0 ml-2"><b>Ingreso de muestra: </b>{Moment(valores.fechaingreso).format('DD/MM/YYYY')} {valores.horaingreso}</p>
+                <p class="m-0 ml-2"><b>Ingreso de muestra: </b>{Moment(valores.fechaingreso).format('DD/MM/YYYY')}&nbsp;&nbsp;&nbsp;{valores.horaingreso}</p>
                 <p class="m-0 ml-2"><b>Laboratorio: </b>{valores.nombrelaboratorio}</p>
                 <p class="m-0"></p>
               </div>
@@ -193,7 +194,7 @@ export default function DatatableRoles({
           </div>
           <div class="modal-footer">
             <a type="btn" class="btn btn-secondary" data-bs-dismiss="modal" >Cancelar</a>
-            <a type="btn btn-success" class="btn btn-primary" onClick={()=>{guardar(valores.iddetalle)}}>Guardar</a>
+            <a type="btn btn-success" class="btn btn-primary" onClick={()=>{guardar(valores.iddetalle, valores.idchequeo)}}>Guardar</a>
           </div>
         </div>
       </div>
@@ -212,17 +213,17 @@ export default function DatatableRoles({
             <div class="row px-2">
               <div class="bordeLateral"><h6>Información del paciente:</h6></div>
               <div class="col col-12">
-                <p class="m-0 mt-1 ml-2"><b>Nombre: </b>{valores.nombrepaciente + ' ' + valores.apellido}</p>
+                <p class="m-0 mt-1"><b>Nombre: </b>{valores.nombrepaciente + ' ' + valores.apellido}</p>
               </div>
-              <div class="col col-5">
-                <p class="m-0 ml-2"><b>Edad: </b>{Moment().diff(valores.fechanacimiento, 'years')} años </p> 
-                <p class="m-0 ml-2"><b>Genero: </b></p>
-                <p class="m-0 ml-2"><b>Fecha resultados: </b></p>
+              <div class="col col-6">
+                <p class="m-0"><b>Edad: </b>{Moment().diff(valores.fechanacimiento, 'years')} años </p> 
+                <p class="m-0" ><b>Genero: </b>{valores.genero}</p>
+                <p class="m-0" ><b>Fecha resultados: </b>{Moment(valores.fecharegistro).format('DD/MM/YYYY')}&nbsp;&nbsp;&nbsp;{valores.horaregistro}</p>
               </div>
-              <div class="col col-7">
-                <p class="m-0 ml-2"><b>Ingreso de muestra: </b>{Moment(valores.fechaingreso).format('DD/MM/YYYY')} {valores.horaingreso}</p>
-                <p class="m-0 ml-2"><b>Laboratorio: </b>{valores.nombrelaboratorio}</p>
-                <p class="m-0 ml-2"><b>Laboratorista: </b></p>
+              <div class="col col-6">
+                <p class="m-0 "><b>Ingreso de muestra: </b>{Moment(valores.fechaingreso).format('DD/MM/YYYY')}&nbsp;&nbsp;&nbsp;{valores.horaingreso}</p>
+                <p class="m-0 "><b>Laboratorio: </b>{valores.nombrelaboratorio}</p>
+                <p class="m-0 "><b>Laboratorista: </b></p>
               </div>
             </div>
             <br></br>
@@ -300,8 +301,8 @@ export default function DatatableRoles({
             
             <a type="btn btn-success" class="btn btn-success col-auto me-auto " onClick={()=>{/*guardar(valores.iddetalle)*/}}>Generar PDF</a>
             <a type="btn" class="btn btn-secondary col-auto" data-bs-dismiss="modal" >Cancelar</a>
-            <a type="btn btn-danger" class="btn btn-danger col-auto" onClick={()=>{eliminar(valores.iddetalle)}}>Eliminar</a>
-            <a type="btn btn-success" class="btn btn-primary col-auto" onClick={()=>{modificar(valores.iddetalle)}}>Modificar</a>
+            <a type="btn btn-danger" class="btn btn-danger col-auto" onClick={()=>{eliminar(valores.iddetalle, valores.idchequeo)}}>Eliminar</a>
+            <a type="btn btn-success" class="btn btn-primary col-auto" onClick={()=>{modificar(valores.iddetalle, valores.idchequeo)}}>Modificar</a>
           </div>
         </div>
       </div>
