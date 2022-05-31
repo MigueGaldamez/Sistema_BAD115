@@ -25,6 +25,8 @@ const { obtenerOrdenes, obtenerParametrosResultados, obtenerOpcionesResultados, 
 
 const { crearMuestra, eliminarMuestra} = require('../controladores/muestras.controller');
 
+const { generarReporte, generarReporteResultados } = require('../controladores/reporte.controller');
+
 //siempre poner una coma al final
 
 //CRUD ROLES
@@ -138,5 +140,9 @@ router.delete('/resultados/:iddetalle', eliminarResultado);
 //CRUD MUESTRA
 router.post('/muestras', crearMuestra);
 router.delete('/muestras/:iddetalle', eliminarMuestra);
+
+//PDF
+router.post('/generarpdf', generarReporte);
+router.post('/generarpdfresultados', generarReporteResultados);
 
 module.exports = router;

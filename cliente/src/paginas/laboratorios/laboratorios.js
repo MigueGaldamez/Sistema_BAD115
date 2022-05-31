@@ -154,6 +154,25 @@ const Laboratorios = () => {
      });;
   };
   
+  const generarReporte=(data) =>{
+    
+    Axios.post(`http://${process.env.REACT_APP_SERVER_IP}/generarpdf`,{data:data})
+    .then((response)=>{
+
+      var filename = response.data.body.path;
+
+      // abrir el archivo en una nueva pestaña
+      var link = document.createElement("a");
+      link.download =true;
+      link.href = `http://${process.env.REACT_APP_SERVER_IP}/docs/${filename}`;
+      link.target = "_blank";
+      link.click();
+
+    }).catch(function (error) {
+      console.log(error);
+    });
+  }
+
   function buscar(rows) {
     return rows.filter((row) =>
       buscarColumnas.some(
@@ -270,7 +289,7 @@ const Laboratorios = () => {
               </div>
             </div>
           </div>
-          <DatatableRoles  data={buscar(laboratorioLista)} municipios={municipioLista} eliminarRegistro={eliminarRegistro} actualizarRegistro={actualizaRegistro} setNuevoNombre={setNuevoNombre} setNuevoIdMunicipio={setNuevoIdMunicipio}/>
+          <DatatableRoles  data={buscar(laboratorioLista)} municipios={municipioLista} eliminarRegistro={eliminarRegistro} actualizarRegistro={actualizaRegistro} setNuevoNombre={setNuevoNombre} setNuevoIdMunicipio={setNuevoIdMunicipio} generarReporte={generarReporte}/>
 
       </div>    
     </div>

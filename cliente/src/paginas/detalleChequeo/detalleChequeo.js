@@ -368,6 +368,29 @@ const DetalleChequeo = () => {
 
   }
 
+  const generarReporteResultados=(valores, resultados, parametros, intervalos, opciones) =>{
+    Axios.post(`http://${process.env.REACT_APP_SERVER_IP}/generarpdfresultados`,{
+      valores:valores,
+      resultados:resultados,
+      parametros:parametros,
+      intervalos:intervalos,
+      opciones:opciones
+    })
+    .then((response)=>{
+      //console.log(response);
+      var filename = response.data.body.path;
+      console.log(response.data.body.path);
+      var link = document.createElement("a");
+      link.download =true;
+      link.href = `http://${process.env.REACT_APP_SERVER_IP}/docs/${filename}`;
+      link.target = "_blank";
+      link.click();
+      //document.getElementById('my_iframe').src = url;
+    }).catch(function (error) {
+      console.log(error);
+    });
+  }
+
   /*function buscar(rows) {
     return rows.filter((row) =>
       buscarColumnas.some(
@@ -447,6 +470,7 @@ const DetalleChequeo = () => {
                       guardar={guardar}
                       modificar={modificar}
                       eliminar={eliminar}
+                      generarReporteResultados={generarReporteResultados}
                       />
                     </div>
                 </div>

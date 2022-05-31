@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pdf Document</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-0evHe/X+R7YkIZDRvuzKMRqM+OrBnVFBL6DOitfPri4tjfHxaWutUpFmBp4vmVor" crossorigin="anonymous">
+</head>
+<body>
+    <table width="100%" border="0" cellspacing="0" cellpadding="0">
+        <tr>
+            <td align="left" valign="top" bgcolor="#ffe77b" style="background-color:#fff;">
+              <img height="100" width="100" src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSgQ_m4DUpDZtd5CnGPtFUpGMXXEoPWNSVnAA&usqp=CAU" alt="">
+            </td>
+            <td align="left" bgcolor="#ffe77b" style="background-color: #fff;">
+              <h2 style="font-weight: 900;color: brown;">LOREM IPSU {{ laboratorios.campo }}</h2>
+              <p> Laboratorio  <br/> 
+                http://dinostore.bed | hello@dinostore.bed +555 7 789-1234</p>
+            </td>
+        </tr>
+    </table> 
+    <hr>
+    <h1 style="font-size: 30px;font-weight: 600; color: green; margin-top: 10px;">INVOICE</h1>
+    <h4>#1</h4> 
+    <table width="100%" border="0" cellspacing="0" cellpadding="0">
+      <tr>
+          <td width="30%" align="left" valign="top" bgcolor="#ffe77b" style="background-color:#fff;">
+            <p>Invoice To:</p>
+            <h3 style="font-weight: 800;color: brown;">Jhone Carter</h3>
+          </td>
+          <td width="70%" align="left" bgcolor="#ffe77b" style="background-color: #fff;">             
+          </td>
+      </tr>
+      <tr>
+        <td width="30%" align="left" valign="top" bgcolor="#ffe77b" style="background-color:#fff;">
+          <p>Social Media Manager</p>
+          <p>Bolen Tex .Inc</p>
+        </td>
+        <td width="70%" align="left" bgcolor="#ffe77b" style="background-color: #fff;">             
+        </td>
+      </tr>
+  </table>  
+      <table width="100%" border="0" cellspacing="0" cellpadding="0">
+        <tr>
+          <td width="30%" align="left" valign="top" bgcolor="#ffe77b" style="background-color:#fff;">
+            <p>+152 5248 523</p>
+            <p>info@gmail.com</p>
+          </td>
+          <td width="40%" align="left" bgcolor="#ffe77b" style="background-color: #fff;">             
+          </td>
+          <td width="30%" align="right" bgcolor="#ffe77b" style="background-color: #fff;">
+            <h4 style="font-weight: 700;color: #000000;">Date: 01 Dec 2020</h4> 
+            <h4 style="font-weight: 700;color: #000000;">INVOICE NO: DX-5236</h4>            
+          </td>
+        </tr>
+      </table>   
+      <table class="table" width="100%">
+          <thead>
+            <tr>
+              <th scope="col">ID</th>
+              <th scope="col">Laboratorio</th>
+            </tr>
+          </thead>
+          <tbody>
+            {{#each laboratorios.laboratoriosLista}}
+            <tr>
+              <td width="10%">{{this.idlaboratorio}}</td>
+              <td width="10%">{{this.nombrelaboratorio}}</td>
+            </tr>
+            {{/each}}
+          </tbody>
+        </table>
+
+</body>
+</html>

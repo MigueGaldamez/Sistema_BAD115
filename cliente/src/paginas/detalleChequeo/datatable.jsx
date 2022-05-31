@@ -21,7 +21,8 @@ export default function DatatableRoles({
   opcionesLista,
   guardar,
   modificar,
-  eliminar
+  eliminar,
+  generarReporteResultados
   }) {
   
   const dataOriginal = data;
@@ -382,7 +383,7 @@ export default function DatatableRoles({
           </div>
           <div class="modal-footer">
             
-            <a type="btn btn-success" class="btn btn-success col-auto me-auto " onClick={()=>{/*guardar(valores.iddetalle)*/}}>Generar PDF</a>
+            <a type="btn btn-success" class="btn btn-success col-auto me-auto " onClick={()=>{generarReporteResultados(valores, resultadosLista, parametroLista, intervalosLista, opcionesLista)}}>Mostrar PDF</a>
             <a type="btn" class="btn btn-secondary col-auto" data-bs-dismiss="modal" >Cancelar</a>
             <a type="btn btn-danger" class="btn btn-danger col-auto" onClick={()=>{eliminar(valores.iddetalle, valores.idchequeo)}}>Eliminar</a>
             <a type="btn btn-success" class="btn btn-primary col-auto" onClick={()=>{modificar(valores.iddetalle, valores.idchequeo)}}>Modificar</a>
