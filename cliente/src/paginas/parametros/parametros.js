@@ -180,6 +180,42 @@ const Parametros = () => {
      });;
   };
   
+  const actualizaRegistroDetalles=(idparametro)=>{
+    Axios.put(`http://${process.env.REACT_APP_SERVER_IP}/parametros`,
+    { nombre:nuevoNombre,
+      idparametro:idparametro,
+      area:nuevaArea,
+      tipo:nuevoTipo,
+      intervalos:intervalosP,
+      mensajeNega:nuevoMensajeNega,
+      mensajePosi:nuevoMensajePosi,
+    }).then(()=>{
+      obtenerRegistros();
+      swal({
+        title: "Exito!",
+        text: "Actualizado con exito",
+        icon: "success",
+        button: `Entendido`, 
+      })
+    }).catch(function (error) {
+      if(error.response!=null){
+       swal({
+         title: "Error!",
+         text: error.response.data.detail,
+         icon: "error",
+         button: "Aww yiss!",
+       });
+     }if(error.response==null){
+       swal({
+         title: "Error!",
+         text: "Error de conexion al servidor",
+         icon: "error",
+         button: "Aww yiss!",
+       });
+     }
+     });;
+  };
+
   function agregarALista() {
     var Intervalo={};
     Intervalo.maxval = maxval;
@@ -475,7 +511,7 @@ const Parametros = () => {
           errores={errores} 
           areas={areaLista} 
           eliminarRegistro={eliminarRegistro} 
-          actualizarRegistro={actualizaRegistro} 
+          actualizarRegistro={actualizaRegistroDetalles} 
           setNuevoNombre={setNuevoNombre} 
           setNuevaArea={setNuevaArea} 
           setNuevoTipo={setNuevoTipo}

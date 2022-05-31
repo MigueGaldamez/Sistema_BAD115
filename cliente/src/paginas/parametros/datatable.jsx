@@ -47,7 +47,23 @@ export default function DatatableRoles(
     if(valor.intervalos.length>0){
       setNuevoMensajeNega(valor.intervalos[0].comentarionegativo);
       setNuevoMensajePosi(valor.intervalos[0].comentariopositivo)
-      setIntervalosP(valor.intervalos);
+     
+      for(const intervalo of valor.intervalos){
+        var Intervalo={};
+        Intervalo.maxval = intervalo.valormaximo;
+        Intervalo.minval = intervalo.valorminimo;
+        Intervalo.id = intervalo.idpoblacion;
+        Intervalo.idunidad = intervalo.idunidad;
+        if( intervalo.idpoblacion!=0){
+        Intervalo.valor = poblacionLista.find(x => x.idpoblacion == intervalo.idpoblacion ).poblacion;
+        }else{
+          Intervalo.valor = "Todas las poblaciones";
+        }
+      
+        Intervalo.unidad = unidadLista.find(x => x.idunidad == intervalo.idunidad ).simbolo;    
+        intervalosP.push(Intervalo);
+      }
+    
       console.log(valor.intervalos);
     }
   }
@@ -320,7 +336,7 @@ export default function DatatableRoles(
                     return(
                     <div class="col-6 px-2">
                       <div class="border border-success p-2 mb-2 border-opacity-50 rounded ">
-                       <small><span><b>{registro.idpoblacion}</b> desde <b>{registro.valorminimo} ({registro.unidad})</b> hasta  <b>{registro.valormaximo} ({registro.unidad})</b></span></small> 
+                       <small><span><b>{registro.valor}</b> desde <b>{registro.minval} ({registro.unidad})</b> hasta  <b>{registro.maxval} ({registro.unidad})</b></span></small> 
                         <button type="button" class="btn-close end-0" aria-label="Close" onClick={()=>{eliminardeLista(index)}}></button>
                       </div>
                     </div>)
@@ -348,7 +364,7 @@ export default function DatatableRoles(
                     </div>
                     <div class="modal-footer">
                       <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-                      <button type="button" class="btn btn-primary" data-bs-dismiss="modal" onClick={()=>{}}  >Guardar Cambios</button>
+                      <button type="button" class="btn btn-primary" data-bs-dismiss="modal" onClick={()=>{actualizarRegistro(registro.idparametro)}}  >Guardar Cambios</button>
                     </div>
                   </div>
                 </div>

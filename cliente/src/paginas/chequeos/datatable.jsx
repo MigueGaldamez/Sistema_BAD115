@@ -34,12 +34,21 @@ export default function DatatableRoles({ data,eliminarRegistro,actualizarRegistr
           <tr>
            
             {columns.map((column) => {
-            if(column=='paciente')
-            return(
+            if(column=='paciente'){ return(
                 
               <td>{row[column]}  </td>
            
-            )
+            )}
+           
+            if(column=='estadochequeo'){
+              return(       
+                <>
+                {row[column]==false && <td><input class="form-control form-control-sm" disabled type="text" value="En Proceso"/></td>}
+                {row[column]==true && <td><input class="form-control form-control-sm" disabled type="text" value="Finalizado"/></td>}
+                </>
+               )
+            }
+            
             if(column=='idchequeo')
             return(
                 

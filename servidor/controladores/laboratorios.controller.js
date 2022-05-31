@@ -12,12 +12,13 @@ const obtenerLaboratorios = async(req,res)=>{
             sql2 = 'SELECT * FROM municipio where idmunicipio=($1) limit 1';
             const responseHija = await sqlee.query(sql2,[laboratorio.idmunicipio]);
             laboratorio.municipio = responseHija.rows[0].municipio; 
-        
         }
+        res.status(200).json(laboratorios);
     }catch(error){
+        console.log(error);
         res.status(500).json(error);
     }
-    res.status(200).json(laboratorios);
+    
 };
 
 const crearLaboratorio =  async (req, res) => {

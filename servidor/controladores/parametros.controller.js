@@ -23,8 +23,6 @@ const obtenerParametros = async(req,res)=>{
 const crearParametro =  async (req, res) => {
     const { nombre,area,tipo,
         mensajePosi,mensajeNega,intervalos} = req.body;
-    console.log(req.body);
-
     var correcto = true;
     try{
         if(nombre==''){
@@ -84,12 +82,14 @@ const crearParametro =  async (req, res) => {
 
 const actualizarParametro = async (req,res)=>{
     const id = req.body.idparametro;
-    var { nombre,tipo,area } = req.body;
-    console.log(req.body);
+    var { nombre,tipo,area,intervalos, mensajeNega,mensajePosi} = req.body;
     try{
         registroSQL = 'SELECT * FROM parametro where idparametro=$1 limit 1';
         const responseRe = await sqlee.query(registroSQL,[id]);
+        registroSQL2 = 'SELECT * FROM intervalo where idparametro=$1 limit 1';
+        const responseRe2 = await sqlee.query(registroSQL2,[id]);
         registro = responseRe.rows[0];
+        registro2 = responseRe2.rows[0];
         
         if(nombre==''){
             nombre = registro.parametro;
@@ -99,8 +99,23 @@ const actualizarParametro = async (req,res)=>{
         if(tipo<=0){
             tipo = registro.tipo
         }
+        if(mensajeNega==''){
+            mensajeNega = registro2.comentarionegativo;
+        }
+        if(mensajePosi==''){
+            mensajePosi = registro2.comentariopositivo;
+        }
         sql = "UPDATE parametro SET idarea=$1, tipo=$2, parametro=$3 WHERE idparametro=$4";
         const response = await sqlee.query(sql,[area,tipo,nombre,id]);
+        if(tipo==1){
+            sql3 = "DELETE FROM intervalo WHERE idparametro=$1";
+            const response3 = await sqlee.query(sql3,[id]);
+            for(const intervalo of intervalos){
+                const response2 = await sqlee.query('INSERT INTO intervalo (idparametro,idunidad,idpoblacion,comentariopositivo,comentarionegativo,valormaximo,valorminimo) VALUES($1,$2,$3,$4,$5,$6,$7)',[
+                    id,intervalo.idunidad,intervalo.id,mensajePosi,mensajeNega,intervalo.maxval,intervalo.minval
+                ]);
+            }
+        }
         res.status(200).json({
             "resultado":response
         })
@@ -127,7 +142,6 @@ const parametrosPorArea = async(req,res)=>{
         sql = 'SELECT * FROM parametro  where idarea=$1 order by idparametro asc';
         const response = await sqlee.query(sql,[id]);
         parametros = response.rows;
-        console.log(parametros);
         for(const parametro of parametros){
             sql2 = 'SELECT * FROM area where idarea=($1) limit 1';
             const responseHija = await sqlee.query(sql2,[parametro.idarea]);

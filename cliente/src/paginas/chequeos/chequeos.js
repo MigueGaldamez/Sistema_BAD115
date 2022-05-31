@@ -16,6 +16,7 @@ const Chequeos = () => {
   //    const[usuario,setUsuario]=useState(0);
   const[fechaChequeo,setFechaChequeo]=useState(Moment().format('YYYY-MM-DD'));
   const[horaChequeo,setHoraChequeo]=useState(Moment().format('HH:mm:ss'));
+  const[examenes, setExamenes] = useState([]);
   
   //ESTE PARA CADA ATRIBUTO QUE SEPUEDE EDITAR
   const[nuevaFechaChequeo,setNuevaFechaChequeo]=useState("");
@@ -97,6 +98,7 @@ const Chequeos = () => {
       laboratorio:laboratorio,
       fechaChequeo:fechaChequeo,
       horaChequeo:horaChequeo,
+      examenes:examenes,
       //usuario:"",
     }).then((response)=>{
       if(response.data.errores==null){      
@@ -199,7 +201,16 @@ const Chequeos = () => {
     );
   }
 
-
+  const manejarChecks= (event) => {
+    var updatedList = [...examenes];
+    if (event.target.checked) {
+      updatedList = [...examenes, parseInt(event.target.value)];
+    } else {
+      updatedList.splice(examenes.indexOf(parseInt(event.target.value)), 1);
+    }
+    setExamenes(updatedList);
+    console.log(updatedList);
+  };
   //LEER LOS DATOS AL CARGAR
   useEffect(()=>{
    obtenerRegistros();
@@ -265,7 +276,7 @@ const Chequeos = () => {
               {examenLista.map((registro) => {
                   return(
                   <div class="form-check">
-                  <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault"/>
+                  <input class="form-check-input" type="checkbox" value={registro.idexamen} id="flexCheckDefault" onChange={manejarChecks}/>
                   <label class="form-check-label" for="flexCheckDefault">
                     {registro.nombreexamen}
                   </label>

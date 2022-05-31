@@ -176,7 +176,17 @@ const Examenes = () => {
     );
   }
 
-  
+    const manejarChecks= (event) => {
+      var updatedList = [...parametros];
+      if (event.target.checked) {
+        updatedList = [...parametros, parseInt(event.target.value)];
+      } else {
+        updatedList.splice(parametros.indexOf(parseInt(event.target.value)), 1);
+      }
+      setParametros(updatedList);
+      console.log(updatedList);
+    };
+
 
 
   //LEER LOS DATOS AL CARGAR
@@ -227,7 +237,7 @@ const Examenes = () => {
                     
                      return(  
                       <div class="form-check">
-                      <input class="form-check-input" value={parametro.idparametro} type="checkbox"  id="flexCheckDefault"/>
+                      <input class="form-check-input" onChange={manejarChecks} value={parametro.idparametro} type="checkbox"  id="flexCheckDefault"/>
                       <label class="form-check-label" for="flexCheckDefault">
                       {parametro.parametro}
                       </label>
@@ -311,8 +321,12 @@ const Examenes = () => {
           eliminarRegistro={eliminarRegistro} 
           actualizarRegistro={actualizaRegistro} 
           setNuevoNombre={setNuevoNombre} 
-          setNuevaArea={setNuevaArea}/>
-
+          consultarParametros={consultarParametros}
+          setNuevaArea={setNuevaArea}
+          parametroLista={parametroLista}
+          areaLista={areaLista}
+          nuevosParametros={nuevosParametros}
+          setNuevosParametros={setNuevosParametros}/>
       </div>    
     </div>
   );
