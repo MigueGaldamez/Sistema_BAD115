@@ -35,22 +35,19 @@ const Chequeos = () => {
   const [q, setQ] = useState('');
   //TODAS LAS COLUMNAS
   const [columns] =useState([
-    'idchequeo',
     'paciente',
     'laboratorio',
-    'usuario',
-    'fechaChequeo',
-    'horaChequeo'
-    
+    'fechachequeo',
+    'horachequeo',
+    'estadochequeo'
   ]);
   //LAS COLUMNAS POR LAS QUE SEPUEDEN FILTRAR
   const [buscarColumnas, setBuscarColumnas] = useState([
-    'idchequeo',
     'paciente',
     'laboratorio',
-    'usuario',
-    'fechaChequeo',
-    'horaChequeo'
+    'fechachequeo',
+    'horachequeo',
+    'estadochequeo'
   ]);
   
 
@@ -349,7 +346,7 @@ const Chequeos = () => {
               </div>
             </div>
           </div>
-          <DatatableRoles  data={buscar(chequeoLista)} usuarios={usuarioLista} laboratorios={laboratorioLista} eliminarRegistro={eliminarRegistro} actualizarRegistro={actualizaRegistro}  setNuevoLaboratorio={setNuevoLaboratorio} setNuevaFechaChequeo={setNuevaFechaChequeo} setNuevaHoraChequeo={setNuevaHoraChequeo} />
+          <DatatableRoles examenes={examenLista} pacientes={pacienteLista} labs={laboratorioLista} data={buscar(chequeoLista)} usuarios={usuarioLista} laboratorios={laboratorioLista} eliminarRegistro={eliminarRegistro} actualizarRegistro={actualizaRegistro}  setNuevoLaboratorio={setNuevoLaboratorio} setNuevaFechaChequeo={setNuevaFechaChequeo} setNuevaHoraChequeo={setNuevaHoraChequeo} />
           
       </div>    
     </div>

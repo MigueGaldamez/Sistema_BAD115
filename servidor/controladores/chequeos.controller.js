@@ -24,9 +24,14 @@ const obtenerChequeos = async(req,res)=>{
             /*sql5 = 'SELECT * FROM detalleOrden where idChequeo=($1)';
             const responseHija4 = await sqlee.query(sql5,[chequeo.idchequeo]);
             chequeo.detalleOrden= responseHija4.rows; */
+
+            sql6 = 'SELECT idexamen,estadoexamen FROM detallechequeo where idchequeo=($1)';
+            const responseHija6 = await sqlee.query(sql6,[chequeo.idchequeo]);
+            chequeo.examenes = responseHija6.rows; 
         }
         res.status(200).json(chequeos);
     }catch(error){
+        console.error();
         res.status(500).json(error);
     }
   
