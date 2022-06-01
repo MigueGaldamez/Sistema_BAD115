@@ -6,7 +6,8 @@ export default function DatatableRoles(
     actualizarRegistro,
     setNuevoNombre,
     setNuevoIdMunicipio,
-    municipios, }) {
+    municipios,
+    generarReporte }) {
   
   const dataOriginal = data;
   const [paginaActual, setPaginaActual] = useState(1);
@@ -115,6 +116,7 @@ export default function DatatableRoles(
          }
       </tbody>
     </table>
+    <button type="button" class="btn btn-danger" onClick={()=>{generarReporte(data)}}>Generar reporte</button>
     <Pagination 
       registrosPorPagina={registrosXpagina}
       registrosTotales={dataOriginal.length}

@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pdf Document</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-0evHe/X+R7YkIZDRvuzKMRqM+OrBnVFBL6DOitfPri4tjfHxaWutUpFmBp4vmVor" crossorigin="anonymous">
+</head>
+<body>
+    <table width="100%" border="0" cellspacing="0" cellpadding="0" >
+        <tr>
+            <td align="center" valign="top" bgcolor="#ffe77b" style="background-color:#fff;">
+              <img height="100" width="100" src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSgQ_m4DUpDZtd5CnGPtFUpGMXXEoPWNSVnAA&usqp=CAU" alt="">
+            </td>
+            <td align="center" bgcolor="#ffe77b" style="background-color: #fff;">
+              <h2 style="font-weight: 900;color: brown;">{{ resultados.nombrelaboratorio }}</h2>
+              <p> Laboratorio  clínico<br/> otro texto</p>
+            </td>
+        </tr>
+    </table> 
+    
+    <h1 style="font-size: 18px;font-weight: 600;  margin-top: 10px; margin-bottom: 0; text-align: center;">Informe de resultados</h1>
+    <hr style="margin:0; margin-top:5px; margin-bottom:5px; color: black;">
+    <table width="100%" border="0" cellspacing="0" cellpadding="0">
+      <tr>
+          <td width="50%" align="left" valign="top" bgcolor="#ffe77b" style="background-color:#fff;">
+            <p style="font-size: 12px;  margin-top: 5px; margin-bottom: 5px; padding-left: 10px;">Paciente: {{ resultados.nombrepaciente }}</p>
+          </td>
+          <td width="50%" align="left"  valign="top" bgcolor="#ffe77b" style="background-color: #fff;">
+            <p style="font-size: 12px;  margin-top: 5px; margin-bottom: 5px; ">Laboratorista: {{ resultados.laboratorista }}</p>            
+          </td>
+      </tr>
+      <tr>
+        <td width="50%" align="left"   bgcolor="#ffe77b" style="background-color: #fff;">
+          <p style="font-size: 12px; margin-top: 5px; margin-bottom: 5px; padding-left: 10px;">Edad: {{ resultados.edad }}</p>            
+        </td>
+        
+        <td width="50%" align="left"   bgcolor="#ffe77b" style="background-color: #fff;">
+          <p style="font-size: 12px;  margin-top: 5px; margin-bottom: 5px;">Fecha de muestra: {{ resultados.fechaingreso }}</p>            
+        </td>
+      </tr>
+      <tr>
+        <td width="50%" align="left"   bgcolor="#ffe77b" style="background-color: #fff;">
+          <p style="font-size: 12px;  margin-top: 5px; margin-bottom: 5px; padding-left: 10px;">Genero: {{ resultados.genero }}</p>            
+        </td>
+        <td width="50%" align="left"  valign="top" bgcolor="#ffe77b" style="background-color: #fff;">
+          <p style="font-size: 12px;  margin-top: 5px; margin-bottom: 5px;">Fecha resultados: {{ resultados.fecharegistro }}</p>            
+        </td>
+      </tr>
+    </table>  
+    <hr style="margin:0; margin-top:5px; margin-bottom:5px; color: black;">
+    <h1 style="font-size: 17px;font-weight: 600;  margin-top: 20px; text-align: center;">{{ resultados.nombreexamen }}</h1>
+    <hr style="margin:0; margin-top:5px; margin-bottom:5px; color: black;">
+    <table style="font-size: 12px; text-align: left;" class="table" width="100%">
+      <thead>
+        <tr>
+          <th style="border-bottom-width:1px; padding: 0; padding-left: 10px; padding-bottom: 5px;" scope="col">Parametro</th>
+          <th style="border-bottom-width:1px; padding: 0; padding-left: 10px; padding-bottom: 5px;" scope="col">Resultado</th>
+          <th style="border-bottom-width:1px; padding: 0; padding-left: 10px; padding-bottom: 5px;" scope="col">Unidad</th>
+          <th style="border-bottom-width:1px; padding: 0; padding-left: 10px; padding-bottom: 5px;" scope="col">Comentario</th>
+        </tr>
+      </thead>
+      <tbody>
+        {{#each resultados.resultadosLista}}
+        <tr>
+          <td style="border-bottom: hidden;" width="25%">{{ this.nombreparametro }}</td>
+          <td style="border-bottom: hidden;" width="25%">{{ this.valor }}</td>
+          <td style="border-bottom: hidden;" width="25%">{{ this.unidad }}</td>
+          <td style="border-bottom: hidden;" width="25%">{{ this.comentario }}</td>
+        </tr>
+        {{/each}}
+      </tbody>
+    </table>
+
+</body>
+</html>

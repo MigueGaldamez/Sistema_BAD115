@@ -16,12 +16,18 @@ const { crearPermiso, obtenerPermisos, actualizarPermiso, eliminarPermiso, } = r
 const { crearParametro, obtenerParametros, actualizarParametro, eliminarParametro,parametrosPorArea, } = require('../controladores/parametros.controller');
 
 const { crearEstadoCivil, obtenerEstadosCiviles, actualizarEstadoCivil, eliminarEstadoCivil, } = require('../controladores/estadosciviles.controller');
-const { crearPaciente, obtenerPacientes, actualizarPaciente, eliminarPaciente, } = require('../controladores/pacientes.controller');
+const { crearPaciente, obtenerPacientes, actualizarPaciente, eliminarPaciente, obtenerPacienteExamenes,} = require('../controladores/pacientes.controller');
 
 const { obtenerChequeos, crearChequeo, actualizarChequeo, eliminarChequeo, /*obtenerChequeosPaciente,*/ } = require('../controladores/chequeos.controller');
 
 const { obtenerUsuarios, iniciarSesion,crearUsuario,actualizarUsuario,actualizarUsuarioRoles,eliminarUsuario,obtenerUsuariosLibres} = require('../controladores/usuarios.controller');
 const { crearExamen, obtenerExamenes, actualizarExamen, eliminarExamen, } = require('../controladores/examenes.controller');
+
+const { obtenerOrdenes, obtenerParametrosResultados, obtenerOpcionesResultados, guardarResultado, obtenerIntervalosResultados, validarResultado, obtenerResultados, actualizarResultado, eliminarResultado, } = require('../controladores/detalleChequeo.controller');
+
+const { crearMuestra, eliminarMuestra} = require('../controladores/muestras.controller');
+
+const { generarReporte, generarReporteResultados, generarReporteTipeoSanguineo } = require('../controladores/reporte.controller');
 
 //siempre poner una coma al final
 
@@ -113,6 +119,7 @@ router.get('/pacientes', obtenerPacientes);
 router.post('/pacientes', crearPaciente);
 router.put('/pacientes', actualizarPaciente)
 router.delete('/pacientes/:idpaciente', eliminarPaciente);
+router.get('/pacientesPacienteExamenes', obtenerPacienteExamenes);
 
 //CRUD CHEQUEO
 router.delete('/chequeos/:idchequeo', eliminarChequeo);
@@ -137,3 +144,24 @@ router.delete('/examenes/:idexamen', eliminarExamen);
 
 module.exports = router;
 
+//REGISTRO DE RESULTADOS
+router.get('/ordenes/:idchequeo', obtenerOrdenes);
+router.get('/parametrosResultados/:idexamen', obtenerParametrosResultados);
+router.get('/opcionesResultados', obtenerOpcionesResultados);
+router.get('/intervalosResultados', obtenerIntervalosResultados);
+router.post('/validarResultados', validarResultado);
+router.post('/resultados', guardarResultado);
+router.put('/resultados', actualizarResultado);
+router.get('/resultados/:iddetalle', obtenerResultados);
+router.delete('/resultados/:iddetalle', eliminarResultado);
+
+//CRUD MUESTRA
+router.post('/muestras', crearMuestra);
+router.delete('/muestras/:iddetalle', eliminarMuestra);
+
+//PDF
+router.post('/generarpdf', generarReporte);
+router.post('/generarpdfresultados', generarReporteResultados);
+router.post('/generarpdftipeo',generarReporteTipeoSanguineo);
+
+module.exports = router;

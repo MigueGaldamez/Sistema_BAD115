@@ -109,7 +109,6 @@ const crearChequeo =  async (req, res) => {
             const archivo = "nada";
             const response =  await sqlee.query('INSERT INTO chequeo (idpaciente, idlaboratorio, idUsuario, fechaChequeo, horaChequeo) VALUES ($1,$2, 1, $3,$4) RETURNING idchequeo',
             [paciente, laboratorio, fechaChequeo, horaChequeo]);
-            
             for(const examen of examenes){
                 const response2 =  await sqlee.query('INSERT INTO detallechequeo (idchequeo, idexamen,estadoexamen) VALUES ($1,$2,false)',
                 [response.rows[0].idchequeo,examen]);
