@@ -25,7 +25,7 @@ const { obtenerOrdenes, obtenerParametrosResultados, obtenerOpcionesResultados, 
 
 const { crearMuestra, eliminarMuestra} = require('../controladores/muestras.controller');
 
-const { generarReporte, generarReporteResultados } = require('../controladores/reporte.controller');
+const { generarReporte, generarReporteResultados, generarReporteTipeoSanguineo } = require('../controladores/reporte.controller');
 
 //siempre poner una coma al final
 
@@ -144,5 +144,6 @@ router.delete('/muestras/:iddetalle', eliminarMuestra);
 //PDF
 router.post('/generarpdf', generarReporte);
 router.post('/generarpdfresultados', generarReporteResultados);
+router.post('/generarpdftipeo',generarReporteTipeoSanguineo);
 
 module.exports = router;

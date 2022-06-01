@@ -4,13 +4,14 @@ const { sqlee } = require('./controlador');
 const obtenerOrdenes = async(req,res)=>{
     const id = parseInt(req.params.idchequeo);
     try{
-        sql = 'SELECT detallechequeo.iddetalle as iddetalle, detallechequeo.idexamen as idexamen, detallechequeo.idchequeo as idchequeo, estadoexamen, fecharegistro, horaregistro, examen.idarea as idarea, nombreexamen, examen.idarea, nombrearea, chequeo.idpaciente as idpaciente, chequeo.idlaboratorio as idlaboratorio, idusuario, fechachequeo, horachequeo, archivo, estadochequeo, idestado, nombrepaciente, apellido, direccion, fechanacimiento, correopaciente, genero, idmuestra, observaciones, fechaingreso, horaingreso, nombrelaboratorio FROM detallechequeo ' + 
+        sql = 'SELECT detallechequeo.iddetalle as iddetalle, detallechequeo.idexamen as idexamen, detallechequeo.idchequeo as idchequeo, estadoexamen, fecharegistro, horaregistro, examen.idarea as idarea, nombreexamen, examen.idarea, nombrearea, chequeo.idpaciente as idpaciente, chequeo.idlaboratorio as idlaboratorio, usuario.idusuario as idusuario, nombreusuario, fechachequeo, horachequeo, archivo, estadochequeo, idestado, nombrepaciente, apellido, direccion, fechanacimiento, correopaciente, genero, idmuestra, observaciones, fechaingreso, horaingreso, nombrelaboratorio FROM detallechequeo ' + 
         'join examen on examen.idexamen = detallechequeo.idexamen ' + 
         'join area on area.idarea = examen.idarea ' + 
         'join chequeo on chequeo.idchequeo = detallechequeo.idchequeo ' +
         'join paciente on paciente.idpaciente = chequeo.idpaciente ' +
         'left join muestra on muestra.iddetalle = detallechequeo.iddetalle ' +
         'join laboratorio on laboratorio.idlaboratorio = chequeo.idlaboratorio ' +
+        'join usuario on usuario.idusuario = chequeo.idusuario ' +
         'where chequeo.idchequeo = $1 ' +
         'order by detallechequeo.iddetalle desc';
         const response = await sqlee.query(sql, [id]);

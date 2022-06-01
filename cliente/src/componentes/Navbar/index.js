@@ -79,6 +79,23 @@ const Navbar = () => {
                 <li class="nav-item">
                     <NavLink to="/muestras" class="nav-link  text-light" aria-current="page" href="#">Muestras</NavLink>
                 </li>
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle text-light" href="#" id="navbarDarkDropdownMenuLink" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        Reportes
+                    </a>
+                    <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+                        <li>
+                            <NavLinkDrop to="/" class="dropdown-item" aria-current="page" href="#">Examenes realizados</NavLinkDrop>
+                        </li>
+                        <li>
+                            <NavLinkDrop to="/" class="dropdown-item" aria-current="page" href="#">Epidemiologico</NavLinkDrop>
+                        </li>
+                        <li>
+                            <NavLinkDrop to="/reportetipeo" class="dropdown-item" aria-current="page" href="#">Tipeo de sangre</NavLinkDrop>
+                        </li>
+                        
+                    </ul>
+                </li>
              
             </ul>
             }

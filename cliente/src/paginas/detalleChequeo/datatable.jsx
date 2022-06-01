@@ -66,7 +66,7 @@ export default function DatatableRoles({
              && heading!='idestado' && heading!='nombrepaciente'  && heading!='apellido' && heading!='direccion' && heading!='fechanacimiento' && heading!='correopaciente'
              && heading!='observaciones' && heading!='fechaingreso'  && heading!='horaingreso' && heading!='idmuestra' && heading!='nombrelaboratorio'
              && heading!='idresultado' && heading!='idparametro'  && heading!='valor' && heading!='positivo' && heading!='comentario' && heading!='presencia' 
-             && heading!='genero' && heading!='fecharegistro' && heading!='horaregistro')
+             && heading!='genero' && heading!='fecharegistro' && heading!='horaregistro' && heading!='nombreusuario')
             return(<th>{heading}</th>)
             })}
           <th>Acciones</th>
@@ -260,7 +260,7 @@ export default function DatatableRoles({
               <div class="col col-6">
                 <p class="m-0 "><b>Ingreso de muestra: </b>{Moment(valores.fechaingreso).format('DD/MM/YYYY')}&nbsp;&nbsp;&nbsp;{valores.horaingreso}</p>
                 <p class="m-0 "><b>Laboratorio: </b>{valores.nombrelaboratorio}</p>
-                <p class="m-0 "><b>Laboratorista: </b></p>
+                <p class="m-0 "><b>Laboratorista: </b>{valores.nombreusuario}</p>
               </div>
             </div>
             <br></br>
@@ -301,7 +301,7 @@ export default function DatatableRoles({
                             </div>
                             <div class="col col-6">
                               {resultadosLista.map((result) => {
-                                if(id===result.idparametro){
+                                if(id===result.idparametro && valores.iddetalle===result.iddetalle){
                                   return(<input defaultValue={result.comentario} type="text" id={'mod_comentario_'+row["parametro"]} class="form-control form-control-sm"  aria-label="dfg"/>)
                                 }
                               })}

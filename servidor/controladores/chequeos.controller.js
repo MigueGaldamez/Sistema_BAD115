@@ -97,8 +97,8 @@ const crearChequeo =  async (req, res) => {
         }
         else{
             const archivo = "nada";
-            const response =  await sqlee.query('INSERT INTO chequeo (idpaciente, idlaboratorio, idUsuario, fechaChequeo, horaChequeo, archivo) VALUES ($1,$2, 1, $3,$4, $5) RETURNING idchequeo',
-            [paciente, laboratorio, fechaChequeo, horaChequeo, archivo]);
+            const response =  await sqlee.query('INSERT INTO chequeo (idpaciente, idlaboratorio, idUsuario, fechaChequeo, horaChequeo) VALUES ($1,$2, 1, $3,$4) RETURNING idchequeo',
+            [paciente, laboratorio, fechaChequeo, horaChequeo]);
             
             
             res.status(200).json({
