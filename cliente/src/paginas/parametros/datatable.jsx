@@ -24,7 +24,13 @@ export default function DatatableRoles(
     agregarALista,
     intervalosP,
     setIntervalosP,
-    eliminardeLista
+    eliminardeLista,
+    setOpcion,
+    setReferencia,
+    agregarOpcion,
+    eliminardeListaOpcion,
+    opcionesP,
+    setOpcionesP
   }) {
   
   const dataOriginal = data;
@@ -63,9 +69,8 @@ export default function DatatableRoles(
         Intervalo.unidad = unidadLista.find(x => x.idunidad == intervalo.idunidad ).simbolo;    
         intervalosP.push(Intervalo);
       }
-    
-      console.log(valor.intervalos);
     }
+    setOpcionesP(valor.opciones);
   }
   const columns = data[0] && Object.keys(data[0]);
   return (
@@ -74,7 +79,7 @@ export default function DatatableRoles(
       <thead class="table-dark">
         <tr>
           {data[0] && columns.map((heading) => {
-             if(heading!='idarea' && heading!='idparametro' && heading!='iddetalle'  && heading!='intervalos')
+             if(heading!='fechaactualizacion' && heading!='fechacreacion' && heading!='opciones' && heading!='idarea' && heading!='idparametro' && heading!='iddetalle'  && heading!='intervalos')
             return(<th>{heading}</th>)
             })}
           <th>Acciones</th>
@@ -346,9 +351,48 @@ export default function DatatableRoles(
                
                }
                {nuevoTipo ==2 &&
-               <div class="text-center mt-2">
-                <h6>- Por opción indica si se encuentran presentes o no en la muestra.</h6>
-               </div>
+            <form id="opcionesM" class="">
+            <hr class="mt-3 px-4"/>
+            <div class="mt-2 row">
+              <div class="col col-6">
+              <label>Agregar opción:</label>
+              <input type="text" placeholder="Agregar Opcion" class="form-control form-control-sm" onChange={(event)=>{
+               setOpcion(event.target.value)}}/>
+              <a class="btn btn-success btn-sm mt-2" onClick={agregarOpcion}>Agregar</a>
+              </div>
+              <div class="col col-6">
+              <label>Referencia opción:</label>
+              <div class="form-check form-switch ms-4">
+                <input class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckChecked" checked
+                onChange={(event)=>{
+                  event.target.checked && setReferencia(true);
+                  !event.target.checked && setReferencia(false);}}/>
+                <label class="form-check-label" for="flexSwitchCheckChecked">Es referencia</label>
+              </div>
+              
+              
+              </div>
+              {opcionesP.length>0 && <h6>Opciones agregadas:</h6>}
+              {opcionesP.map((opcione,index)=>{
+                return(
+                  <div class="col-4 px-2 container-fluid">
+                    <div class="border border-success p-2 mb-2 border-opacity-50 rounded px-2">
+                      
+                      <small class="ms-2"> <b>Opcion: </b>{opcione.opcion} <b>Referencia:</b> {opcione.referencia==false&& <>No</>}{opcione.referencia==true&& <>Si</>}</small> 
+
+                      <button type="button" class="btn-close float-end" aria-label="Close" onClick={()=>{eliminardeListaOpcion(index)}}></button>
+
+                      
+                    </div>
+                  </div>
+                )
+                 
+                })
+              }
+             
+              {opcionesP.length<=0 && <><span class="text-danger">* Debe de agregar al menos dos opciones</span></>}
+            </div>
+          </form>
              
                }
               

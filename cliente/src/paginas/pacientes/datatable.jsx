@@ -28,7 +28,8 @@ export default function DatatableRoles(
     setNuevoIdentificadorEmergencias,
     setNuevoNumeroEmergencias,
     eliminarNumeroActu,
-    agregarNumeroActu
+    agregarNumeroActu,
+    setNuevoGenero,
  }) {
   Moment.locale('es');
   const dataOriginal = data;
@@ -58,7 +59,7 @@ export default function DatatableRoles(
     setNuevoEstado(result.idestado);
     setNuevoIdentificadorEmergencias(result.contactoemergencia.nombrecontacto);
     setNuevoNumeroEmergencias(result.contactoemergencia.telefono);
-
+    setNuevoGenero(result.genero);
     setContactosA(result.numeros);
     setvalores(result);
     abrirModalActualizacion();
@@ -102,7 +103,12 @@ export default function DatatableRoles(
                 }} key={id} defaultValue={row[column]} /></td>
              
             )
-           
+            if(column=='genero')
+            return(
+                
+              <td> <input type="text" class="form-control form-control-sm" disabled  key={id} defaultValue={row[column]} /></td>
+             
+            )
             
             if(column=='municipio')
             return(
@@ -309,7 +315,7 @@ export default function DatatableRoles(
       {/*INICIA DATOS DEUSUARIO*/}
       <div class="row mt-3 px-3">
       <div class="bordeLateral"><h6>Información General:</h6></div>
-        <div class="col col-6">
+        <div class="col col-4">
                 <label for="exampleInputEmail1" class="form-label">Nombres del Paciente:</label>
                 <input defaultValue={valores.nombrepaciente} type="text" class="form-control form-control-sm" placeholder='Ingrese los nombres del paciente' onChange={(event)=>{ setNuevoNombre(event.target.value)}}/>        
                 { 
@@ -317,12 +323,46 @@ export default function DatatableRoles(
                <p><small class="text-danger">* {erroresA.nombre}</small></p>
               }
                 </div>
-                <div class="col col-6">
+                <div class="col col-4">
                 <label for="exampleInputEmail1" class="form-label">Apellidos del Paciente:</label>
                 <input defaultValue={valores.apellido} type="text" class="form-control form-control-sm" placeholder='Ingrese los apellidos del pacientes' onChange={(event)=>{ setNuevoApellido(event.target.value)}}/>        
                 { 
                 erroresA.apellido &&
                <p><small class="text-danger">* {erroresA.apellido}</small></p>
+              }
+                </div>
+                <div class="col col-4">
+                <label for="exampleInputEmail1" class="form-label">Genero:</label>
+               
+                  
+                  {valores.genero=="masculino" && 
+                   <select disabled class="form-select form-select-sm" aria-label="Default select example" onChange={(event)=>{
+                    setNuevoGenero(event.target.value)}}>
+                  <option>Seleccionar Genero</option>
+                  <option value="masculino" selected>Masculino</option>
+                  <option value="femenino">Femenino</option>
+                 
+                </select>}
+                {valores.genero=="femenino" && 
+                   <select disabled class="form-select form-select-sm" aria-label="Default select example" onChange={(event)=>{
+                    setNuevoGenero(event.target.value)}}>
+                  <option >Seleccionar Genero</option>
+                  <option value="masculino" >Masculino</option>
+                  <option value="femenino" selected>Femenino</option>
+                 
+                </select>}
+
+                {(valores.genero!="femenino" && valores.genero!="masculino" ) && 
+                   <select class="form-select form-select-sm" aria-label="Default select example" onChange={(event)=>{
+                    setNuevoGenero(event.target.value)}}>
+                  <option selected>Seleccionar Genero</option>
+                  <option value="masculino" >Masculino</option>
+                  <option value="femenino" >Femenino</option>
+                 
+                </select>}
+                { 
+                erroresA.genero &&
+               <p><small class="text-danger">* {erroresA.genero}</small></p>
               }
                 </div>
                 <div class="col col-4 mt-3">

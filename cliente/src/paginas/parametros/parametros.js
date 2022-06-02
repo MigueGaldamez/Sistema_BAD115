@@ -19,7 +19,9 @@ const Parametros = () => {
   const[mensajePosi,setMensajePosi] = useState("");
   const[mensajeNega,setMensajeNega] = useState("");
   const[intervalosP, setIntervalosP] = useState([]);
-
+  const[opcionesP, setOpcionesP] = useState([]);
+  const[opcion,setOpcion] = useState("");
+  const[referencia,setReferencia] = useState(true);
   //ESTE PARA CADA ATRIBUTO QUE SEPUEDE EDITAR
   const[nuevoNombre,setNuevoNombre]=useState("");
   const[nuevaArea,setNuevaArea]=useState(0);
@@ -90,7 +92,8 @@ const Parametros = () => {
       tipo:tipo,
       mensajePosi:mensajePosi,
       mensajeNega:mensajeNega,
-      intervalos:intervalosP
+      intervalos:intervalosP,
+      opciones:opcionesP,
     }).then((response)=>{
       if(response.data.errores==null){      
         cerrarModal();
@@ -242,6 +245,8 @@ const Parametros = () => {
     }
     setMaxval("");
   }
+ 
+  
   function buscar(rows) {
     return rows.filter((row) =>
       buscarColumnas.some(
@@ -254,8 +259,22 @@ const Parametros = () => {
     );
   }
 
-  
-
+  const agregarOpcion=()=>{
+    var opcionv={};
+    opcionv.opcion = opcion;
+    opcionv.referencia = referencia;
+    var registros = opcionesP;
+    registros.push(opcionv);
+    setOpcionesP(registros);
+    setOpcion(0);   
+    document.getElementById("opcionesM").reset()
+  }
+  function eliminardeListaOpcion(id){
+    if (id > -1) {
+      opcionesP.splice(id, 1);
+    }
+    setOpcion(0);
+  }
 
   //LEER LOS DATOS AL CARGAR
   useEffect(()=>{
@@ -427,10 +446,48 @@ const Parametros = () => {
                
                }
                {tipo ==2 &&
-               <div class="text-center mt-2">
-                <h6>- Por opción indica si se encuentran presentes o no en la muestra.</h6>
-               </div>
-             
+                <form id="opcionesM" class="">
+                  <hr class="mt-3 px-4"/>
+                  <div class="mt-2 row">
+                    <div class="col col-6">
+                    <label>Agregar opción:</label>
+                    <input type="text" placeholder="Agregar Opcion" class="form-control form-control-sm" onChange={(event)=>{
+                     setOpcion(event.target.value)}}/>
+                    <a class="btn btn-success btn-sm mt-2" onClick={agregarOpcion}>Agregar</a>
+                    </div>
+                    <div class="col col-6">
+                    <label>Referencia opción:</label>
+                    <div class="form-check form-switch ms-4">
+                      <input class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckChecked" checked
+                      onChange={(event)=>{
+                        event.target.checked && setReferencia(true);
+                        !event.target.checked && setReferencia(false);}}/>
+                      <label class="form-check-label" for="flexSwitchCheckChecked">Es referencia</label>
+                    </div>
+                    
+                    
+                    </div>
+                    {opcionesP.length>0 && <h6>Opciones agregadas:</h6>}
+                    {opcionesP.map((opcione,index)=>{
+                      return(
+                        <div class="col-4 px-2 container-fluid">
+                          <div class="border border-success p-2 mb-2 border-opacity-50 rounded px-2">
+                            
+                            <small class="ms-2"> <b>Opcion: </b>{opcione.opcion} <b>Referencia:</b> {opcione.referencia==false&& <>No</>}{opcione.referencia==true&& <>Si</>}</small> 
+
+                            <button type="button" class="btn-close float-end" aria-label="Close" onClick={()=>{eliminardeListaOpcion(index)}}></button>
+
+                            
+                          </div>
+                        </div>
+                      )
+                       
+                      })
+                    }
+                   
+                    {opcionesP.length<=0 && <><span class="text-danger">* Debe de agregar al menos dos opciones</span></>}
+                  </div>
+                </form>
                }
               
                     </div>
@@ -531,6 +588,12 @@ const Parametros = () => {
           nuevoMensajeNega ={nuevoMensajeNega}
           eliminardeLista={eliminardeLista}
           setIntervalosP = {setIntervalosP}
+          setOpcion={setOpcion}
+          setReferencia={setReferencia}
+          agregarOpcion={agregarOpcion}
+          eliminardeListaOpcion={eliminardeListaOpcion}
+          opcionesP={opcionesP}
+          setOpcionesP={setOpcionesP}
           />
 
       </div>    
