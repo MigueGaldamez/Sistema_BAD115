@@ -141,9 +141,6 @@ router.post('/examenes', crearExamen);
 router.put('/examenes', actualizarExamen);
 router.delete('/examenes/:idexamen', eliminarExamen);
 
-
-module.exports = router;
-
 //REGISTRO DE RESULTADOS
 router.get('/ordenes/:idchequeo', obtenerOrdenes);
 router.get('/parametrosResultados/:idexamen', obtenerParametrosResultados);
