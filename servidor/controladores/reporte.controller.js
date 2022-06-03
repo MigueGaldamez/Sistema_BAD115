@@ -498,6 +498,343 @@ const generarReporteTipeoSanguineo =  async (req, res) => {
 
 }
 
+const generarReporteEpidemiologico =  async (req, res) => {
+    const { filtro, padecimiento } = req.body;
+    const html = fs.readFileSync(path.join(__dirname, '../views/template-epidemiologico.html'), 'utf-8')
+    var filename = '';
+    var obj = null;
+    let array = [];
+
+    console.log(filtro, padecimiento);
+    if (padecimiento==='1' && filtro === '5'){ 
+//Triglicéridos altos con zona geográfica filtro 1 = 5
+        filename = 'TriglicéridosAltos_ZonaGeografica' + '_' + (Math.floor(Math.random() * 9999) + 10000) + '.pdf';
+        
+        var municipios = response.rows;
+        for(const municipio of municipios){
+
+        }
+        // esta sera la data que vamos a mandar al template(plantilla) para crear el pdf
+        obj = {
+            nombrelaboratorio: 'Laboratorio Nacional',
+            nombrereporte: 'Reporte de Triglicéridos Altos por zona geografica',
+            datosLista: array,
+        }
+
+    } else if (padecimiento==='1' && filtro === '6') { 
+//Triglicéridos altos con edades filtro 1 = 6
+        filename = 'TriglicéridosAltos_Edades' + '_' + (Math.floor(Math.random() * 9999) + 10000) + '.pdf';
+        var fecha = new Date();
+        var y = fecha.getFullYear();
+
+        var edades = [
+            {
+                grupo: 'Primera infancia (0-5 años)',
+                minedad: y,
+                maxedad: y-6,
+            },
+            {
+                grupo: 'Infancia (6 - 11 años)',
+                minedad: y-7,
+                maxedad: y-11,
+            },
+            {
+                grupo: 'Adolescencia (12 - 18 años)',
+                minedad: y-12,
+                maxedad: y-18,
+            },
+            {
+                grupo: 'Adulto juventud (19 - 26 años)',
+                minedad: y-19,
+                maxedad: y-26,
+            },
+            {
+                grupo: 'Adultez (27- 59 años)',
+                minedad: y-27,
+                maxedad: y-59,
+            },
+            {
+                grupo: 'Persona Mayor (60 años o mas)',
+                minedad: y-60,
+                maxedad: y-130,
+            },
+            
+        ]
+        for(const edad of edades){
+        }
+        // esta sera la data que vamos a mandar al template(plantilla) para crear el pdf
+        obj = {
+            nombrelaboratorio: 'Laboratorio Nacional',
+            nombrereporte: 'Reporte de Triglicéridos Altos por edades',
+            datosLista: array,
+        }
+
+    } else if (padecimiento==='1' && filtro === '7') { 
+//Triglicéridos altos con genero filtro 1 = 7
+        filename = 'TriglicéridosAltos_Genero' + '_' + (Math.floor(Math.random() * 9999) + 10000) + '.pdf';
+        var fecha = new Date();
+        var y = fecha.getFullYear();
+
+        var generos = [{genero: 'Hombre'}, {genero: 'Mujer'}]
+
+        
+        for(const genero of generos){
+        }
+        // esta sera la data que vamos a mandar al template(plantilla) para crear el pdf
+        obj = {
+            nombrelaboratorio: 'Laboratorio Nacional',
+            nombrereporte: 'Reporte de Trigliceridos Altos por genero',
+            datosLista: array,
+        }
+
+    } else if (padecimiento==='2' && filtro === '5') { 
+//Colesterol con zona geografica filtro 2 = 5
+        filename = 'Colesterol_ZonaGeográfica' + '_' + (Math.floor(Math.random() * 9999) + 10000) + '.pdf';
+        
+        var municipios = response.rows;
+        for(const municipio of municipios){
+
+        }
+        // esta sera la data que vamos a mandar al template(plantilla) para crear el pdf
+        obj = {
+            nombrelaboratorio: 'Laboratorio Nacional',
+            nombrereporte: 'Reporte Colesterol por zona geografica',
+            datosLista: array,
+        }
+
+    } else if (padecimiento==='2' && filtro === '6') { 
+//Colesterol con edad filtro 2 = 6
+        filename = 'Colesterol_Edad' + '_' + (Math.floor(Math.random() * 9999) + 10000) + '.pdf';
+        var fecha = new Date();
+        var y = fecha.getFullYear();
+
+        var edades = [
+            {
+                grupo: 'Primera infancia (0-5 años)',
+                minedad: y,
+                maxedad: y-6,
+            },
+            {
+                grupo: 'Infancia (6 - 11 años)',
+                minedad: y-7,
+                maxedad: y-11,
+            },
+            {
+                grupo: 'Adolescencia (12 - 18 años)',
+                minedad: y-12,
+                maxedad: y-18,
+            },
+            {
+                grupo: 'Adulto juventud (19 - 26 años)',
+                minedad: y-19,
+                maxedad: y-26,
+            },
+            {
+                grupo: 'Adultez (27- 59 años)',
+                minedad: y-27,
+                maxedad: y-59,
+            },
+            {
+                grupo: 'Persona Mayor (60 años o mas)',
+                minedad: y-60,
+                maxedad: y-130,
+            },
+            
+        ]
+        for(const edad of edades){
+        }
+        // esta sera la data que vamos a mandar al template(plantilla) para crear el pdf
+        obj = {
+            nombrelaboratorio: 'Laboratorio Nacional',
+            nombrereporte: 'Reporte de Colesterol por edades',
+            datosLista: array,
+        }
+
+    } else if (padecimiento==='2' && filtro === '7') { 
+//Colesterol con genero filtro 2 = 7
+        filename = 'Colesterol_Genero' + '_' + (Math.floor(Math.random() * 9999) + 10000) + '.pdf';
+        
+        var fecha = new Date();
+        var y = fecha.getFullYear();
+
+        var generos = [{genero: 'Hombre'}, {genero: 'Mujer'}]
+
+        
+        for(const genero of generos){
+        }
+        // esta sera la data que vamos a mandar al template(plantilla) para crear el pdf
+        obj = {
+            nombrelaboratorio: 'Laboratorio Nacional',
+            nombrereporte: 'Reporte de Colesterol Altos por genero',
+            datosLista: array,
+        }
+
+    } else if (padecimiento==='3' && filtro === '5') { 
+//AcidoUrico con zona geografica filtro 3 = 5
+        filename = 'AcidoUrico_ZonaGeográfica' + '_' + (Math.floor(Math.random() * 9999) + 10000) + '.pdf';
+        
+        var municipios = response.rows;
+        for(const municipio of municipios){
+
+        }
+        // esta sera la data que vamos a mandar al template(plantilla) para crear el pdf
+        obj = {
+            nombrelaboratorio: 'Laboratorio Nacional',
+            nombrereporte: 'Reporte Acido Úrrico por zona geografica',
+            datosLista: array,
+        }
+
+    } else if (padecimiento==='3' && filtro === '6') { 
+//AcidoUrico con edad filtro 3 = 6
+        filename = 'AcidoUrico_Edad' + '_' + (Math.floor(Math.random() * 9999) + 10000) + '.pdf';
+        var fecha = new Date();
+        var y = fecha.getFullYear();
+
+        var edades = [
+            {
+                grupo: 'Primera infancia (0-5 años)',
+                minedad: y,
+                maxedad: y-6,
+            },
+            {
+                grupo: 'Infancia (6 - 11 años)',
+                minedad: y-7,
+                maxedad: y-11,
+            },
+            {
+                grupo: 'Adolescencia (12 - 18 años)',
+                minedad: y-12,
+                maxedad: y-18,
+            },
+            {
+                grupo: 'Adulto juventud (19 - 26 años)',
+                minedad: y-19,
+                maxedad: y-26,
+            },
+            {
+                grupo: 'Adultez (27- 59 años)',
+                minedad: y-27,
+                maxedad: y-59,
+            },
+            {
+                grupo: 'Persona Mayor (60 años o mas)',
+                minedad: y-60,
+                maxedad: y-130,
+            },
+            
+        ]
+        for(const edad of edades){
+        }
+        // esta sera la data que vamos a mandar al template(plantilla) para crear el pdf
+        obj = {
+            nombrelaboratorio: 'Laboratorio Nacional',
+            nombrereporte: 'Reporte de Acido Úrico Altos por edades',
+            datosLista: array,
+        }
+
+    } else if (padecimiento==='3' && filtro === '7') { 
+//AcidoUrico con genero filtro 3 = 7
+        filename = 'AcidoUrico_Genero' + '_' + (Math.floor(Math.random() * 9999) + 10000) + '.pdf';
+        
+        var fecha = new Date();
+        var y = fecha.getFullYear();
+
+        var generos = [{genero: 'Hombre'}, {genero: 'Mujer'}]
+
+        
+        for(const genero of generos){
+        }
+        // esta sera la data que vamos a mandar al template(plantilla) para crear el pdf
+        obj = {
+            nombrelaboratorio: 'Laboratorio Nacional',
+            nombrereporte: 'Reporte de Acido Úrico Altos por genero',
+            datosLista: array,
+        }
+
+    } else if (padecimiento==='4' && filtro === '5') { 
+//Glucosa con zona geografica filtro 4 = 5
+        filename = 'Glucosa_ZonaGeográfica' + '_' + (Math.floor(Math.random() * 9999) + 10000) + '.pdf';
+        
+        var municipios = response.rows;
+        for(const municipio of municipios){
+
+        }
+        // esta sera la data que vamos a mandar al template(plantilla) para crear el pdf
+        obj = {
+            nombrelaboratorio: 'Laboratorio Nacional',
+            nombrereporte: 'Reporte Glucosa por zona geografica',
+            datosLista: array,
+        }
+
+    } else if (padecimiento==='4' && filtro === '6') { 
+//Glucosa con edad filtro 4 = 6
+        filename = 'Glucosa_Edad' + '_' + (Math.floor(Math.random() * 9999) + 10000) + '.pdf';
+        var fecha = new Date();
+        var y = fecha.getFullYear();
+
+        var edades = [
+            {
+                grupo: 'Primera infancia (0-5 años)',
+                minedad: y,
+                maxedad: y-6,
+            },
+            {
+                grupo: 'Infancia (6 - 11 años)',
+                minedad: y-7,
+                maxedad: y-11,
+            },
+            {
+                grupo: 'Adolescencia (12 - 18 años)',
+                minedad: y-12,
+                maxedad: y-18,
+            },
+            {
+                grupo: 'Adulto juventud (19 - 26 años)',
+                minedad: y-19,
+                maxedad: y-26,
+            },
+            {
+                grupo: 'Adultez (27- 59 años)',
+                minedad: y-27,
+                maxedad: y-59,
+            },
+            {
+                grupo: 'Persona Mayor (60 años o mas)',
+                minedad: y-60,
+                maxedad: y-130,
+            },
+            
+        ]
+        for(const edad of edades){
+        }
+        // esta sera la data que vamos a mandar al template(plantilla) para crear el pdf
+        obj = {
+            nombrelaboratorio: 'Laboratorio Nacional',
+            nombrereporte: 'Reporte de Glucosa por edades',
+            datosLista: array,
+        }
+
+    } else if (padecimiento==='4'  && filtro === '7') {
+//Glucosa con genero filtro 4 = 7
+        filename = 'Glucosa_Genero' + '_' + (Math.floor(Math.random() * 9999) + 10000) + '.pdf';
+        
+        var fecha = new Date();
+        var y = fecha.getFullYear();
+
+        var generos = [{genero: 'Hombre'}, {genero: 'Mujer'}]
+
+        
+        for(const genero of generos){
+        }
+        // esta sera la data que vamos a mandar al template(plantilla) para crear el pdf
+        obj = {
+            nombrelaboratorio: 'Laboratorio Nacional',
+            nombrereporte: 'Reporte de Glucosa por genero',
+            datosLista: array,
+        }
+
+    }
+}
 
 const generarReporteCantidadExamenes =  async (req, res) => {
     const { filtro, idpaciente, iddepartamento, idmunicipio, fechainicio, fechafin } = req.body;
@@ -725,5 +1062,6 @@ module.exports = {
     generarReporte,
     generarReporteResultados,
     generarReporteTipeoSanguineo,
-    generarReporteCantidadExamenes
+    generarReporteCantidadExamenes,
+    generarReporteEpidemiologico,
 };

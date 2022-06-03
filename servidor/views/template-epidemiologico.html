@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pdf Document</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-0evHe/X+R7YkIZDRvuzKMRqM+OrBnVFBL6DOitfPri4tjfHxaWutUpFmBp4vmVor" crossorigin="anonymous">
+</head>
+<body>
+    <table width="100%" border="0" cellspacing="0" cellpadding="0" >
+        <tr>
+            <td align="center" valign="top" bgcolor="#ffe77b" style="background-color:#fff;">
+              <img height="100" width="100" src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSgQ_m4DUpDZtd5CnGPtFUpGMXXEoPWNSVnAA&usqp=CAU" alt="">
+            </td>
+            <td align="center" bgcolor="#ffe77b" style="background-color: #fff;">
+              <h2 style="font-weight: 900;color: brown;">{{ datos.nombrelaboratorio }}</h2>
+              <p> Laboratorio  clínico<br/> otro texto</p>
+            </td>
+        </tr>
+    </table> 
+    
+    <hr style="margin:0; margin-top:5px; margin-bottom:5px; color: black;">
+    <h1 style="font-size: 17px;font-weight: 600;  margin-top: 20px; text-align: center;">{{ datos.nombrereporte }}</h1>
+    <hr style="margin:0; margin-top:5px; margin-bottom:5px; color: black;">
+    {{#each datos.datosLista}}
+    <h1 style="font-size: 15px;font-weight: 600;  margin-top: 20px; text-align: center;">{{ this.agrupacion }}</h1>
+    <table style="font-size: 12px; text-align: center; width: 50%; margin-left: 25%;" class="table" width="50%">
+      <thead>
+        <tr>
+          <th style="border-bottom-width:1px; padding: 0; padding-left: 10px; padding-bottom: 5px;" scope="col">Epidemiologico</th>
+          <th style="border-bottom-width:1px; padding: 0; padding-left: 10px; padding-bottom: 5px;" scope="col">#</th>
+        </tr>
+      </thead>
+      <tbody>
+        
+        
+
+      </tbody>
+    </table>
+    {{/each}}
+</body>
+</html>
