@@ -32,7 +32,7 @@ const Profesiones = () => {
   
 
   const obtenerRegistros=()=>{
-    Axios.get(`http://${process.env.REACT_APP_SERVER_IP}/profesiones`).then((response)=>{
+    Axios.get(`https://${process.env.REACT_APP_SERVER_IP}/profesiones`).then((response)=>{
       setProfesionLista(response.data);
     });
   };
@@ -56,7 +56,7 @@ const Profesiones = () => {
   //AGREGAR
   const agregarRegistro=(event)=>{    
     event.preventDefault();
-    Axios.post(`http://${process.env.REACT_APP_SERVER_IP}/profesiones`,{
+    Axios.post(`https://${process.env.REACT_APP_SERVER_IP}/profesiones`,{
       //TODOS LOS CAMPOS
       nombre:nombre,
     }).then((response)=>{    
@@ -93,7 +93,7 @@ const Profesiones = () => {
   };
 
   const eliminarRegistro=(idprofesion)=>{
-    Axios.delete(`http://${process.env.REACT_APP_SERVER_IP}/profesiones/${idprofesion}`).then(()=>{
+    Axios.delete(`https://${process.env.REACT_APP_SERVER_IP}/profesiones/${idprofesion}`).then(()=>{
       obtenerRegistros();
       swal({
         title: "Exito!",
@@ -121,7 +121,7 @@ const Profesiones = () => {
   };
 
   const actualizaRegistro=(idprofesion)=>{
-    Axios.put(`http://${process.env.REACT_APP_SERVER_IP}/profesiones`,{nombre:nuevoNombre,idprofesion:idprofesion}).then(()=>{
+    Axios.put(`https://${process.env.REACT_APP_SERVER_IP}/profesiones`,{nombre:nuevoNombre,idprofesion:idprofesion}).then(()=>{
       obtenerRegistros();
       swal({
         title: "Exito!",

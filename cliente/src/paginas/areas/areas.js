@@ -29,7 +29,7 @@ const Areas = () => {
   ]);
 
   const obtenerRegistros=()=>{
-    Axios.get(`http://${process.env.REACT_APP_SERVER_IP}/areas`).then((response)=>{
+    Axios.get(`https://${process.env.REACT_APP_SERVER_IP}/areas`).then((response)=>{
       setAreaLista(response.data);  });
   };
 
@@ -53,7 +53,7 @@ const Areas = () => {
   //AGREGAR
   const agregarRegistro=(event)=>{    
     event.preventDefault();
-    Axios.post(`http://${process.env.REACT_APP_SERVER_IP}/areas`,{
+    Axios.post(`https://${process.env.REACT_APP_SERVER_IP}/areas`,{
       //TODOS LOS CAMPOS
       nombre:nombre,
     }).then((response)=>{
@@ -90,7 +90,7 @@ const Areas = () => {
   };
 
   const eliminarRegistro=(idarea)=>{
-    Axios.delete(`http://${process.env.REACT_APP_SERVER_IP}/areas/${idarea}`).then(()=>{
+    Axios.delete(`https://${process.env.REACT_APP_SERVER_IP}/areas/${idarea}`).then(()=>{
       obtenerRegistros();
       swal({
         title: "Exito!",
@@ -118,7 +118,7 @@ const Areas = () => {
   };
 
   const actualizaRegistro=(idarea)=>{
-    Axios.put(`http://${process.env.REACT_APP_SERVER_IP}/areas`,{nombre:nuevoNombre,idarea:idarea}).then(()=>{
+    Axios.put(`https://${process.env.REACT_APP_SERVER_IP}/areas`,{nombre:nuevoNombre,idarea:idarea}).then(()=>{
       obtenerRegistros();
       swal({
         title: "Exito!",

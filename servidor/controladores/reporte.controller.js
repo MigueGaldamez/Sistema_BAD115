@@ -49,7 +49,7 @@ const generarReporte =  async (req, res) => {
         console.log(error);
     });
 
-    const filepath = `http://${process.env.REACT_APP_SERVER_IP}/docs/` + filename;
+    const filepath = `https://${process.env.REACT_APP_SERVER_IP}/docs/` + filename;
 
     
 
@@ -179,7 +179,7 @@ const generarReporteResultados =  async (req, res) => {
             res.status(500).json(error);
         }
 
-        const filepath = `http://${process.env.REACT_APP_SERVER_IP}/docs/` + filename; 
+        const filepath = `https://${process.env.REACT_APP_SERVER_IP}/docs/` + filename; 
 
     }  else {
 
@@ -494,7 +494,7 @@ const generarReporteTipeoSanguineo =  async (req, res) => {
         console.log(error);
     });
 
-    const filepath = `http://${process.env.REACT_APP_SERVER_IP}/docs/` + filename;   
+    const filepath = `https://${process.env.REACT_APP_SERVER_IP}/docs/` + filename;   
 
 }
 
@@ -1053,7 +1053,7 @@ const generarReporteCantidadExamenes =  async (req, res) => {
             console.log(error);
         });
 
-        const filepath = `http://${process.env.REACT_APP_SERVER_IP}/docs/` + filename;   
+        const filepath = `https://${process.env.REACT_APP_SERVER_IP}/docs/` + filename;   
     }
 
 }

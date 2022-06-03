@@ -52,16 +52,16 @@ const Laboratoristas = () => {
   
 
   const obtenerRegistros=()=>{
-    Axios.get(`http://${process.env.REACT_APP_SERVER_IP}/laboratoristas`).then((response)=>{
+    Axios.get(`https://${process.env.REACT_APP_SERVER_IP}/laboratoristas`).then((response)=>{
       setLaboratoristaLista(response.data);
     });
-    Axios.get(`http://${process.env.REACT_APP_SERVER_IP}/profesiones`).then((response)=>{
+    Axios.get(`https://${process.env.REACT_APP_SERVER_IP}/profesiones`).then((response)=>{
       setProfesionLista(response.data);
     });
-    Axios.get(`http://${process.env.REACT_APP_SERVER_IP}/usuarioslibres`).then((response)=>{
+    Axios.get(`https://${process.env.REACT_APP_SERVER_IP}/usuarioslibres`).then((response)=>{
       setUsuarioLista(response.data);
     });
-    Axios.get(`http://${process.env.REACT_APP_SERVER_IP}/laboratorios`).then((response)=>{
+    Axios.get(`https://${process.env.REACT_APP_SERVER_IP}/laboratorios`).then((response)=>{
       setLaboratorioLista(response.data);
     });
   };
@@ -88,7 +88,7 @@ const Laboratoristas = () => {
     var contraseniaEncriptada = (SHA256(contrasenia)).toString();
     var confirmacionEncriptada = (SHA256(confirmarC)).toString();
     if(nuevoRegistro==true){
-      Axios.post(`http://${process.env.REACT_APP_SERVER_IP}/laboratoristas`,{
+      Axios.post(`https://${process.env.REACT_APP_SERVER_IP}/laboratoristas`,{
         //TODOS LOS CAMPOS
         nuevo:1,
         nombre:nombre,
@@ -133,7 +133,7 @@ const Laboratoristas = () => {
        });
     }else if(nuevoRegistro==false){
       
-      Axios.post(`http://${process.env.REACT_APP_SERVER_IP}/laboratoristas`,{
+      Axios.post(`https://${process.env.REACT_APP_SERVER_IP}/laboratoristas`,{
         //TODOS LOS CAMPOS
         nuevo:0,
         usuario:usuario,
@@ -176,7 +176,7 @@ const Laboratoristas = () => {
   };
 
   const eliminarRegistro=(idlaboratorista)=>{
-    Axios.delete(`http://${process.env.REACT_APP_SERVER_IP}/laboratoristas/${idlaboratorista}`).then(()=>{
+    Axios.delete(`https://${process.env.REACT_APP_SERVER_IP}/laboratoristas/${idlaboratorista}`).then(()=>{
       obtenerRegistros();
       swal({
         title: "Exito!",
@@ -204,7 +204,7 @@ const Laboratoristas = () => {
   };
 
   const actualizaRegistro=(idlaboratorista)=>{
-    Axios.put(`http://${process.env.REACT_APP_SERVER_IP}/laboratoristas`,{idlaboratorista:idlaboratorista,profesion:nuevaProfesion,usuario:nuevoUsuario,numerojunta:nuevoNumeroJunta}).then(()=>{
+    Axios.put(`https://${process.env.REACT_APP_SERVER_IP}/laboratoristas`,{idlaboratorista:idlaboratorista,profesion:nuevaProfesion,usuario:nuevoUsuario,numerojunta:nuevoNumeroJunta}).then(()=>{
       obtenerRegistros();
       swal({
         title: "Exito!",

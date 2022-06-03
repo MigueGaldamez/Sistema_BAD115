@@ -12,7 +12,7 @@ const Laboratorios = () => {
   
   const generarReporte=() =>{
     
-    Axios.post(`http://${process.env.REACT_APP_SERVER_IP}/generarpdfepidemiologico`,{filtro:filtro, padecimiento:padecimiento})
+    Axios.post(`https://${process.env.REACT_APP_SERVER_IP}/generarpdfepidemiologico`,{filtro:filtro, padecimiento:padecimiento})
     .then((response)=>{
 
       var filename = response.data.body.path;
@@ -20,7 +20,7 @@ const Laboratorios = () => {
       // abrir el archivo en una nueva pestaña
       var link = document.createElement("a");
       link.download =true;
-      link.href = `http://${process.env.REACT_APP_SERVER_IP}/docs/${filename}`;
+      link.href = `https://${process.env.REACT_APP_SERVER_IP}/docs/${filename}`;
       link.target = "_blank";
       link.click();
 

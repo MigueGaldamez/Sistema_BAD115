@@ -29,7 +29,7 @@ const EstadosCiviles = () => {
   ]);
 
   const obtenerRegistros=()=>{
-    Axios.get(`http://${process.env.REACT_APP_SERVER_IP}/estadosciviles`).then((response)=>{
+    Axios.get(`https://${process.env.REACT_APP_SERVER_IP}/estadosciviles`).then((response)=>{
       setEstadoCivilLista(response.data);  });
   };
 
@@ -53,7 +53,7 @@ const EstadosCiviles = () => {
   //AGREGAR
   const agregarRegistro=(event)=>{    
     event.preventDefault();
-    Axios.post(`http://${process.env.REACT_APP_SERVER_IP}/estadosciviles`,{
+    Axios.post(`https://${process.env.REACT_APP_SERVER_IP}/estadosciviles`,{
       //TODOS LOS CAMPOS
       nombre:nombre,
     }).then((response)=>{
@@ -90,7 +90,7 @@ const EstadosCiviles = () => {
   };
 
   const eliminarRegistro=(idestado)=>{
-    Axios.delete(`http://${process.env.REACT_APP_SERVER_IP}/estadosciviles/${idestado}`).then(()=>{
+    Axios.delete(`https://${process.env.REACT_APP_SERVER_IP}/estadosciviles/${idestado}`).then(()=>{
       obtenerRegistros();
       swal({
         title: "Exito!",
@@ -118,7 +118,7 @@ const EstadosCiviles = () => {
   };
 
   const actualizaRegistro=(idestado)=>{
-    Axios.put(`http://${process.env.REACT_APP_SERVER_IP}/estadosciviles`,{nombre:nuevoNombre,idestado:idestado}).then(()=>{
+    Axios.put(`https://${process.env.REACT_APP_SERVER_IP}/estadosciviles`,{nombre:nuevoNombre,idestado:idestado}).then(()=>{
       obtenerRegistros();
       swal({
         title: "Exito!",

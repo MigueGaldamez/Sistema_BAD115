@@ -48,13 +48,13 @@ const DetalleChequeo = () => {
   */
 
   const obtenerRegistros=()=>{
-    Axios.get(`http://${process.env.REACT_APP_SERVER_IP}/pacientesPacienteExamenes`).then((response)=>{
+    Axios.get(`https://${process.env.REACT_APP_SERVER_IP}/pacientesPacienteExamenes`).then((response)=>{
       setPacientesLista(response.data);
     });    
   };
 
   const obtenerTabla=(id)=>{
-    Axios.get(`http://${process.env.REACT_APP_SERVER_IP}/ordenes/${id}`).then((response)=>{
+    Axios.get(`https://${process.env.REACT_APP_SERVER_IP}/ordenes/${id}`).then((response)=>{
       setOrdenesLista(response.data);
     });
   };
@@ -96,7 +96,7 @@ const DetalleChequeo = () => {
   }
 
   const guardar=(iddetalle, idchequeo)=>{
-    Axios.post(`http://${process.env.REACT_APP_SERVER_IP}/muestras`,{
+    Axios.post(`https://${process.env.REACT_APP_SERVER_IP}/muestras`,{
       observaciones:observaciones, 
       horaIngreso:horaIngreso,
       fechaIngreso:fechaIngreso,
@@ -146,7 +146,7 @@ const DetalleChequeo = () => {
     })
     .then(willDelete => {
       if (willDelete) {
-        Axios.delete(`http://${process.env.REACT_APP_SERVER_IP}/muestras/${iddetalle}`).then(()=>{
+        Axios.delete(`https://${process.env.REACT_APP_SERVER_IP}/muestras/${iddetalle}`).then(()=>{
           swal({
             title: "Exito!",
             text: "Eliminado con exito",

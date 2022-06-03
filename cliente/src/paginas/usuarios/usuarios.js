@@ -55,11 +55,11 @@ const Usuarios = () => {
     const config = {
         headers: { Authorization:token }
     };
-    Axios.get(`http://${process.env.REACT_APP_SERVER_IP}/usuarios`,config).then((response)=>{
+    Axios.get(`https://${process.env.REACT_APP_SERVER_IP}/usuarios`,config).then((response)=>{
       setUsuarioLista(response.data);  });
-    Axios.get(`http://${process.env.REACT_APP_SERVER_IP}/laboratorios`).then((response)=>{
+    Axios.get(`https://${process.env.REACT_APP_SERVER_IP}/laboratorios`).then((response)=>{
       setLaboratorioLista(response.data);  });
-      Axios.get(`http://${process.env.REACT_APP_SERVER_IP}/roles`).then((response)=>{
+      Axios.get(`https://${process.env.REACT_APP_SERVER_IP}/roles`).then((response)=>{
         setRolLista(response.data);
       });
   };
@@ -91,7 +91,7 @@ const Usuarios = () => {
     event.preventDefault();
     var contraseniaEncriptada = (SHA256(contrasenia)).toString();
     var confirmacionEncriptada = (SHA256(confirmarC)).toString();
-    Axios.post(`http://${process.env.REACT_APP_SERVER_IP}/usuarios`,{
+    Axios.post(`https://${process.env.REACT_APP_SERVER_IP}/usuarios`,{
       //TODOS LOS CAMPOS
       nombre:nombre,
       correo:correo,
@@ -133,7 +133,7 @@ const Usuarios = () => {
   };
 
   const eliminarRegistro=(idusuario)=>{
-    Axios.delete(`http://${process.env.REACT_APP_SERVER_IP}/usuarios/${idusuario}`).then(()=>{
+    Axios.delete(`https://${process.env.REACT_APP_SERVER_IP}/usuarios/${idusuario}`).then(()=>{
       obtenerRegistros();
       swal({
         title: "Exito!",
@@ -161,7 +161,7 @@ const Usuarios = () => {
   };
 
   const actualizaRegistro=(idusuario)=>{
-    Axios.put(`http://${process.env.REACT_APP_SERVER_IP}/usuarios`,{nombre:nuevoNombre,idusuario:idusuario,laboratorio:nuevoLaboratorio,correo:nuevoCorreo,estado:nuevoEstado}).then(()=>{
+    Axios.put(`https://${process.env.REACT_APP_SERVER_IP}/usuarios`,{nombre:nuevoNombre,idusuario:idusuario,laboratorio:nuevoLaboratorio,correo:nuevoCorreo,estado:nuevoEstado}).then(()=>{
       obtenerRegistros();
       swal({
         title: "Exito!",
@@ -189,7 +189,7 @@ const Usuarios = () => {
   };
   
   const actualizaRoles=(idusuario)=>{
-    Axios.post(`http://${process.env.REACT_APP_SERVER_IP}/usuariosroles`,{roles:nuevosRoles,idusuario:idusuario}).then(()=>{
+    Axios.post(`https://${process.env.REACT_APP_SERVER_IP}/usuariosroles`,{roles:nuevosRoles,idusuario:idusuario}).then(()=>{
       obtenerRegistros(); 
       swal({
         title: "Exito!",
