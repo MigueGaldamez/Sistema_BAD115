@@ -31,15 +31,20 @@ const iniciarBaseDatos = async(req,res)=>{
     sqlusuario2 = "INSERT INTO usuario (idusuario,idlaboratorio,contrasenia,estado,nombreusuario,correousuario) VALUES(2,1,'6e6cf51ea07f12ab08f338af53ff690d76a63a11202bed13b1cc768d3d10c174',TRUE,'Miguel Angel','migue.galdamez@hotmail.com')";
     const usuResp2 =  await sqlee.query(sqlusuario2);
 
+    sqlareas = "INSERT INTO area(idarea,nombrearea) VALUES(1,'Coprología'),(2,' Urianálisis'),(3,'Química clínica'),(4,'Hematología')";
+    const areaResp = await sqlee.query(sqlareas);
+
     //SIRVEN PARA PONER AL DIA LOS SERIALES DESPUES DE LOS INSERT ANTERIORES
     sqlSerialMunicipio = "SELECT setval(pg_get_serial_sequence('municipio', 'idmunicipio'), coalesce(max(idmunicipio),0) + 1, false) FROM municipio";
     sqlSerialDepartamento = "SELECT setval(pg_get_serial_sequence('departamento', 'iddepartamento'), coalesce(max(iddepartamento),0) + 1, false) FROM departamento";
     sqlSerialLaboratorio = "SELECT setval(pg_get_serial_sequence('laboratorio', 'idlaboratorio'), coalesce(max(idlaboratorio),0) + 1, false) FROM laboratorio";
     sqlSerialUsuario = "SELECT setval(pg_get_serial_sequence('usuario', 'idusuario'), coalesce(max(idusuario),0) + 1, false) FROM usuario";
+    sqlSerialarea = "SELECT setval(pg_get_serial_sequence('area', 'idarea'), coalesce(max(idarea),0) + 1, false) FROM area";
     await sqlee.query(sqlSerialMunicipio);
     await sqlee.query(sqlSerialDepartamento);
     await sqlee.query(sqlSerialLaboratorio);
     await sqlee.query(sqlSerialUsuario);
+    await sqlee.query(sqlSerialarea);
   }
 };
 
