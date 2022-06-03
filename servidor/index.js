@@ -1,7 +1,7 @@
 const express = require('express');
 const app = express();
 const cors = require('cors');
-const { iniciarBaseDatos,} = require('./controladores/controlador');
+//const { iniciarBaseDatos,} = require('./controladores/controlador');
 const cookieParser = require('cookie-parser');
 const path = require('path');
 const PORT = process.env.PORT || 3001;
@@ -18,6 +18,6 @@ app.use(require('./rutas/index'));
 
 app.listen(PORT,()=>{
     console.log(`Server running on port ${PORT}`);
-    iniciarBaseDatos();
+    //iniciarBaseDatos();
 })
 
