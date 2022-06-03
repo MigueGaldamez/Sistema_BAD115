@@ -402,7 +402,7 @@ const generarReporteTipeoSanguineo =  async (req, res) => {
         var fecha = new Date();
         var y = fecha.getFullYear();
 
-        var generos = [{genero: 'Hombre'}, {genero: 'Mujer'}]
+        var generos = [{genero: 'Masculino'}, {genero: 'Femenino'}]
 
         
         for(const genero of generos){
@@ -575,7 +575,7 @@ const generarReporteEpidemiologico =  async (req, res) => {
         var fecha = new Date();
         var y = fecha.getFullYear();
 
-        var generos = [{genero: 'Hombre'}, {genero: 'Mujer'}]
+        var generos = [{genero: 'Masculino'}, {genero: 'Femenino'}]
 
         
         for(const genero of generos){
@@ -657,7 +657,7 @@ const generarReporteEpidemiologico =  async (req, res) => {
         var fecha = new Date();
         var y = fecha.getFullYear();
 
-        var generos = [{genero: 'Hombre'}, {genero: 'Mujer'}]
+        var generos = [{genero: 'Masculino'}, {genero: 'Femenino'}]
 
         
         for(const genero of generos){
@@ -739,7 +739,7 @@ const generarReporteEpidemiologico =  async (req, res) => {
         var fecha = new Date();
         var y = fecha.getFullYear();
 
-        var generos = [{genero: 'Hombre'}, {genero: 'Mujer'}]
+        var generos = [{genero: 'Masculino'}, {genero: 'Femenino'}]
 
         
         for(const genero of generos){
@@ -821,7 +821,7 @@ const generarReporteEpidemiologico =  async (req, res) => {
         var fecha = new Date();
         var y = fecha.getFullYear();
 
-        var generos = [{genero: 'Hombre'}, {genero: 'Mujer'}]
+        var generos = [{genero: 'Masculino'}, {genero: 'Femenino'}]
 
         
         for(const genero of generos){
