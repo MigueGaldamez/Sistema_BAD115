@@ -5,7 +5,8 @@ const sqlee = new Pool({
   host: 'ec2-52-71-69-66.compute-1.amazonaws.com',
   password: 'b64c6a69f773f4ed28134df5a493b48528609ae9656106909dd96caf693b4b34',//cambiarlo por el propio
   database: 'dnvqb2sh9egkv',//mismo aqui
-  port: '5432'
+  port: '5432',
+  ssl: { rejectUnauthorized: false }
 })
 //Para cuando la base esta vacia
 const iniciarBaseDatos = async(req,res)=>{
