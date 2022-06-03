@@ -836,9 +836,232 @@ const generarReporteEpidemiologico =  async (req, res) => {
     }
 }
 
+const generarReporteCantidadExamenes =  async (req, res) => {
+    const { filtro, idpaciente, iddepartamento, idmunicipio, fechainicio, fechafin } = req.body;
+    const html = fs.readFileSync(path.join(__dirname, '../views/template-examenes.html'), 'utf-8')
+    var filename = '';
+    var obj = null;
+    
+    if (filtro==='1' && (idpaciente !== 0 || idpaciente !== null)){
+        
+        var sql = 'select DISTINCT e.idarea as idarea, nombrearea from detallechequeo d ' +
+        'join chequeo c on c.idchequeo = d.idchequeo '+
+        'join paciente p on c.idpaciente = p.idpaciente  '+
+        'join examen e on e.idexamen = d.idexamen '+
+        'join area a on a.idarea = e.idarea '+
+        'where p.idpaciente = $1  AND fechaRegistro BETWEEN $2 AND $3';
+        const response = await sqlee.query(sql, [idpaciente, fechainicio, fechafin]);
+
+        let arrayAreas = [];
+        var areas = response.rows;
+        for(const area of areas){
+        
+            var sql = 'select count(p.idpaciente) as cuenta, nombreexamen from detallechequeo d ' +
+            'join chequeo c on c.idchequeo = d.idchequeo '+
+            'join paciente p on c.idpaciente = p.idpaciente  '+
+            'join examen e on e.idexamen = d.idexamen '+
+            'join area a on a.idarea = e.idarea '+
+            'where p.idpaciente = $1 and a.idarea = $2 AND fechaRegistro BETWEEN $3 AND $4 group by nombreexamen';
+            const response = await sqlee.query(sql, [idpaciente, area.idarea, fechainicio, fechafin]);
+            
+            var examenes = response.rows;
+            let array = [];
+            examenes.forEach(examen => {
+                const elemento = {
+                    nombreexamen: examen.nombreexamen,
+                    cuenta: examen.cuenta,
+                }
+                array.push(elemento);
+            });
+
+            var elemento2 = {
+                nombrearea: area.nombrearea,
+                examenes: array,
+            }
+            arrayAreas.push(elemento2);
+
+        };
+        // esta sera la data que vamos a mandar al template(plantilla) para crear el pdf
+
+        var nombrepaciente = "";
+        var sql = 'select * from paciente where idpaciente = $1';
+        const response3 = await sqlee.query(sql, [idpaciente]);
+        var pacientes = response3.rows;
+
+        for(const paciente of pacientes){
+            nombrepaciente = paciente.nombrepaciente + ' ' + paciente.apellido;
+        }
+
+        obj = {
+            nombrelaboratorio: 'Laboratorio Nacional',
+            nombrereporte: 'Reporte de cantidad de examenes de paciente',
+            filtro: 'Paciente ' +nombrepaciente,
+            fechainicio: fechainicio,
+            fechafin: fechafin,
+            datosLista: arrayAreas,
+        }
+
+        filename = 'CantidadExamenes_'+ (nombrepaciente).replace(/ /g, "") + '_' + (Math.floor(Math.random() * 9999) + 10000) + '.pdf';
+        
+
+    } else if (filtro==='2' && iddepartamento !== 0){
+        //departamento
+
+        var sql = 'select DISTINCT e.idarea as idarea, nombrearea from detallechequeo d ' +
+        'join chequeo c on c.idchequeo = d.idchequeo '+
+        'join paciente p on c.idpaciente = p.idpaciente  '+
+        'join examen e on e.idexamen = d.idexamen '+
+        'join area a on a.idarea = e.idarea '+
+        'join municipio m on m.idmunicipio = p.idmunicipio ' +
+        'where m.iddepartamento = $1 AND fechaRegistro BETWEEN $2 AND $3';
+        const response = await sqlee.query(sql, [iddepartamento, fechainicio, fechafin]);
+
+        let arrayAreas = [];
+        var areas = response.rows;
+        for(const area of areas){
+        
+            var sql = 'select count(m.iddepartamento) as cuenta, nombreexamen from detallechequeo d ' +
+            'join chequeo c on c.idchequeo = d.idchequeo '+
+            'join paciente p on c.idpaciente = p.idpaciente  '+
+            'join examen e on e.idexamen = d.idexamen '+
+            'join area a on a.idarea = e.idarea '+
+            'join municipio m on m.idmunicipio = p.idmunicipio '+
+            'where m.iddepartamento = $1 and a.idarea = $2 AND fechaRegistro BETWEEN $3 AND $4 group by nombreexamen';
+            const response = await sqlee.query(sql, [iddepartamento, area.idarea, fechainicio, fechafin]);
+            
+            var examenes = response.rows;
+            let array = [];
+            examenes.forEach(examen => {
+                const elemento = {
+                    nombreexamen: examen.nombreexamen,
+                    cuenta: examen.cuenta,
+                }
+                array.push(elemento);
+            });
+
+            var elemento2 = {
+                nombrearea: area.nombrearea,
+                examenes: array,
+            }
+            arrayAreas.push(elemento2);
+        };
+        
+        // esta sera la data que vamos a mandar al template(plantilla) para crear el pdf
+
+        var nombredepartamento = "";
+        var sql = 'select * from departamento where iddepartamento = $1';
+        const response3 = await sqlee.query(sql, [iddepartamento]);
+        var departamentos = response3.rows;
+
+        for(const departamento of departamentos){
+            nombredepartamento = departamento.departamento;
+        }
+
+        obj = {
+            nombrelaboratorio: 'Laboratorio Nacional',
+            nombrereporte: 'Reporte de cantidad de examenes de departamento',
+            filtro: 'Departamento de ' + nombredepartamento,
+            fechainicio: fechainicio,
+            fechafin: fechafin,
+            datosLista: arrayAreas,
+        }
+
+        filename = 'CantidadExamenes_'+ (nombredepartamento).replace(/ /g, "") + '_' + (Math.floor(Math.random() * 9999) + 10000) + '.pdf';
+
+    } else if (filtro==='3' && idmunicipio !== 0){
+        //municipio
+        var sql = 'select DISTINCT e.idarea as idarea, nombrearea from detallechequeo d ' +
+        'join chequeo c on c.idchequeo = d.idchequeo '+
+        'join paciente p on c.idpaciente = p.idpaciente  '+
+        'join examen e on e.idexamen = d.idexamen '+
+        'join area a on a.idarea = e.idarea '+
+        'where p.idmunicipio = $1  AND fechaRegistro BETWEEN $2 AND $3';
+        const response = await sqlee.query(sql, [idmunicipio, fechainicio, fechafin]);
+
+        let arrayAreas = [];
+        var areas = response.rows;
+        for(const area of areas){
+        
+            var sql = 'select count(p.idmunicipio) as cuenta, nombreexamen from detallechequeo d ' +
+            'join chequeo c on c.idchequeo = d.idchequeo '+
+            'join paciente p on c.idpaciente = p.idpaciente  '+
+            'join examen e on e.idexamen = d.idexamen '+
+            'join area a on a.idarea = e.idarea '+
+            'where p.idmunicipio = $1 and e.idarea = $2 AND fechaRegistro BETWEEN $3 AND $4 group by nombreexamen';
+            const response = await sqlee.query(sql, [idmunicipio, area.idarea, fechainicio, fechafin]);
+            
+            var examenes = response.rows;
+            let array = [];
+            examenes.forEach(examen => {
+                const elemento = {
+                    nombreexamen: examen.nombreexamen,
+                    cuenta: examen.cuenta,
+                }
+                array.push(elemento);
+            });
+
+            var elemento2 = {
+                nombrearea: area.nombrearea,
+                examenes: array,
+            }
+            arrayAreas.push(elemento2);
+        };
+        
+        // esta sera la data que vamos a mandar al template(plantilla) para crear el pdf
+        var nombremunicipio = "";
+        var sql = 'select * from municipio where idmunicipio = $1';
+        const response3 = await sqlee.query(sql, [idmunicipio]);
+        var municipios = response3.rows;
+
+        for(const municipio of municipios){
+            nombremunicipio = municipio.municipio;
+        }
+
+        obj = {
+            nombrelaboratorio: 'Laboratorio Nacional',
+            nombrereporte: 'Reporte de cantidad de examenes de municipio',
+            filtro: 'Municipio de '+ nombremunicipio,
+            fechainicio: obtenerfecha(fechainicio),
+            fechafin: obtenerfecha(fechafin),
+            datosLista: arrayAreas,
+        }
+
+        filename = 'CantidadExamenes_'+ (nombremunicipio).replace(/ /g, "") + '_' + (Math.floor(Math.random() * 9999) + 10000) + '.pdf';
+
+    }
+
+    if ((filtro === '1' && idpaciente !== 0) || (filtro === '2' && iddepartamento !== 0) || (filtro === '3' && idmunicipio !== 0)) {
+        // creamos el documento
+        const document = {
+            html: html,
+            data: {
+                datos: obj   // aqui enviamos toda la data
+            },
+            path: './docs/' + filename
+        }
+
+        // creamos el pdf
+        pdf.create(document, options)
+        .then(resp => {
+            res.status(200).json({
+                message: 'Creado con exito',
+                body: {
+                    path: filename //enviamos el nombre del archivo como respuesta
+                }
+            });
+        }).catch(error => {
+            console.log(error);
+        });
+
+        const filepath = `http://${process.env.REACT_APP_SERVER_IP}/docs/` + filename;   
+    }
+
+}
+
 module.exports = {
     generarReporte,
     generarReporteResultados,
     generarReporteTipeoSanguineo,
+    generarReporteCantidadExamenes,
     generarReporteEpidemiologico,
 };
