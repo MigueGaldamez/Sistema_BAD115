@@ -197,7 +197,7 @@ const Examenes = () => {
   return (
     <div class="container my-4">
       <div class="modal fade" id="nuevoRegistro" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true" data-bs-backdrop="static">
-        <div class="modal-dialog">
+        <div class="modal-dialog modal-lg">
           <div class="modal-content">
             <div class="modal-header">
               <h5 class="modal-title" id="exampleModalLabel">Nuevo Registro</h5>
@@ -229,17 +229,14 @@ const Examenes = () => {
               }
 
               {parametroLista.length>0 &&
-              
-                  <div class="mt-3 px-2">
+                  <div class="mt-2 px-2 row p-4">
                     <h6>Seleccionar Parametros</h6>
                     {parametroLista.map((parametro) => {
-                     
-                    
-                     return(  
-                      <div class="form-check">
-                      <input class="form-check-input" onChange={manejarChecks} value={parametro.idparametro} type="checkbox"  id="flexCheckDefault"/>
-                      <label class="form-check-label" for="flexCheckDefault">
-                      {parametro.parametro}
+                     return(
+                      <div class="form-check col-4">
+                        <input class="form-check-input" onChange={manejarChecks} value={parametro.idparametro} type="checkbox"  id="flexCheckDefault"/>
+                        <label class="form-check-label" for="flexCheckDefault">
+                        {parametro.parametro}
                       </label>
                     </div>)
                      })}

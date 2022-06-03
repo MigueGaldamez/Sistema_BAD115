@@ -80,6 +80,7 @@ const crearParametro =  async (req, res) => {
                     ]);
                 }
             }
+            
             res.status(200).json({
                 message: 'Añadido con Exito',
                 body: {
@@ -123,8 +124,17 @@ const actualizarParametro = async (req,res)=>{
         if(tipo==1){
             sql3 = "DELETE FROM intervalo WHERE idparametro=$1";
             const response3 = await sqlee.query(sql3,[id]);
+            for(const opcion of opciones){
+                const response2 = await sqlee.query('INSERT INTO opcion (idparametro,opcion,referencia) VALUES($1,$2,$3)',[
+                    id,opcion.opcion,opcion.referencia
+                ]);
+            }
+        }
+        if(tipo==2){
+            sql3 = "DELETE FROM opcion WHERE idparametro=$1";
+            const response3 = await sqlee.query(sql3,[id]);
             for(const intervalo of intervalos){
-                const response2 = await sqlee.query('INSERT INTO intervalo (idparametro,idunidad,idpoblacion,comentariopositivo,comentarionegativo,valormaximo,valorminimo) VALUES($1,$2,$3,$4,$5,$6,$7)',[
+                const response2 = await sqlee.query('INSERT INTO opcion (idparametro,idunidad,idpoblacion,comentariopositivo,comentarionegativo,valormaximo,valorminimo) VALUES($1,$2,$3,$4,$5,$6,$7)',[
                     id,intervalo.idunidad,intervalo.id,mensajePosi,mensajeNega,intervalo.maxval,intervalo.minval
                 ]);
             }
@@ -142,6 +152,12 @@ const actualizarParametro = async (req,res)=>{
 const eliminarParametro =  async (req, res) => {
     const id = parseInt(req.params.idparametro);
     try{
+        await sqlee.query('DELETE FROM opcion where idparametro=$1', [
+            id
+        ]);
+        await sqlee.query('DELETE FROM intervalo where idparametro=$1', [
+            id
+        ]);
         await sqlee.query('DELETE FROM parametro where idparametro = $1', [
             id
         ]);

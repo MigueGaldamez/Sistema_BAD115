@@ -20,8 +20,8 @@ const crearPoblacion =  async (req, res) => {
             erroresC.nombre = "Este campo es obligatorio";  
             correcto =false;
         }
-        if(edadminimo<=0){
-            erroresC.edadminimo = "Debe ingresar un valor mayor que 0";
+        if(edadminimo<0){
+            erroresC.edadminimo = "Debe ingresar un valor mayor o igual que 0";
             correcto =false;  
         }
         if(edadmaximo<=0){
@@ -55,6 +55,7 @@ const crearPoblacion =  async (req, res) => {
 const actualizarPoblacion = async (req,res)=>{
     const id = req.body.idpoblacion;
     var { nombre,edadmaximo,edadminimo } = req.body;
+    
     try{
         registroSQL = 'SELECT * FROM poblacion where idpoblacion=$1 limit 1';
         const responseRe = await sqlee.query(registroSQL,[id]);
@@ -65,13 +66,15 @@ const actualizarPoblacion = async (req,res)=>{
         }if(edadmaximo<=0){
             edadmaximo= registro.edadmaximo;
         }
-        if(edadminimo<=0){
+        if(edadminimo<0){
             edadminimo= registro.edadminimo;
         }
-        if(edadmaximo<=edadminimo){
+       
+        if(parseInt(edadmaximo)<=parseInt(edadminimo)){
             edadmaximo= registro.edadmaximo;
             edadminimo= registro.edadminimo;
         }
+
         sql = "UPDATE poblacion SET poblacion=$1, edadminimo=$2, edadmaximo=$3 WHERE idpoblacion=$4";
         const response = await sqlee.query(sql,[nombre,edadminimo,edadmaximo,id]);
         res.status(200).json({

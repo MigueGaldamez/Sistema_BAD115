@@ -361,6 +361,7 @@ const Parametros = () => {
                        <option selected value="0">Seleccione un tipo</option>
                        <option value="1">Intervalo</option>
                        <option value="2">Por opción</option>
+                       <option value="3">Especificación</option>
                    </select>
                  
                    { 
@@ -489,7 +490,9 @@ const Parametros = () => {
                   </div>
                 </form>
                }
-              
+              {tipo ==3 &&
+              <div class="mx-auto fw-bold text-center"><span>Permite ingresar un valor textual</span></div>
+              }
                     </div>
                   </div>
                   {/*hasta aqui*/}

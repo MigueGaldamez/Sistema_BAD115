@@ -127,6 +127,7 @@ export default function DatatableRoles(
                 }}> 
                        <option value="1">Intervalo</option>
                        <option value="2">Por opción</option>
+                       <option value="3">Especificación</option>
                    </select>
                 </td>
              
@@ -261,12 +262,21 @@ export default function DatatableRoles(
                        
                         <option value="1" selected>Intervalo</option>
                         <option value="2">Por opción</option>
+                        <option value="3">Especificación</option>
                     </select>}
                     {registro.tipo==2 &&
                         <select class="form-select form-select-sm" onChange={(event)=>{setNuevoTipo(event.target.value)}}> 
                        
                         <option value="1">Intervalo</option>
                         <option value="2"  selected>Por opción</option>
+                        <option value="3">Especificación</option>
+                    </select>}
+                    {registro.tipo==3 &&
+                        <select class="form-select form-select-sm" onChange={(event)=>{setNuevoTipo(event.target.value)}}> 
+                       
+                        <option value="1">Intervalo</option>
+                        <option value="2" >Por opción</option>
+                        <option value="3"  selected>Especificación</option>
                     </select>}
                 
                  
@@ -395,6 +405,9 @@ export default function DatatableRoles(
           </form>
              
                }
+                {nuevoTipo ==3 &&
+              <div class="mx-auto fw-bold text-center"><span>Permite ingresar un valor textual</span></div>
+              }
               
                     </div>
                   </div>
