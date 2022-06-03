@@ -24,9 +24,14 @@ const obtenerChequeos = async(req,res)=>{
             /*sql5 = 'SELECT * FROM detalleOrden where idChequeo=($1)';
             const responseHija4 = await sqlee.query(sql5,[chequeo.idchequeo]);
             chequeo.detalleOrden= responseHija4.rows; */
+
+            sql6 = 'SELECT idexamen,estadoexamen FROM detallechequeo where idchequeo=($1)';
+            const responseHija6 = await sqlee.query(sql6,[chequeo.idchequeo]);
+            chequeo.examenes = responseHija6.rows; 
         }
         res.status(200).json(chequeos);
     }catch(error){
+        console.error();
         res.status(500).json(error);
     }
   
@@ -65,7 +70,8 @@ const obtenerChequeosPaciente = async(req,res)=>{
 };
 
 const crearChequeo =  async (req, res) => {
-    const {paciente, laboratorio, fechaChequeo, horaChequeo} = req.body;
+    const {paciente, laboratorio, fechaChequeo, horaChequeo,examenes} = req.body;
+    console.log(req.body);
     var erroresC ={};
     var correcto = true;
     try{
@@ -87,6 +93,10 @@ const crearChequeo =  async (req, res) => {
             erroresC.horaChequeo = "Este campo es obligatorio";
             correcto =false;  
         }
+        if(examenes.length<=0){
+            erroresC.examenes = "Este campo es obligatorio";
+            correcto =false; 
+        }
         if(correcto==false)
         {
             
@@ -99,8 +109,10 @@ const crearChequeo =  async (req, res) => {
             const archivo = "nada";
             const response =  await sqlee.query('INSERT INTO chequeo (idpaciente, idlaboratorio, idUsuario, fechaChequeo, horaChequeo) VALUES ($1,$2, 1, $3,$4) RETURNING idchequeo',
             [paciente, laboratorio, fechaChequeo, horaChequeo]);
-            
-            
+            for(const examen of examenes){
+                const response2 =  await sqlee.query('INSERT INTO detallechequeo (idchequeo, idexamen,estadoexamen) VALUES ($1,$2,false)',
+                [response.rows[0].idchequeo,examen]);
+            }
             res.status(200).json({
                 message: 'Añadido con Exito',
                 body: {

@@ -126,9 +126,7 @@ export default function DatatableRoles({ actualizaPermisos,nuevosPermisos,data,e
                     <div class="modal-body">
                    
                       <h6><span>¿El rol <span class="text-primary text-decoration-underline">{rolM}</span> tiene los siguientes permisos:</span></h6>
-                    
-                   
-                  
+
                       {permisosM.map((permiso,index) => 
                       {
                         if(index==0)

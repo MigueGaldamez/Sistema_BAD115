@@ -1,3 +1,4 @@
 cliente/node_modules/
 servidor/node_modules/
 cliente_1/
+cliente/.env

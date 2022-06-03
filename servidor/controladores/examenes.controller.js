@@ -11,56 +11,60 @@ const obtenerExamenes = async(req,res)=>{
         for(const examen of examenes){
             sql2 = 'SELECT * FROM area where idarea=($1) limit 1';
             const responseHija = await sqlee.query(sql2,[examen.idarea]);
-            examen.area = responseHija.rows[0].nombrearea; 
 
-        }
+            sql3 = 'SELECT idparametro FROM detalleexamen where idexamen=($1)';
+            const responseHija3 = await sqlee.query(sql3,[examen.idexamen]);
+            var parametros =[];
+            for(const parametro of responseHija3.rows){
+                parametros.push(parametro.idparametro)
+            }
+            examen.parametros = parametros;
+            examen.area = responseHija.rows[0].nombrearea; 
         
+        }
         res.status(200).json(examenes);
     }catch(error){
+        console.log(error);
         res.status(500).json(error);
     }
-  
 };
 
-
 const crearExamen =  async (req, res) => {
-    const {nombreexamen, area} = req.body;
+    const { nombre,area,parametros} = req.body;
     var erroresC ={};
     var correcto = true;
     try{
-       
-        
-        if(area=='' || area==0){
+        if(nombre==''){
+            erroresC.nombre = "Este campo es obligatorio";  
+            correcto =false;
+        }
+        if(area=='' || area<=0){
             erroresC.area = "Este campo es obligatorio";  
             correcto =false;
         }
-        if(nombreexamen==''){
-            erroresC.nombreexamen = "Este campo es obligatorio";  
+        if(parametros.length<=0){
+            erroresC.parametros = "Este campo es obligatorio";  
             correcto =false;
         }
         if(correcto==false)
         {
-            
             res.status(200).json({
                 error:'hay error',
                 errores: erroresC,
             })
-        }
-        else{
-            const response =  await sqlee.query('INSERT INTO examen (idarea, nombreexamen) VALUES ($1,$2) RETURNING idexamen',
-            [area, nombreexamen]);
-            
-            console.log(response);
+        }else{
+            const response = await sqlee.query('INSERT INTO examen(nombreexamen,idarea) VALUES ($1,$2) returning idexamen', [nombre,area]);
+            for(const parametro of parametros){
+                const response2 = await sqlee.query('INSERT INTO detalleexamen(idexamen,idparametro) VALUES ($1,$2)', [response.rows[0].idexamen,parametro]);
+            }
             res.status(200).json({
                 message: 'Añadido con Exito',
                 body: {
-                    examen: response
+                poblacion: {response}
                 }
             })
         }
-       
     }catch(error){
-        console.log(error);
         res.status(500).json(error);
     }
 };

@@ -20,6 +20,7 @@ const Login = () => {
           var respuesta = response.data[0];
           cookies.set('nombre', respuesta.nombreusuario + " | ", {path: "/"});
           cookies.set('usuario',respuesta);
+          cookies.set('codigousuario',respuesta.idusuario)
           swal({
             title: "Exito!",
             text: "Bienvenido "+respuesta.nombreusuario +"!",

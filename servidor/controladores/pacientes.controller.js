@@ -54,7 +54,7 @@ const obtenerPacienteExamenes = async(req,res)=>{
 };
 
 const crearPaciente =  async (req, res) => {
-    const {nombre,apellido,municipio,correo,estadoCivil,direccion,fechaNacimiento,numeros,identificadorEmergencias,numeroEmergencias } = req.body;
+    const {genero,nombre,apellido,municipio,correo,estadoCivil,direccion,fechaNacimiento,numeros,identificadorEmergencias,numeroEmergencias } = req.body;
     var erroresC ={};
     var correcto = true;
     try{
@@ -100,6 +100,10 @@ const crearPaciente =  async (req, res) => {
             erroresC.identificadorEmergencias = "Este campo es obligatorio";
             correcto =false;  
         }
+        if(genero==''){
+            erroresC.genero = "Este campo es obligatorio";
+            correcto =false;  
+        }
         if(correcto==false)
         {
             res.status(200).json({
@@ -133,7 +137,7 @@ const crearPaciente =  async (req, res) => {
 const actualizarPaciente = async (req,res)=>{
     const id = req.body.idpaciente;
     const completo = req.body.completo;
-    var { nombre,idmunicipio,apellido,direccion,fechaNacimiento,correo,estado,identificadorEmergencias,numeroEmergencias,contactos } = req.body;
+    var { genero,nombre,idmunicipio,apellido,direccion,fechaNacimiento,correo,estado,identificadorEmergencias,numeroEmergencias,contactos } = req.body;
     var erroresC ={};
     var correcto = true;
     try{
@@ -179,6 +183,10 @@ const actualizarPaciente = async (req,res)=>{
                 erroresC.numeroEmergencias = "Este campo es obligatorio";
                 correcto =false;  
             }
+            if(genero==''){
+                erroresC.genero = "Este campo es obligatorio";
+                correcto =false;  
+            }
             if(identificadorEmergencias=='' || identificadorEmergencias<=0){
                 erroresC.identificadorEmergencias = "Este campo es obligatorio";
                 correcto =false;  
@@ -190,8 +198,8 @@ const actualizarPaciente = async (req,res)=>{
                     errores: erroresC,
                 })
             }else{
-                sql = "UPDATE paciente SET nombrepaciente=$1, apellido=$2, idmunicipio=$3, direccion=$4, fechanacimiento=$5,correopaciente=$6, idestado=$7 WHERE idpaciente=$8 ";
-                const response = await sqlee.query(sql,[nombre,apellido,idmunicipio,direccion,fechaNacimiento,correo,estado,id]);
+                sql = "UPDATE paciente SET nombrepaciente=$1, apellido=$2, idmunicipio=$3, direccion=$4, fechanacimiento=$5,correopaciente=$6, idestado=$7, genero=$8 WHERE idpaciente=$9 ";
+                const response = await sqlee.query(sql,[nombre,apellido,idmunicipio,direccion,fechaNacimiento,correo,estado,genero,id]);
                 
                 sql2 = "UPDATE contactoemergencia SET telefono=$1, nombrecontacto=$2 WHERE idpaciente=$3 ";
                 const response2 = await sqlee.query(sql2,[numeroEmergencias,identificadorEmergencias,id]);

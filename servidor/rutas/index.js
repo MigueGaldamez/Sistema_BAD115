@@ -13,6 +13,7 @@ const { crearArea, obtenerAreas, actualizarArea, eliminarArea, } = require('../c
 const { crearUnidad, obtenerUnidades, actualizarUnidad, eliminarUnidad, } = require('../controladores/unidades.controller');
 const { crearLaboratorista, obtenerLaboratoristas, actualizarLaboratorista, eliminarLaboratorista, } = require('../controladores/laboratoristas.controller');
 const { crearPermiso, obtenerPermisos, actualizarPermiso, eliminarPermiso, } = require('../controladores/permisos.controller');
+const { crearParametro, obtenerParametros, actualizarParametro, eliminarParametro,parametrosPorArea, } = require('../controladores/parametros.controller');
 
 const { crearEstadoCivil, obtenerEstadosCiviles, actualizarEstadoCivil, eliminarEstadoCivil, } = require('../controladores/estadosciviles.controller');
 const { crearPaciente, obtenerPacientes, actualizarPaciente, eliminarPaciente, obtenerPacienteExamenes,} = require('../controladores/pacientes.controller');
@@ -20,6 +21,7 @@ const { crearPaciente, obtenerPacientes, actualizarPaciente, eliminarPaciente, o
 const { obtenerChequeos, crearChequeo, actualizarChequeo, eliminarChequeo, /*obtenerChequeosPaciente,*/ } = require('../controladores/chequeos.controller');
 
 const { obtenerUsuarios, iniciarSesion,crearUsuario,actualizarUsuario,actualizarUsuarioRoles,eliminarUsuario,obtenerUsuariosLibres} = require('../controladores/usuarios.controller');
+const { crearExamen, obtenerExamenes, actualizarExamen, eliminarExamen, } = require('../controladores/examenes.controller');
 
 const { obtenerOrdenes, obtenerParametrosResultados, obtenerOpcionesResultados, guardarResultado, obtenerIntervalosResultados, validarResultado, obtenerResultados, actualizarResultado, eliminarResultado, } = require('../controladores/detalleChequeo.controller');
 
@@ -125,6 +127,22 @@ router.get('/chequeos', obtenerChequeos);
 //router.get('/chequeos/:idpaciente', obtenerChequeosPaciente);
 router.post('/chequeos', crearChequeo);
 router.put('/chequeos', actualizarChequeo)
+
+//CRUD PERMISOS
+router.get('/parametros', obtenerParametros);
+router.post('/parametros', crearParametro);
+router.put('/parametros', actualizarParametro)
+router.delete('/parametros/:idparametro', eliminarParametro);
+router.get('/parametros_area/:idarea',parametrosPorArea);
+
+//CRUD AREAS
+router.get('/examenes', obtenerExamenes);
+router.post('/examenes', crearExamen);
+router.put('/examenes', actualizarExamen);
+router.delete('/examenes/:idexamen', eliminarExamen);
+
+
+module.exports = router;
 
 //REGISTRO DE RESULTADOS
 router.get('/ordenes/:idchequeo', obtenerOrdenes);

@@ -4,6 +4,7 @@ import Axios from 'axios';
 import DatatableRoles from "./datatable";
 import { Modal } from 'bootstrap/dist/js/bootstrap.bundle.min';
 import swal from 'sweetalert';
+import Cookies from 'universal-cookie';
 
 const Pacientes = () => { 
     //PARA los ERRORES
@@ -14,6 +15,8 @@ const Pacientes = () => {
   const[correo,setCorreo]=useState("");
   const[direccion,setDireccion]=useState("");
   const[apellido,setApellido]=useState("");
+  const[genero,setGenero]=useState("");
+  
   const[fechaNacimiento,setFechaNacimiento]=useState("");
   const[estadoCivil,setEstadoCivil]=useState(0);  
   const[municipio,setMunicipio]=useState(0);
@@ -41,6 +44,7 @@ const Pacientes = () => {
   const[nuevonumeroEmergencias,setNuevoNumeroEmergencias]=useState(0);
   const[nuevoidentificador,setNuevoidentificador]=useState("");  
   const[nuevoNumero,setNuevoNumero]=useState(0);
+  const[nuevoGenero,setNuevoGenero]=useState("");
   //LA LISTA QUEMOSTRAREMOS
   const[municipioLista, setMunicipioLista] = useState([]);
   const[pacienteLista, setPacienteLista] = useState([]);
@@ -55,6 +59,7 @@ const Pacientes = () => {
     'nombrepaciente',
     'municipio',
     'estadocivil',
+    'genero'
   ]);
   //LAS COLUMNAS POR LAS QUE SEPUEDEN FILTRAR
   const [buscarColumnas, setBuscarColumnas] = useState([
@@ -62,9 +67,11 @@ const Pacientes = () => {
     'nombrepaciente',
     'municipio',
     'estadocivil',
+    'genero'
   ]);
 
   const obtenerRegistros=()=>{
+
     Axios.get(`http://${process.env.REACT_APP_SERVER_IP}/pacientes`).then((response)=>{
      setPacienteLista([]);
     setPacienteLista(response.data);  });
@@ -118,6 +125,7 @@ const Pacientes = () => {
     setNuevoCorreo('');
     setNuevoEstadoCivil(0);
     setNuevoNumeroEmergencias(0);
+    setGenero("");
     setNuevoIdentificadorEmergencias('');
     //limpiamos el formulario
     document.getElementById("formularioActu").reset();
@@ -141,10 +149,11 @@ const Pacientes = () => {
       numeros:contactos,
       identificadorEmergencias:identificadorEmergencias,
       numeroEmergencias:numeroEmergencias,
+      genero:genero,
 
     }).then((response)=>{
       if(response.data.errores==null){      
-        cerrarModalActualizacion();
+        cerrarModal();
         swal({
           title: "Exito!",
           text: "Guardado con exito",
@@ -188,6 +197,7 @@ const Pacientes = () => {
       numeroEmergencias:nuevonumeroEmergencias,
       contactos:contactosA,
       completo:1,
+      genero:nuevoGenero,
     }).then((response)=>{
       if(response.data.errores==null){      
         cerrarModalActualizacion();
@@ -357,7 +367,7 @@ const Pacientes = () => {
       <div class="modal fade" id="nuevoRegistro" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true" data-bs-backdrop="static">
         <div class="modal-dialog modal-lg">
           <div class="modal-content">
-            <div class="modal-header">
+            <div class="modal-header">  
               <h5 class="modal-title" id="exampleModalLabel">Nuevo Registro</h5>
               <button type="button" class="btn-close"  onClick={cerrarModal} aria-label="Close"></button>
             </div>
@@ -396,20 +406,34 @@ const Pacientes = () => {
       {/*INICIA DATOS DEUSUARIO*/}
       <div class="row mt-3 px-3">
       <div class="bordeLateral"><h6>Información General:</h6></div>
-        <div class="col col-6">
+        <div class="col col-4">
                 <label for="exampleInputEmail1" class="form-label">Nombres del Paciente:</label>
-                <input  type="text" class="form-control form-control-sm" placeholder='Ingrese los nombres del paciente' onChange={(event)=>{ setNombre(event.target.value)}}/>        
+                <input  type="text" class="form-control form-control-sm" placeholder='Nombres del paciente' onChange={(event)=>{ setNombre(event.target.value)}}/>        
                 { 
                 errores.nombre &&
                <p><small class="text-danger">* {errores.nombre}</small></p>
               }
                 </div>
-                <div class="col col-6">
+                <div class="col col-4">
                 <label for="exampleInputEmail1" class="form-label">Apellidos del Paciente:</label>
-                <input type="text" class="form-control form-control-sm" placeholder='Ingrese los apellidos del pacientes' onChange={(event)=>{ setApellido(event.target.value)}}/>        
+                <input type="text" class="form-control form-control-sm" placeholder='Apellidos del pacientes' onChange={(event)=>{ setApellido(event.target.value)}}/>        
                 { 
                 errores.apellido &&
                <p><small class="text-danger">* {errores.apellido}</small></p>
+              }
+                </div>
+                <div class="col col-4">
+                <label for="exampleInputEmail1" class="form-label">Genero:</label>
+                <select class="form-select form-select-sm" aria-label="Default select example" onChange={(event)=>{
+                setGenero(event.target.value)}}>
+                  <option selected>Seleccionar Genero</option>
+                  <option value="masculino">Masculino</option>
+                  <option value="femenino">Femenino</option>
+                 
+                </select>
+                { 
+                errores.genero &&
+               <p><small class="text-danger">* {errores.genero}</small></p>
               }
                 </div>
                 <div class="col col-4 mt-3">
@@ -642,7 +666,8 @@ const Pacientes = () => {
           setNuevoNombre={setNuevoNombre} 
           setNuevoMunicipio={setNuevoMunicipio}
           cerrarModalActualizacion={cerrarModalActualizacion}
-          abrirModalActualizacion={abrirModalActualizacion}/>
+          abrirModalActualizacion={abrirModalActualizacion}
+          setNuevoGenero ={setNuevoGenero}/>
 
       </div>    
     </div>
