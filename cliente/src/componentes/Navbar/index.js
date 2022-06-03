@@ -85,7 +85,7 @@ const Navbar = () => {
                     </a>
                     <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
                         <li>
-                            <NavLinkDrop to="/" class="dropdown-item" aria-current="page" href="#">Examenes realizados</NavLinkDrop>
+                            <NavLinkDrop to="/reporteexamenes" class="dropdown-item" aria-current="page" href="#">Examenes realizados</NavLinkDrop>
                         </li>
                         <li>
                             <NavLinkDrop to="/" class="dropdown-item" aria-current="page" href="#">Epidemiologico</NavLinkDrop>
