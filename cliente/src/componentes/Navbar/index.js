@@ -105,7 +105,7 @@ const Navbar = () => {
                             <NavLinkDrop to="/" class="dropdown-item" aria-current="page" href="#">Examenes realizados</NavLinkDrop>
                         </li>
                         <li>
-                            <NavLinkDrop to="/" class="dropdown-item" aria-current="page" href="#">Epidemiologico</NavLinkDrop>
+                            <NavLinkDrop to="/reporteepidemiologico" class="dropdown-item" aria-current="page" href="#">Epidemiologico</NavLinkDrop>
                         </li>
                         <li>
                             <NavLinkDrop to="/reportetipeo" class="dropdown-item" aria-current="page" href="#">Tipeo de sangre</NavLinkDrop>
