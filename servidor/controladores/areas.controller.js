@@ -60,6 +60,7 @@ const actualizarArea = async (req,res)=>{
         poblacion:{response}
         })
     }catch(error){
+        console.log(error);
         res.status(500).json(error);
     }
 };

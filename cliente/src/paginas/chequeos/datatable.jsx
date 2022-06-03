@@ -39,7 +39,7 @@ export default function DatatableRoles({ examenes,labs,pacientes,data,eliminarRe
       <thead class="table-dark">
         <tr>
         {data[0] && columns.map((heading) => {
-             if(heading!='examenes' && heading!='idchequeo' && heading!='idusuario' && heading!='idlaboratorio' && heading!='idpaciente' && heading!='archivo')
+             if(heading!='fechaactualizacion' && heading!='fechacreacion' && heading!='examenes' && heading!='idchequeo' && heading!='idusuario' && heading!='idlaboratorio' && heading!='idpaciente' && heading!='archivo')
             return(<th>{heading}</th>)
             })}
           <th>Acciones</th>

@@ -56,7 +56,7 @@ export default function DatatableRoles(
       <thead class="table-dark">
         <tr>
           {data[0] && columns.map((heading) => {
-             if(heading!='contrasenia' && heading!='idlaboratorio'  && heading!='roles'  &&   heading!='infolaboratorio' && heading!='idusuario' )
+             if(heading!='fechaactualizacion' && heading!='fechacreacion' && heading!='contrasenia' && heading!='idlaboratorio'  && heading!='roles'  &&   heading!='infolaboratorio' && heading!='idusuario' )
             return(<th>{heading}</th>)
             })}
           <th>Acciones</th>

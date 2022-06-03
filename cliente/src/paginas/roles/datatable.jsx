@@ -44,7 +44,7 @@ export default function DatatableRoles({ actualizaPermisos,nuevosPermisos,data,e
       <thead class="table-dark">
         <tr>
         {data[0] && columns.map((heading) => {
-             if(heading!='permisos' )
+             if(heading!='permisos' && heading!='fechaactualizacion' && heading!='fechacreacion')
             return(<th>{heading}</th>)
             })}
           <th>Acciones</th>

@@ -21,7 +21,7 @@ export default function DatatableRoles({ data,eliminarRegistro,actualizarRegistr
       <thead class="table-dark">
         <tr>
         {data[0] && columns.map((heading) => {
-             if(heading!='idprofesion' && heading!='infoprofesion' &&   heading!='infousuario'  &&   heading!='idusuario' )
+             if(heading!='idprofesion' && heading!='infoprofesion' &&   heading!='infousuario'  &&   heading!='idusuario'  && heading!='fechaactualizacion' && heading!='fechacreacion')
             return(<th>{heading}</th>)
             })}
           <th>Acciones</th>

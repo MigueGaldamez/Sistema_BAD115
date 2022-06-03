@@ -20,7 +20,8 @@ export default function DatatableRoles({ data,eliminarRegistro,actualizarRegistr
     <table class="table table-striped mt-3 table-hover table-responsive-lg" cellPadding={0} cellSpacing={0}>
       <thead class="table-dark">
         <tr>
-          {data[0] && columns.map((heading,index) => <th key={index}>{heading}</th>)}
+          {data[0] && columns.map((heading,index) => {if(heading!='fechaactualizacion' && heading!='fechacreacion')
+          {return(<th>{heading}</th>)}})}
           <th>Acciones</th>
         </tr>
       </thead>
