@@ -131,7 +131,7 @@ const guardarResultado =  async (req, res) => {
     try{
         
 
-        if(tipo==1){
+        if(tipo==2){
             // valor = 0;
             
             idopcion = valor;
@@ -142,7 +142,7 @@ const guardarResultado =  async (req, res) => {
             'VALUES ($1,$2,$3,$4,$5,$6,$7) ',
             [idparametro, iddetalle, 0, positivo, valorOpcion, comentario, presencia]);
         
-        } else if(tipo==2){
+        } else if(tipo==1){
             var opcion ="";
             response =  await sqlee.query('INSERT INTO resultado (idparametro, iddetalle, valor, positivo, opcion, comentario, presencia) '+
             'VALUES ($1,$2,$3,$4,$5,$6,$7) ',

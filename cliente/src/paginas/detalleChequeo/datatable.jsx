@@ -150,7 +150,7 @@ export default function DatatableRoles({
                 
                 {parametroLista.map((row) =>{  const id = row['idparametro'];  return(
                   
-                    row['tipo']==1?
+                    row['tipo']==2?
                     <div class="col col-6">
                       <div class="mt-3 ml-3">
                           <label for="exampleInput" class="form-label">{row['parametro']}</label>
@@ -185,7 +185,7 @@ export default function DatatableRoles({
 
                       </div>
                     </div>
-                    : row['tipo']==2?
+                    : row['tipo']==1?
                     <div class="col col-6">
                       <div class="mt-3 ml-3">
                           <label for="exampleInput" class="form-label">{row['parametro']}</label>

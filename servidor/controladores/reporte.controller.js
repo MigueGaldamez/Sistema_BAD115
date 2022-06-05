@@ -51,9 +51,6 @@ const generarReporte =  async (req, res) => {
 
     const filepath = `http://${process.env.REACT_APP_SERVER_IP}/docs/` + filename;
 
-    
-
-
 }
 
 
@@ -1058,10 +1055,57 @@ const generarReporteCantidadExamenes =  async (req, res) => {
 
 }
 
+const generarReporteTipos=  async (req, res) => {
+    const { fechaInicio, fechaFIn,idlaboratorio } = req.body;
+    const html = fs.readFileSync(path.join(__dirname, '../views/template-examenportipo.html'), 'utf-8')
+    var data = [];
+    if(idlaboratorio==0){
+        sql ="select nombreexamen, count(d.idexamen) from detallechequeo d inner join examen e on d.idexamen = e.idexamen inner join chequeo ch  on ch.idchequeo = d.idchequeo inner join laboratorio lab on lab.idlaboratorio = ch.idlaboratorio group by (nombreexamen)";
+        const response = await sqlee.query(sql);
+        data = response.rows;
+    }else if(idlaboratorio!=0){
+        sql ="select nombreexamen, count(d.idexamen) from detallechequeo d inner join examen e on d.idexamen = e.idexamen inner join chequeo ch  on ch.idchequeo = d.idchequeo inner join laboratorio lab on lab.idlaboratorio = ch.idlaboratorio where lab.idlaboratorio=$1 group by (nombreexamen)";
+        const response = await sqlee.query(sql, [idlaboratorio]);
+        data = response.rows;
+    }
+   
+
+    // esta sera la data que vamos a mandar al template(plantilla) para crear el pdf
+    const obj = {
+        nombrelaboratorio: 'Este es un campo',
+        examenes: data,
+    }
+
+    // creamos el documento
+    const document = {
+        html: html,
+        data: {
+           datos: obj   // aqui enviamos toda la data
+        },
+        path: './docs/' + filename
+    }
+
+    // creamos el pdf
+    pdf.create(document, options)
+    .then(resp => {
+        res.status(200).json({
+        message: 'Creado con exito',
+        body: {
+            path: filename //enviamos el nombre del archivo como respuesta
+        }
+    });
+    }).catch(error => {
+        console.log(error);
+    });
+
+    const filepath = `http://${process.env.REACT_APP_SERVER_IP}/docs/` + filename;
+
+}
 module.exports = {
     generarReporte,
     generarReporteResultados,
     generarReporteTipeoSanguineo,
     generarReporteCantidadExamenes,
     generarReporteEpidemiologico,
+    generarReporteTipos,
 };
