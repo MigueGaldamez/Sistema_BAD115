@@ -200,7 +200,7 @@ const Roles = () => {
   },[]);
 
   return (
-    <div class="container my-4">
+    <div class="col container my-4">
       
        {/* Modal para nuevo registro*/} 
       <div class="modal fade" id="nuevoRegistro" tabIndex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true" data-bs-backdrop="static">

@@ -117,7 +117,7 @@ const ReporteCantidadExamenes = () => {
  
   },[]);
   return (
-    <div class="container my-4">
+    <div class="col container my-4">
       
       <div class="mt-4 mb-4">
         <div class="row bordeLateral mb-3">

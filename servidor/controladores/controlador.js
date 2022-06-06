@@ -3,9 +3,9 @@ const Pool = require('pg').Pool
 const sqlee = new Pool({
   user: 'postgres',
   host: 'localhost',
-  password: 'sm16021',//cambiarlo por el propio
-  database: 'BAD115',//mismo aqui
-  port: '5433'
+  password: 'adminadmin',//cambiarlo por el propio
+  database: 'aplicacion',//mismo aqui
+  port: '5432'
 })
 //Para cuando la base esta vacia
 const iniciarBaseDatos = async(req,res)=>{
