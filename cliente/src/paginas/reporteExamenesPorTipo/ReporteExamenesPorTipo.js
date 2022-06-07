@@ -58,9 +58,9 @@ const ReporteExamenesPorTipo = () => {
  
   },[]);
   return (
-    <div class="container my-4">
+    <div class="col container">
       
-      <div class="mt-4 mb-4">
+      <div class="mt-4 mb-4 sticky-top sticky">
         <div class="row bordeLateral mb-3">
         <h2 class="m-0"><span>Reporte de examenes realizados por area y tipo</span></h2>
         </div>

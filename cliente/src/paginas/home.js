@@ -2,7 +2,7 @@ import React from 'react';
   
 const Inicio = () => {
   return (
-    <div class="container mt-4">
+    <div class="col container mt-4">
         <h1>Inicio</h1>
         {/*INICIA */}
         <div class="container mt-3 mb-3">

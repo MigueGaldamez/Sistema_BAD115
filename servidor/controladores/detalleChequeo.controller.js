@@ -61,7 +61,22 @@ const obtenerOpcionesResultados = async(req,res)=>{
 
 const obtenerIntervalosResultados = async(req,res)=>{
     try{
-        sql = 'select * from intervalo join unidad on unidad.idunidad = intervalo.idunidad';
+        sql = 'select distinct idparametro, simbolo from intervalo i join unidad u on u.idunidad = i.idunidad ';
+        const response = await sqlee.query(sql);
+
+        intervalos = response.rows;
+
+        res.status(200).json(intervalos);
+    }catch(error){
+        res.status(500).json(error);
+        console.log(error);
+    }
+  
+};
+
+const obtenerIntervalosRefResultados = async(req,res)=>{
+    try{
+        sql = 'select * from intervalo join unidad on unidad.idunidad = intervalo.idunidad join poblacion on poblacion.idpoblacion = intervalo.idpoblacion';
         const response = await sqlee.query(sql);
 
         intervalos = response.rows;
@@ -84,14 +99,14 @@ const validarResultado =  async (req, res) => {
         const response1 =  await sqlee.query('select * from parametro where idparametro = $1 limit 1',[idparametro]);
         var parametro = response1.rows[0].parametro;
         
-        if(tipo==1){
-            if(idopcion==null || idopcion==0){
-                erroresC.errorParametros = "Debe seleccionar una opción para el parametro de: " + parametro;  
-                correcto =false;
-            }
-        } else if(tipo==2){
+        if(tipo===1){
             if(valor=='' || valor==0){
                 erroresC.errorParametros = "Debe ingresar un valor para el parametro de: " + parametro;  
+                correcto =false;
+            }
+        } else if(tipo===2){
+            if(idopcion==null || idopcion==0){
+                erroresC.errorParametros = "Debe seleccionar una opción para el parametro de: " + parametro;  
                 correcto =false;
             }
         }
@@ -131,7 +146,13 @@ const guardarResultado =  async (req, res) => {
     try{
         
 
-        if(tipo==2){
+        if(tipo==1){
+            var opcion ="";
+            response =  await sqlee.query('INSERT INTO resultado (idparametro, iddetalle, valor, positivo, opcion, comentario, presencia) '+
+            'VALUES ($1,$2,$3,$4,$5,$6,$7) ',
+            [idparametro, iddetalle, valor, positivo, opcion, comentario, presencia]);
+        
+        } else if(tipo==2){
             // valor = 0;
             
             idopcion = valor;
@@ -141,12 +162,6 @@ const guardarResultado =  async (req, res) => {
             response =  await sqlee.query('INSERT INTO resultado (idparametro, iddetalle, valor, positivo, opcion, comentario, presencia) '+
             'VALUES ($1,$2,$3,$4,$5,$6,$7) ',
             [idparametro, iddetalle, 0, positivo, valorOpcion, comentario, presencia]);
-        
-        } else if(tipo==1){
-            var opcion ="";
-            response =  await sqlee.query('INSERT INTO resultado (idparametro, iddetalle, valor, positivo, opcion, comentario, presencia) '+
-            'VALUES ($1,$2,$3,$4,$5,$6,$7) ',
-            [idparametro, iddetalle, valor, positivo, opcion, comentario, presencia]);
         
         }
         
@@ -195,17 +210,17 @@ const actualizarResultado =  async (req, res) => {
         
 
         if(tipo==1){
+
+            response =  await sqlee.query('UPDATE resultado SET valor = $1, comentario = $2 WHERE iddetalle = $3 AND idparametro = $4',
+            [valor, comentario, iddetalle, idparametro]);
+        
+        } else if(tipo==2){
             idopcion = valor;
             const response1 =  await sqlee.query('select * from opcion where idopcion = $1 limit 1',[idopcion]);
             var valorOpcion = response1.rows[0].opcion;
 
             response =  await sqlee.query('UPDATE resultado SET opcion = $1, comentario = $2 WHERE iddetalle = $3 AND idparametro = $4',
             [valorOpcion, comentario, iddetalle, idparametro ]);
-        
-        } else if(tipo==2){
-
-            response =  await sqlee.query('UPDATE resultado SET valor = $1, comentario = $2 WHERE iddetalle = $3 AND idparametro = $4',
-            [valor, comentario, iddetalle, idparametro]);
         
         }
 
@@ -245,6 +260,7 @@ module.exports = {
     validarResultado,
     guardarResultado,
     obtenerIntervalosResultados,
+    obtenerIntervalosRefResultados,
     obtenerResultados,
     actualizarResultado,
     eliminarResultado,

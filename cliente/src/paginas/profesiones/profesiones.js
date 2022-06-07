@@ -167,7 +167,7 @@ const Profesiones = () => {
   },[]);
 
   return (
-    <div class="container my-4">
+    <div class="col container my-4">
       <div class="modal fade" id="nuevoRegistro" tabIndex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true" data-bs-backdrop="static">
         <div class="modal-dialog">
           <div class="modal-content">

@@ -23,11 +23,12 @@ const { obtenerChequeos, crearChequeo, actualizarChequeo, eliminarChequeo, /*obt
 const { obtenerUsuarios, iniciarSesion,crearUsuario,actualizarUsuario,actualizarUsuarioRoles,eliminarUsuario,obtenerUsuariosLibres} = require('../controladores/usuarios.controller');
 const { crearExamen, obtenerExamenes, actualizarExamen, eliminarExamen, } = require('../controladores/examenes.controller');
 
-const { obtenerOrdenes, obtenerParametrosResultados, obtenerOpcionesResultados, guardarResultado, obtenerIntervalosResultados, validarResultado, obtenerResultados, actualizarResultado, eliminarResultado, } = require('../controladores/detalleChequeo.controller');
+const { obtenerOrdenes, obtenerParametrosResultados, obtenerOpcionesResultados, guardarResultado, obtenerIntervalosResultados, validarResultado, obtenerResultados, actualizarResultado, eliminarResultado, obtenerIntervalosRefResultados, } = require('../controladores/detalleChequeo.controller');
 
 const { crearMuestra, eliminarMuestra} = require('../controladores/muestras.controller');
 
 const { generarReporte, generarReporteResultados, generarReporteTipeoSanguineo, generarReporteCantidadExamenes, generarReporteEpidemiologico, generarReporteTipos } = require('../controladores/reporte.controller');
+const { obtenerPermisosUsuario, } = require('../controladores/validarpermisos.controller');
 
 //siempre poner una coma al final
 
@@ -146,6 +147,7 @@ router.get('/ordenes/:idchequeo', obtenerOrdenes);
 router.get('/parametrosResultados/:idexamen', obtenerParametrosResultados);
 router.get('/opcionesResultados', obtenerOpcionesResultados);
 router.get('/intervalosResultados', obtenerIntervalosResultados);
+router.get('/intervalosRefResultados',obtenerIntervalosRefResultados);
 router.post('/validarResultados', validarResultado);
 router.post('/resultados', guardarResultado);
 router.put('/resultados', actualizarResultado);
@@ -163,4 +165,7 @@ router.post('/generarpdftipeo',generarReporteTipeoSanguineo);
 router.post('/generarpdfexamenes',generarReporteCantidadExamenes);
 router.post('/generarpdfepidemiologico',generarReporteEpidemiologico);
 router.post('/generarpdftipo',generarReporteTipos);
+
+//Modulo seguridad
+router.get('/validarpermisos/:idusuario', obtenerPermisosUsuario);
 module.exports = router;

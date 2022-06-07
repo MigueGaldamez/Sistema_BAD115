@@ -18,6 +18,7 @@ export default function DatatableRoles({
   obtenerResultados,
   parametroLista,
   intervalosLista,
+  intervalosRefLista,
   opcionesLista,
   guardar,
   modificar,
@@ -149,8 +150,43 @@ export default function DatatableRoles({
                 <div class="bordeLateral"><h6>Resultados:</h6></div>
                 
                 {parametroLista.map((row) =>{  const id = row['idparametro'];  return(
-                  
-                    row['tipo']==2?
+                    row['tipo']==1?
+                    <div class="col col-6">
+                      <div class="mt-3 ml-3">
+                          <label for="exampleInput" class="form-label">{row['parametro']}</label>
+                          <div class="row">
+                            <div class="col col-5">
+                              {intervalosLista.map((intervalo) => {
+                                  
+                                  if(intervalo.idparametro === row['idparametro']){
+                                      return(  
+                                        <div class="input-group input-group-sm">
+                                          <input id={row["parametro"]} type="text" class="form-control" aria-label="dfg"></input>
+                                          <span class="input-group-text">{intervalo.simbolo}</span>
+                                        </div>
+                                      )
+                                  }
+                               })}
+                            </div>
+                            <div class="col col-6">
+                              <input type="text" id={'comentario_'+row["parametro"]} class="form-control form-control-sm"  aria-label="dfg"/>
+                            </div>
+                            <div class="col col-12">
+                              <p class="m-0 ml-3 text-black-50 fs-6 fst-italic">Valor de referencia:</p>
+                              {intervalosRefLista.map((intervalo) => {
+                                  if(intervalo.idparametro === row['idparametro']){
+                                    return(  
+                                    <p class="m-0 ml-3 text-black-50 fs-6 fst-italic">- {intervalo.poblacion} ({intervalo.edadminimo}-{intervalo.edadmaximo}): {intervalo.valorminimo} - {intervalo.valormaximo} {intervalo.simbolo}</p>
+                                    )
+                                  }
+                              })}
+                            </div>
+                          </div> 
+                          
+                          
+                      </div>
+                    </div>
+                    : row['tipo']==1?
                     <div class="col col-6">
                       <div class="mt-3 ml-3">
                           <label for="exampleInput" class="form-label">{row['parametro']}</label>
@@ -183,41 +219,6 @@ export default function DatatableRoles({
                           </div> 
                           
 
-                      </div>
-                    </div>
-                    : row['tipo']==1?
-                    <div class="col col-6">
-                      <div class="mt-3 ml-3">
-                          <label for="exampleInput" class="form-label">{row['parametro']}</label>
-                          <div class="row">
-                            <div class="col col-5">
-                              {intervalosLista.map((intervalo) => {
-                                  
-                                  if(intervalo.idparametro === row['idparametro']){
-                                      return(  
-                                        <div class="input-group input-group-sm">
-                                          <input id={row["parametro"]} type="text" class="form-control" aria-label="dfg"></input>
-                                          <span class="input-group-text">{intervalo.simbolo}</span>
-                                        </div>
-                                      )
-                                  }
-                               })}
-                            </div>
-                            <div class="col col-6">
-                              <input type="text" id={'comentario_'+row["parametro"]} class="form-control form-control-sm"  aria-label="dfg"/>
-                            </div>
-                            <div class="col col-12">
-                              {intervalosLista.map((intervalo) => {
-                                  if(intervalo.idparametro === row['idparametro']){
-                                    return(  
-                                    <p class="m-0 ml-3 text-black-50 fs-6 fst-italic">Valor de referencia: {intervalo.valorminimo} - {intervalo.valormaximo}</p>
-                                    )
-                                  }
-                              })}
-                            </div>
-                          </div> 
-                          
-                          
                       </div>
                     </div>
                     : null  
@@ -272,7 +273,57 @@ export default function DatatableRoles({
                 
                 {parametroLista.map((row) =>{  const id = row['idparametro'];  return(
                   
-                    row['tipo']==1?
+                  row['tipo']==1?
+                    <div class="col col-6">
+                      <div class="mt-3 ml-3">
+                          <label for="exampleInput" class="form-label">{row['parametro']}</label>
+                          <div class="row">
+                            <div class="col col-5">
+                              {intervalosLista.map((intervalo) => {
+                                  
+                                  if(intervalo.idparametro === row['idparametro']){
+                                      return(  
+                                        resultadosLista.map((result) => {
+                                          if(result.idparametro === id){
+                                            return(
+                                            <div class="input-group input-group-sm">
+                                              <input defaultValue={result.valor} id={'mod_'+row["parametro"]} type="text" class="form-control" aria-label="dfg"></input>
+                                              <span class="input-group-text">{intervalo.simbolo}</span>
+                                            </div>)
+                                          }
+                                        })
+                                      
+                                      )
+                                  }
+                              
+                                })}
+                            </div>
+                            <div class="col col-6">
+                              {resultadosLista.map((result) => {
+                                  if(result.idparametro === id){
+                                    return(<input  defaultValue={result.comentario} type="text" id={'mod_comentario_'+row["parametro"]} class="form-control form-control-sm"  aria-label="dfg"/>)
+                                  }
+                                })
+                              }
+                              
+                            </div>
+                            <div class="col col-12">
+                            <p class="m-0 ml-3 text-black-50 fs-6 fst-italic">Valor de referencia:</p>
+                              {intervalosRefLista.map((intervalo) => {
+                                  if(intervalo.idparametro === row['idparametro']){
+                                    return(  
+                                    <p class="m-0 ml-3 text-black-50 fs-6 fst-italic">- {intervalo.poblacion} ({intervalo.edadminimo}-{intervalo.edadmaximo}): {intervalo.valorminimo} - {intervalo.valormaximo} {intervalo.simbolo}</p>
+                                    )
+                                  }
+                              })}
+                            </div>
+                          </div> 
+                          
+                          
+                          
+                      </div>
+                    </div>
+                    : row['tipo']==2?
                     <div class="col col-6">
                       <div class="mt-3 ml-3">
                           <label for="exampleInput" class="form-label">{row['parametro']}</label>
@@ -323,56 +374,7 @@ export default function DatatableRoles({
                           </div>
                       </div>
                     </div>
-                    : row['tipo']==2?
-                    <div class="col col-6">
-                      <div class="mt-3 ml-3">
-                          <label for="exampleInput" class="form-label">{row['parametro']}</label>
-                          <div class="row">
-                            <div class="col col-5">
-                              {intervalosLista.map((intervalo) => {
-                                  
-                                  if(intervalo.idparametro === row['idparametro']){
-                                      return(  
-                                        resultadosLista.map((result) => {
-                                          if(result.idparametro === id){
-                                            return(
-                                            <div class="input-group input-group-sm">
-                                              <input defaultValue={result.valor} id={'mod_'+row["parametro"]} type="text" class="form-control" aria-label="dfg"></input>
-                                              <span class="input-group-text">{intervalo.simbolo}</span>
-                                            </div>)
-                                          }
-                                        })
-                                      
-                                      )
-                                  }
-                              
-                                })}
-                            </div>
-                            <div class="col col-6">
-                              {resultadosLista.map((result) => {
-                                  if(result.idparametro === id){
-                                    return(<input  defaultValue={result.comentario} type="text" id={'mod_comentario_'+row["parametro"]} class="form-control form-control-sm"  aria-label="dfg"/>)
-                                  }
-                                })
-                              }
-                              
-                            </div>
-                            <div class="col col-12">
-                              {intervalosLista.map((intervalo) => {
-                                if(intervalo.idparametro === row['idparametro']){
-                                  return(  
-                                  <p class="m-0 ml-3 text-black-50 fs-6 fst-italic">Valor de referencia: {intervalo.valorminimo} - {intervalo.valormaximo}</p>
-                                  )
-                                }
-                            })}
-                            </div>
-                          </div> 
-                          
-                          
-                          
-                      </div>
-                    </div>
-                    : null  
+                    :  null  
                   
                 )})}
               </div>

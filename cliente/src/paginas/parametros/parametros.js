@@ -282,7 +282,7 @@ const Parametros = () => {
  
   },[]);
   return (
-    <div class="container my-4">
+    <div class="col container my-4">
       <div class="modal fade" id="nuevoRegistro" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true" data-bs-backdrop="static">
         <div class="modal-dialog modal-lg">
           <div class="modal-content">
@@ -511,8 +511,8 @@ const Parametros = () => {
           </div>
         </div>
       </div>
-      <div class="mt-4 mb-4">
-        <div class="row bordeLateral mb-3">
+      <div class="mb-4">
+        <div class="row bordeLateral mb-3 sticky-top sticky bg-white">
         <h2 class="m-0"><span>Gestión de Parametros</span>
         
           <button type="button" class="btn btn-primary btn-sm ms-3"  onClick={abrirModal}>

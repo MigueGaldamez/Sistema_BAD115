@@ -28,6 +28,7 @@ const DetalleChequeo = () => {
   const[parametroLista, setParametrosLista] = useState([]);
   const[opcionesLista, setOpcionesLista] = useState([]);
   const[intervalosLista, setIntervalosLista] = useState([]);
+  const[intervalosRefLista, setIntervalosRefLista] = useState([]);
 
   const columns = pacientesLista[0] && Object.keys(pacientesLista[0]);
 
@@ -65,6 +66,9 @@ const DetalleChequeo = () => {
       setIntervalosLista(response.data);
     });
     
+    Axios.get(`http://${process.env.REACT_APP_SERVER_IP}/intervalosRefResultados`).then((response)=>{
+      setIntervalosRefLista(response.data);
+    });
   };
 
   const obtenerTabla=(id)=>{
@@ -143,13 +147,13 @@ const DetalleChequeo = () => {
     parametroLista.map((element) => {
       if (element.tipo == 1) {
         variables = {
-          idopcion: document.getElementById(element.parametro).value,
-          valor: 0,
+          idopcion: 0,
+          valor: document.getElementById(element.parametro).value,
         }
       } else if (element.tipo == 2) {
         variables = {
-          idopcion: 0,
-          valor: document.getElementById(element.parametro).value,
+          idopcion: document.getElementById(element.parametro).value,
+          valor: 0,
         }
       }
       
@@ -240,13 +244,13 @@ const DetalleChequeo = () => {
     parametroLista.map((element) => {
       if (element.tipo == 1) {
         variables = {
-          idopcion: document.getElementById('mod_'+element.parametro).value,
-          valor: 0,
+          idopcion: 0,
+          valor: document.getElementById('mod_'+element.parametro).value,
         }
       } else if (element.tipo == 2) {
         variables = {
-          idopcion: 0,
-          valor: document.getElementById('mod_'+element.parametro).value,
+          idopcion: document.getElementById('mod_'+element.parametro).value,
+          valor: 0,
         }
       }
       Axios.post(`http://${process.env.REACT_APP_SERVER_IP}/validarResultados`,{
@@ -410,7 +414,7 @@ const DetalleChequeo = () => {
   },[]);
 
   return (
-    <div class="container my-4">
+    <div class="col container my-4">
       
       
       <div class="mt-4 mb-4">
@@ -466,6 +470,7 @@ const DetalleChequeo = () => {
                       obtenerResultados={obtenerResultados}
                       parametroLista={parametroLista}
                       intervalosLista={intervalosLista}
+                      intervalosRefLista={intervalosRefLista}
                       opcionesLista={opcionesLista}
                       guardar={guardar}
                       modificar={modificar}
