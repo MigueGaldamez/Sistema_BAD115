@@ -36,6 +36,7 @@ const Laboratorios = () => {
     'nombrelaboratorio',
     'municipio' 
   ]);
+  //esto es para validar en el backend y mandar siempre el id usuario
   Axios.interceptors.request.use(function (config) {
       var id = cookies.get('usuario').idusuario;
       config.headers.idusuario =  id;
@@ -46,6 +47,7 @@ const Laboratorios = () => {
       setLaboratorioLista(response.data);  });
     Axios.get(`http://${process.env.REACT_APP_SERVER_IP}/municipios`).then((response)=>{
       setMunicipioLista(response.data);  });
+    //aqui obtengo los permisos que tiene
     var id = cookies.get('usuario').idusuario;
     Axios.get(`http://${process.env.REACT_APP_SERVER_IP}/validarpermisos/${id}`).then((response)=>{
       setValidarLista(response.data);
@@ -207,6 +209,7 @@ const Laboratorios = () => {
   },[]);
   return (
     <>
+      {/*asi validamos cada permiso*/}
        {(!validarLista.includes(1)) && 
        <div class="col container mx-auto my-auto text-center">
          <h1 class="text-primary">Ups...</h1>
