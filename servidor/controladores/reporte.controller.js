@@ -234,20 +234,21 @@ const generarReporteTipeoSanguineo =  async (req, res) => {
             var BN = 0;
             var ABN = 0;
 
-            sql = 'select p.idpaciente, opcion, p.idmunicipio as idmunicipio ' +
+            sql = 'select p.idpaciente, opcion, p.idmunicipio as idmunicipio, r.iddetalle as iddetalle  ' +
             'from resultado r '+
             'join detallechequeo d on d.iddetalle = r.iddetalle '+
             'join chequeo c on c.idchequeo = d.idchequeo '+
             'join paciente p on c.idpaciente = p.idpaciente '+
             'join municipio m on p.idmunicipio = m.idmunicipio '+
             'where idparametro=$1 ' +
-            'and p.idmunicipio=$2 '+        
-            'group by opcion, p.idmunicipio, p.idpaciente';
+            'and p.idmunicipio=$2 ';
             const response = await sqlee.query(sql, [idparametro, idmunicipio]);
             
             var resultados = response.rows;
             //console.log(resultados);
             for(var resultado of resultados){
+
+                var iddetalle = resultado.iddetalle;
 
                 sql = "select p.idpaciente, opcion, p.idmunicipio as idmunicipio " +
                 "from resultado r " +
@@ -257,9 +258,10 @@ const generarReporteTipeoSanguineo =  async (req, res) => {
                 "join paciente p on c.idpaciente = p.idpaciente "+
                 "join municipio m on p.idmunicipio = m.idmunicipio "+
                 "where  parametro LIKE 'Variante Du' " +
-                "and p.idmunicipio=$1 "+        
+                "and p.idmunicipio=$1 "+ 
+                "and r.iddetalle=$2 " +       
                 "group by opcion, p.idmunicipio, p.idpaciente";
-                const response = await sqlee.query(sql, [idmunicipio]);
+                const response = await sqlee.query(sql, [idmunicipio, iddetalle]);
 
                 var resultados2 = response.rows;
                 for (var resultado2 of resultados2){
@@ -381,7 +383,7 @@ const generarReporteTipeoSanguineo =  async (req, res) => {
             var BN = 0;
             var ABN = 0;
 
-            sql = "select p.idpaciente, r.idparametro as idparametro, opcion, EXTRACT(YEAR FROM fechanacimiento) as anio " +
+            sql = "select p.idpaciente, r.idparametro as idparametro, opcion, EXTRACT(YEAR FROM fechanacimiento) as anio, r.iddetalle as iddetalle " +
             "from resultado r " +
             "join detallechequeo d on d.iddetalle = r.iddetalle " +
             "join parametro pa on pa.idparametro = r.idparametro " +
@@ -394,6 +396,8 @@ const generarReporteTipeoSanguineo =  async (req, res) => {
             var resultados = response.rows;
             for (var resultado of resultados) {
 
+                var iddetalle = resultado.iddetalle;
+
                 sql = "select p.idpaciente, r.idparametro as idparametro, opcion, EXTRACT(YEAR FROM fechanacimiento) as anio " +
                 "from resultado r " +
                 "join detallechequeo d on d.iddetalle = r.iddetalle " +
@@ -401,8 +405,9 @@ const generarReporteTipeoSanguineo =  async (req, res) => {
                 "join chequeo c on c.idchequeo = d.idchequeo " +
                 "join paciente p on c.idpaciente = p.idpaciente " +
                 "where (parametro LIKE 'Variante Du') " +
-                "and (EXTRACT(YEAR FROM fechanacimiento) BETWEEN $1 AND $2)";
-                const response = await sqlee.query(sql, [edad.maxedad, edad.minedad]);
+                "and (r.iddetalle = $1) " +
+                "and (EXTRACT(YEAR FROM fechanacimiento) BETWEEN $2 AND $3)";
+                const response = await sqlee.query(sql, [iddetalle, edad.maxedad, edad.minedad]);
 
                 var resultados2 = response.rows;
                 for (var resultado2 of resultados2){
@@ -492,7 +497,7 @@ const generarReporteTipeoSanguineo =  async (req, res) => {
             var BN = 0;
             var ABN = 0;
 
-            sql = "select p.idpaciente, opcion, genero " +
+            sql = "select p.idpaciente, opcion, genero, r.iddetalle as iddetalle " +
             "from resultado r " +
             "join detallechequeo d on d.iddetalle = r.iddetalle " +
             "join parametro pa on pa.idparametro = r.idparametro " +
@@ -505,6 +510,8 @@ const generarReporteTipeoSanguineo =  async (req, res) => {
             var resultados = response.rows;
             for(var resultado of resultados){
 
+                var iddetalle = resultado.iddetalle;
+
                 sql = "select p.idpaciente, opcion, genero " +
                 "from resultado r " +
                 "join detallechequeo d on d.iddetalle = r.iddetalle " +
@@ -512,8 +519,9 @@ const generarReporteTipeoSanguineo =  async (req, res) => {
                 "join chequeo c on c.idchequeo = d.idchequeo " +
                 "join paciente p on c.idpaciente = p.idpaciente " +
                 "where  parametro LIKE 'Variante Du' " +
-                "and genero = $1 ";
-                const response = await sqlee.query(sql, [genero.genero]);
+                "and r.iddetalle = $1 " +
+                "and genero = $2 ";
+                const response = await sqlee.query(sql, [iddetalle, genero.genero]);
 
                 var resultados2 = response.rows;
                 for (var resultado2 of resultados2){

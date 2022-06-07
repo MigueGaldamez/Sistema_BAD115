@@ -56,8 +56,8 @@ const Laboratorios = () => {
                     <select class="form-select form-select-sm my-2" aria-label="Default select example" onChange={(event)=>{setFiltro(event.target.value)}}>
                    
                       <option value="1">Zona geografica</option>
-                      <option value="2">Zona edades</option>
-                      <option value="3">Zona genero</option>
+                      <option value="2">Edades</option>
+                      <option value="3">Genero</option>
                   </select> 
                   <br></br>
                   <button type="button" class="btn btn-danger" onClick={()=>{generarReporte()}}>Generar reporte</button>

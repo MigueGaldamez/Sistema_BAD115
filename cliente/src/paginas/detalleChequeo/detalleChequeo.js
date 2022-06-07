@@ -36,22 +36,24 @@ const DetalleChequeo = () => {
   const[modalRegistro, setModalRegistro] = useState([]);
   const[modalVerResultado, setModalVerResultado] = useState([]);
   //PARA LA BUSQUEDA
-  /*
+  
   const [q, setQ] = useState('');
   //TODAS LAS COLUMNAS
-  const [columns] =useState([
+  /*const [columns] =useState([
     'idexamen',
     'nombreexamen',
     'area',
     
-  ]);
+  ]);*/
   //LAS COLUMNAS POR LAS QUE SEPUEDEN FILTRAR
   const [buscarColumnas, setBuscarColumnas] = useState([
-    'idexamen',
-    'nombreexamen',
-    'area',
+    'idcheq',
+    'nombrepaciente',
+    'apellido',
+    'fechanacimiento',
+    'cuenta',
   ]);
-  */
+  
 
   const obtenerRegistros=()=>{
     Axios.get(`http://${process.env.REACT_APP_SERVER_IP}/pacientesPacienteExamenes`).then((response)=>{
@@ -396,7 +398,9 @@ const DetalleChequeo = () => {
   }
 
   /*function buscar(rows) {
-    return rows.filter((row) =>
+    //var ListaTemp = pacientesLista;
+    console.log(ListaTemp);
+    setPacientesLista(rows.filter((row) =>
       buscarColumnas.some(
         (column) =>
           row[column]
@@ -404,7 +408,7 @@ const DetalleChequeo = () => {
             .toLowerCase()
             .indexOf(q.toLowerCase()) > -1,
       ),
-    );
+    ));
   }*/
 
 
