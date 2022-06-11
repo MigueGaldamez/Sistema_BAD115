@@ -51,9 +51,6 @@ const generarReporte =  async (req, res) => {
 
     const filepath = `http://${process.env.REACT_APP_SERVER_IP}/docs/` + filename;
 
-    
-
-
 }
 
 
@@ -483,7 +480,7 @@ const generarReporteTipeoSanguineo =  async (req, res) => {
         var fecha = new Date();
         var y = fecha.getFullYear();
 
-        var generos = [{genero: 'Hombre'}, {genero: 'Mujer'}]
+        var generos = [{genero: 'Masculino'}, {genero: 'Femenino'}]
 
         
         for(const genero of generos){
@@ -696,7 +693,7 @@ const generarReporteEpidemiologico =  async (req, res) => {
         var fecha = new Date();
         var y = fecha.getFullYear();
 
-        var generos = [{genero: 'Hombre'}, {genero: 'Mujer'}]
+        var generos = [{genero: 'Masculino'}, {genero: 'Femenino'}]
 
         
         for(const genero of generos){
@@ -778,7 +775,7 @@ const generarReporteEpidemiologico =  async (req, res) => {
         var fecha = new Date();
         var y = fecha.getFullYear();
 
-        var generos = [{genero: 'Hombre'}, {genero: 'Mujer'}]
+        var generos = [{genero: 'Masculino'}, {genero: 'Femenino'}]
 
         
         for(const genero of generos){
@@ -860,7 +857,7 @@ const generarReporteEpidemiologico =  async (req, res) => {
         var fecha = new Date();
         var y = fecha.getFullYear();
 
-        var generos = [{genero: 'Hombre'}, {genero: 'Mujer'}]
+        var generos = [{genero: 'Masculino'}, {genero: 'Femenino'}]
 
         
         for(const genero of generos){
@@ -942,7 +939,7 @@ const generarReporteEpidemiologico =  async (req, res) => {
         var fecha = new Date();
         var y = fecha.getFullYear();
 
-        var generos = [{genero: 'Hombre'}, {genero: 'Mujer'}]
+        var generos = [{genero: 'Masculino'}, {genero: 'Femenino'}]
 
         
         for(const genero of generos){
@@ -1179,10 +1176,65 @@ const generarReporteCantidadExamenes =  async (req, res) => {
 
 }
 
+const generarReporteTipos=  async (req, res) => {
+    const { fechainicio, fechafin,idlaboratorio } = req.body;
+    const html = fs.readFileSync(path.join(__dirname, '../views/template-examenesportipo.html'), 'utf-8')
+    var filename = '';
+    var nombrelaboratorio='';
+    var data = [];
+    if(idlaboratorio==0){
+        sql ="select nombrelaboratorio,nombrearea, nombreexamen, count(d.idexamen) from detallechequeo d inner join examen e on d.idexamen = e.idexamen inner join area a on e.idarea=a.idarea inner join chequeo ch  on ch.idchequeo = d.idchequeo inner join laboratorio lab on lab.idlaboratorio = ch.idlaboratorio group by (nombreexamen,nombrelaboratorio,nombrearea)";
+        const response = await sqlee.query(sql);
+        data = response.rows;
+    }else if(idlaboratorio!=0){
+        sql ="select nombrelaboratorio,nombrearea,nombreexamen, count(d.idexamen) from detallechequeo d inner join examen e on d.idexamen = e.idexamen inner join area a on e.idarea=a.idarea inner join chequeo ch  on ch.idchequeo = d.idchequeo inner join laboratorio lab on lab.idlaboratorio = ch.idlaboratorio where lab.idlaboratorio=$1 group by (nombreexamen,nombrelaboratorio,nombrearea)";
+        const response = await sqlee.query(sql, [idlaboratorio]);
+        data = response.rows;
+        sql2 ="select * from laboratorio where idlaboratorio=$1 limit 1";
+        const response2 = await sqlee.query(sql2,[idlaboratorio]);
+        nombrelaboratorio = response2.rows[0].nombrelaboratorio;
+    }
+   
+    var filename = 'examenesportipo_.pdf';
+    // esta sera la data que vamos a mandar al template(plantilla) para crear el pdf
+    const obj = {
+        nombrelaboratorio: nombrelaboratorio,
+        examenes: data,
+        fechainicio:fechainicio,
+        fechafin:fechafin,
+        nombrereporte:"Examenes realizados por tipo",
+    }
+
+    // creamos el documento
+    const document = {
+        html: html,
+        data: {
+           datos: obj   // aqui enviamos toda la data
+        },
+        path: './docs/' + filename
+    }
+
+    // creamos el pdf
+    pdf.create(document, options)
+    .then(resp => {
+        res.status(200).json({
+        message: 'Creado con exito',
+        body: {
+            path: filename //enviamos el nombre del archivo como respuesta
+        }
+    });
+    }).catch(error => {
+        console.log(error);
+    });
+
+    const filepath = `http://${process.env.REACT_APP_SERVER_IP}/docs/` + filename;
+
+}
 module.exports = {
     generarReporte,
     generarReporteResultados,
     generarReporteTipeoSanguineo,
     generarReporteCantidadExamenes,
     generarReporteEpidemiologico,
+    generarReporteTipos,
 };

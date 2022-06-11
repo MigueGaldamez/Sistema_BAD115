@@ -36,7 +36,7 @@ const Laboratorios = () => {
    //obtenerRegistros();
  
   },[]);
-  return (
+  return ( 
     <div class="col container my-4">
       
       <div class="mt-4 mb-4">

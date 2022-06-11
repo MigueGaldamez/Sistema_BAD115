@@ -361,6 +361,7 @@ const Parametros = () => {
                        <option selected value="0">Seleccione un tipo</option>
                        <option value="1">Intervalo</option>
                        <option value="2">Por opción</option>
+                       <option value="3">Especificación</option>
                    </select>
                  
                    { 
@@ -489,7 +490,9 @@ const Parametros = () => {
                   </div>
                 </form>
                }
-              
+              {tipo ==3 &&
+              <div class="mx-auto fw-bold text-center"><span>Permite ingresar un valor textual</span></div>
+              }
                     </div>
                   </div>
                   {/*hasta aqui*/}
@@ -508,8 +511,8 @@ const Parametros = () => {
           </div>
         </div>
       </div>
-      <div class="mt-4 mb-4">
-        <div class="row bordeLateral mb-3">
+      <div class="mb-4">
+        <div class="row bordeLateral mb-3 sticky-top sticky bg-white">
         <h2 class="m-0"><span>Gestión de Parametros</span>
         
           <button type="button" class="btn btn-primary btn-sm ms-3"  onClick={abrirModal}>

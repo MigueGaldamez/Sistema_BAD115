@@ -116,7 +116,10 @@ const Navbar = () => {
                         <li class="nav-item w-100 text-light">
                             <NavLinkDrop to="/reportetipeo" class="dropdown-item" aria-current="page" href="#">Tipeo de sangre</NavLinkDrop>
                         </li>
-                        
+                        <li>
+                            <NavLinkDrop to="/reporteportipo" class="dropdown-item" aria-current="page" href="#"> Reporte Examenes Por Tipo</NavLinkDrop>
+                        </li>
+                       
                     </ul>
                 </li>
 

@@ -67,8 +67,9 @@ export default function DatatableRoles({
              && heading!='idestado' && heading!='nombrepaciente'  && heading!='apellido' && heading!='direccion' && heading!='fechanacimiento' && heading!='correopaciente'
              && heading!='observaciones' && heading!='fechaingreso'  && heading!='horaingreso' && heading!='idmuestra' && heading!='nombrelaboratorio'
              && heading!='idresultado' && heading!='idparametro'  && heading!='valor' && heading!='positivo' && heading!='comentario' && heading!='presencia' 
-             && heading!='genero' && heading!='fecharegistro' && heading!='horaregistro' && heading!='nombreusuario')
-            return(<th>{heading}</th>)
+             && heading!='genero' && heading!='fecharegistro' && heading!='horaregistro' && heading!='nombreusuario'    && heading!='fechaactualizacion' && heading!='fechacreacion')
+           
+             return(<th>{heading}</th>)
             })}
           <th>Acciones</th>
         </tr>
@@ -185,7 +186,7 @@ export default function DatatableRoles({
                           
                       </div>
                     </div>
-                    : row['tipo']==2?
+                    : row['tipo']==1?
                     <div class="col col-6">
                       <div class="mt-3 ml-3">
                           <label for="exampleInput" class="form-label">{row['parametro']}</label>

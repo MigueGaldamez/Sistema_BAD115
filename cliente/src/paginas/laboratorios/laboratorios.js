@@ -4,6 +4,9 @@ import Axios from 'axios';
 import DatatableRoles from "./datatable";
 import { Modal } from 'bootstrap/dist/js/bootstrap.bundle.min';
 import swal from 'sweetalert';
+import Cookies from 'universal-cookie';
+const cookies = new Cookies();
+
 
 const Laboratorios = () => { 
     //PARA los ERRORES
@@ -17,6 +20,7 @@ const Laboratorios = () => {
   //LA LISTA QUEMOSTRAREMOS
   const[municipioLista, setMunicipioLista] = useState([]);
   const[laboratorioLista, setLaboratorioLista] = useState([]);
+  const[validarLista, setValidarLista] = useState([]);
   const[modalB, setModalB] = useState([]);
   //PARA LA BUSQUEDA
   const [q, setQ] = useState('');
@@ -30,14 +34,24 @@ const Laboratorios = () => {
   const [buscarColumnas, setBuscarColumnas] = useState([
     'idlaboratorio',
     'nombrelaboratorio',
-    'municipio'
+    'municipio' 
   ]);
-
+  //esto es para validar en el backend y mandar siempre el id usuario
+  Axios.interceptors.request.use(function (config) {
+      var id = cookies.get('usuario').idusuario;
+      config.headers.idusuario =  id;
+      return config;
+  });
   const obtenerRegistros=()=>{
     Axios.get(`http://${process.env.REACT_APP_SERVER_IP}/laboratorios`).then((response)=>{
       setLaboratorioLista(response.data);  });
     Axios.get(`http://${process.env.REACT_APP_SERVER_IP}/municipios`).then((response)=>{
       setMunicipioLista(response.data);  });
+    //aqui obtengo los permisos que tiene
+    var id = cookies.get('usuario').idusuario;
+    Axios.get(`http://${process.env.REACT_APP_SERVER_IP}/validarpermisos/${id}`).then((response)=>{
+      setValidarLista(response.data);
+    });
   };
 
   const abrirModal=()=>{
@@ -191,10 +205,21 @@ const Laboratorios = () => {
   //LEER LOS DATOS AL CARGAR
   useEffect(()=>{
    obtenerRegistros();
- 
+   
   },[]);
   return (
+    <>
+      {/*asi validamos cada permiso*/}
+       {(!validarLista.includes(1)) && 
+       <div class="col container mx-auto my-auto text-center">
+         <h1 class="text-primary">Ups...</h1>
+          <h4>No tiene permisos para ver estos registros</h4>
+      </div>}{
+      
+    }
+       {validarLista.includes(1) &&
     <div class="col container my-4">
+   
       <div class="modal fade" id="nuevoRegistro" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true" data-bs-backdrop="static">
         <div class="modal-dialog">
           <div class="modal-content">
@@ -236,11 +261,11 @@ const Laboratorios = () => {
       <div class="mt-4 mb-4">
         <div class="row bordeLateral mb-3">
         <h2 class="m-0"><span>Gestión de Laboratorios</span>
-        
+        {validarLista.includes(2) &&
           <button type="button" class="btn btn-primary btn-sm ms-3"  onClick={abrirModal}>
             Nuevo Registro
           </button>
-              
+        }
           </h2>
         </div>
          
@@ -289,10 +314,12 @@ const Laboratorios = () => {
               </div>
             </div>
           </div>
-          <DatatableRoles  data={buscar(laboratorioLista)} municipios={municipioLista} eliminarRegistro={eliminarRegistro} actualizarRegistro={actualizaRegistro} setNuevoNombre={setNuevoNombre} setNuevoIdMunicipio={setNuevoIdMunicipio} generarReporte={generarReporte}/>
+          <DatatableRoles  validarLista={validarLista} data={buscar(laboratorioLista)} municipios={municipioLista} eliminarRegistro={eliminarRegistro} actualizarRegistro={actualizaRegistro} setNuevoNombre={setNuevoNombre} setNuevoIdMunicipio={setNuevoIdMunicipio} generarReporte={generarReporte}/>
 
       </div>    
     </div>
+    }
+    </>
   );
 };
 export default Laboratorios;

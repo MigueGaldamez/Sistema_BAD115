@@ -27,7 +27,8 @@ const { obtenerOrdenes, obtenerParametrosResultados, obtenerOpcionesResultados, 
 
 const { crearMuestra, eliminarMuestra} = require('../controladores/muestras.controller');
 
-const { generarReporte, generarReporteResultados, generarReporteTipeoSanguineo, generarReporteCantidadExamenes, generarReporteEpidemiologico } = require('../controladores/reporte.controller');
+const { generarReporte, generarReporteResultados, generarReporteTipeoSanguineo, generarReporteCantidadExamenes, generarReporteEpidemiologico, generarReporteTipos } = require('../controladores/reporte.controller');
+const { obtenerPermisosUsuario, } = require('../controladores/validarpermisos.controller');
 
 //siempre poner una coma al final
 
@@ -141,9 +142,6 @@ router.post('/examenes', crearExamen);
 router.put('/examenes', actualizarExamen);
 router.delete('/examenes/:idexamen', eliminarExamen);
 
-
-module.exports = router;
-
 //REGISTRO DE RESULTADOS
 router.get('/ordenes/:idchequeo', obtenerOrdenes);
 router.get('/parametrosResultados/:idexamen', obtenerParametrosResultados);
@@ -166,5 +164,8 @@ router.post('/generarpdfresultados', generarReporteResultados);
 router.post('/generarpdftipeo',generarReporteTipeoSanguineo);
 router.post('/generarpdfexamenes',generarReporteCantidadExamenes);
 router.post('/generarpdfepidemiologico',generarReporteEpidemiologico);
+router.post('/generarpdftipo',generarReporteTipos);
 
+//Modulo seguridad
+router.get('/validarpermisos/:idusuario', obtenerPermisosUsuario);
 module.exports = router;

@@ -4,7 +4,7 @@ const sqlee = new Pool({
   user: 'postgres',
   host: 'localhost',
   password: 'adminadmin',//cambiarlo por el propio
-  database: 'aplicacion',//mismo aqui
+  database: 'aplicacion2',//mismo aqui
   port: '5432'
 })
 //Para cuando la base esta vacia
@@ -31,15 +31,47 @@ const iniciarBaseDatos = async(req,res)=>{
     sqlusuario2 = "INSERT INTO usuario (idusuario,idlaboratorio,contrasenia,estado,nombreusuario,correousuario) VALUES(2,1,'6e6cf51ea07f12ab08f338af53ff690d76a63a11202bed13b1cc768d3d10c174',TRUE,'Miguel Angel','migue.galdamez@hotmail.com')";
     const usuResp2 =  await sqlee.query(sqlusuario2);
 
+    sqlareas = "INSERT INTO area(idarea,nombrearea) VALUES(1,'Coprología'),(2,'Urianálisis'),(3,'Química clínica'),(4,'Hematología')";
+    const areaResp = await sqlee.query(sqlareas);
+
+    sqlpoblaciones = "INSERT INTO poblacion(idpoblacion,edadminimo,edadmaximo,poblacion) VALUES(1,1,8,'Niños'),(2,9,18,'Adolecentes'),(3,19,99,'Adulto'),(4,19,99,'Mujeres'),(5,19,99,'Hombres'),(6,0,1,'Recién Nacidos')";
+    const poblaResp = await sqlee.query(sqlpoblaciones);
+
+    sqlUnidades = "INSERT INTO unidad(idunidad,nombreunidad,simbolo) VALUES(1,'Miligramos','mg'),(2,'Mililitros','ml'),(3,'Porcentaje','%'),(4,'Gramos por decilitros','gr/dL'),(5,'Por milímetro cubicos','mm³')";
+    const unidadesResp = await sqlee.query(sqlUnidades);
+
+    sqlparametros = "INSERT INTO parametro(idparametro, idarea, parametro, tipo, fechacreacion, fechaactualizacion) VALUES (1, 4, 'Neutrófilos segmentados', 1, '2022-06-02 21:26:10.570699', '2022-06-02 21:26:24.503943'),(2, 4, 'Neutrofilo en banda', 1, '2022-06-02 21:27:31.00817', '2022-06-02 21:27:31.00817'),(3, 4, 'Linfocitos', 1, '2022-06-02 21:28:27.231827', '2022-06-02 21:28:27.231827'),(4, 4, 'Eosinófilos', 1, '2022-06-02 21:29:26.301623', '2022-06-02 21:29:26.301623'),(5, 4, 'Basofilos', 1, '2022-06-02 21:33:19.657587', '2022-06-02 21:33:19.657587'),(6, 4, 'Monocitos', 1, '2022-06-02 21:34:57.011963', '2022-06-02 21:34:57.011963'),(7, 4, 'Anisocitosis', 2, '2022-06-02 21:36:13.293893', '2022-06-02 21:36:13.293893'),(8, 4, 'Poiquilocitosis', 2, '2022-06-02 21:42:45.680391', '2022-06-02 21:42:45.680391'),(9, 4, 'Hipocromia', 2, '2022-06-02 21:43:57.559734', '2022-06-02 21:43:57.559734'),(10, 4, 'Madurez de leucocitos', 3, '2022-06-02 21:53:39.067185', '2022-06-02 21:53:39.067185'),(11, 4, 'Variante de leucocitos predominante', 3, '2022-06-02 21:57:15.893011', '2022-06-02 21:57:15.893011'),(12, 4, 'Alteraciones encontradas en los leucocitos', 3, '2022-06-02 21:58:15.243287', '2022-06-02 21:58:15.243287'),(13, 4, 'Cantidad de línea plaquetaria', 3, '2022-06-02 21:59:22.628485', '2022-06-02 21:59:22.628485'),(14, 4, 'Tamaño de linea plaquetaria', 2, '2022-06-02 22:00:12.326635', '2022-06-02 22:00:12.326635'),(15, 4, 'Hematocrito', 1, '2022-06-02 22:12:01.545298', '2022-06-02 22:12:01.545298'),(16, 4, 'Hemoglobina', 1, '2022-06-02 22:20:13.92081', '2022-06-02 22:20:13.92081'),(17, 4, 'Recuento de leucocitos', 1, '2022-06-02 23:15:25.594042', '2022-06-02 23:15:25.594042'),(18, 4, 'Recuento de plaquetas', 1, '2022-06-02 23:17:50.72808', '2022-06-02 23:17:50.72808'),(19, 4, 'Tipeo de Sangre', 2, '2022-06-02 23:19:10.108509', '2022-06-02 23:19:10.108509'),(20, 4, 'Variante Du', 2, '2022-06-02 23:19:58.721877', '2022-06-02 23:19:58.721877')";
+    const paramResp = await sqlee.query(sqlparametros);
+
+    sqlintervalos = "INSERT INTO intervalo (idintervalo, idparametro, idunidad, idpoblacion, comentariopositivo, comentarionegativo, valormaximo, valorminimo, fechacreacion, fechaactualizacion) VALUES (1, 1, 3, 1, 'Andamos bien', 'Consulte a su medico', 45.00, 20.00, '2022-06-02 21:26:24.512605', '2022-06-02 21:26:24.512605'),(2, 1, 3, 3, 'Andamos bien', 'Consulte a su medico', 70.00, 60.00, '2022-06-02 21:26:24.519801', '2022-06-02 21:26:24.519801'),(3, 2, 3, 1, 'Andamos bien', 'Consulte a su doctor', 4.00, 0.00, '2022-06-02 21:27:31.02426', '2022-06-02 21:27:31.02426'),(4, 2, 3, 3, 'Andamos bien', 'Consulte a su doctor', 6.00, 2.00, '2022-06-02 21:27:31.035285', '2022-06-02 21:27:31.035285'),(5, 3, 3, 1, 'Andamos bien', 'Consulte a su medico', 60.00, 40.00, '2022-06-02 21:28:27.242043', '2022-06-02 21:28:27.242043'),(6, 3, 3, 3, 'Andamos bien', 'Consulte a su medico', 40.00, 15.00, '2022-06-02 21:28:27.254246', '2022-06-02 21:28:27.254246'),(7, 4, 3, 1, 'Andamos bien', 'Consulte a su medico', 5.00, 1.00, '2022-06-02 21:29:26.339434', '2022-06-02 21:29:26.339434'),(8, 4, 3, 3, 'Andamos bien', 'Consulte a su medico', 4.00, 1.00, '2022-06-02 21:29:26.358112', '2022-06-02 21:29:26.358112'),(9, 5, 3, 1, 'Andamos bien', 'Consulte a su medico', 1.00, 0.00, '2022-06-02 21:33:19.702368', '2022-06-02 21:33:19.702368'),(10, 5, 3, 3, 'Andamos bien', 'Consulte a su medico', 1.00, 0.00, '2022-06-02 21:33:19.726676', '2022-06-02 21:33:19.726676'),(11, 6, 3, 1, 'Andamos bien', 'Consulte a su medico', 8.00, 2.00, '2022-06-02 21:34:57.024793', '2022-06-02 21:34:57.024793'),(12, 6, 3, 3, 'Andamos bien', 'Consulte a su medico', 8.00, 2.00, '2022-06-02 21:34:57.035919', '2022-06-02 21:34:57.035919'),(13, 15, 3, 5, 'Andamos bien', 'Consulte a su medico', 51.00, 42.00, '2022-06-02 22:12:01.559197', '2022-06-02 22:12:01.559197'),(14, 15, 3, 4, 'Andamos bien', 'Consulte a su medico', 42.00, 38.00, '2022-06-02 22:12:01.569861', '2022-06-02 22:12:01.569861'),(15, 15, 3, 1, 'Andamos bien', 'Consulte a su medico', 38.00, 33.00, '2022-06-02 22:12:01.571286', '2022-06-02 22:12:01.571286'),(16, 15, 3, 6, 'Andamos bien', 'Consulte a su medico', 55.00, 0.00, '2022-06-02 22:12:01.572843', '2022-06-02 22:12:01.572843'),(17, 16, 4, 5, 'Andamos bien', 'Consulte a su medico', 17.00, 14.00, '2022-06-02 22:20:13.929688', '2022-06-02 22:20:13.929688'),(18, 16, 4, 4, 'Andamos bien', 'Consulte a su medico', 15.00, 12.50, '2022-06-02 22:20:13.940651', '2022-06-02 22:20:13.940651'),(19, 16, 4, 1, 'Andamos bien', 'Consulte a su medico', 13.00, 11.00, '2022-06-02 22:20:13.94257', '2022-06-02 22:20:13.94257'),(20, 16, 4, 6, 'Andamos bien', 'Consulte a su medico', 18.00, 0.00, '2022-06-02 22:20:13.944409', '2022-06-02 22:20:13.944409'),(21, 17, 5, 3, 'Andamos bien', 'Consulte a su medico', 10000.00, 5000.00, '2022-06-02 23:15:25.615987', '2022-06-02 23:15:25.615987'),(22, 17, 5, 1, 'Andamos bien', 'Consulte a su medico', 12000.00, 5000.00, '2022-06-02 23:15:25.622234', '2022-06-02 23:15:25.622234'),(23, 17, 5, 6, 'Andamos bien', 'Consulte a su medico', 30000.00, 10000.00, '2022-06-02 23:15:25.62365', '2022-06-02 23:15:25.62365'),(24, 18, 5, 3, 'Andamos bien', 'Consulte a su medico', 450000.00, 150000.00, '2022-06-02 23:17:50.738459', '2022-06-02 23:17:50.738459'),(25, 18, 5, 1, 'Andamos bien', 'Consulte a su medico', 450000.00, 150000.00, '2022-06-02 23:17:50.836406', '2022-06-02 23:17:50.836406'),(26, 18, 5, 2, 'Andamos bien', 'Consulte a su medico', 450000.00, 150000.00, '2022-06-02 23:17:50.83944', '2022-06-02 23:17:50.83944'),(27, 18, 5, 6, 'Andamos bien', 'Consulte a su medico', 450000.00, 150000.00, '2022-06-02 23:17:50.842126', '2022-06-02 23:17:50.842126')";
+    const interResp = await sqlee.query(sqlintervalos);
+
+    sqlopciones = "INSERT INTO public.opcion (idopcion, idparametro, opcion, referencia, fechacreacion, fechaactualizacion) VALUES (1, 7, 'Leve', true, '2022-06-02 21:36:13.308289', '2022-06-02 21:36:13.308289'),(2, 7, 'Moderada', true, '2022-06-02 21:36:13.314584', '2022-06-02 21:36:13.314584'),(3, 7, 'Severa', true, '2022-06-02 21:36:13.317337', '2022-06-02 21:36:13.317337'),(4, 8, 'Leve', true, '2022-06-02 21:42:45.829931', '2022-06-02 21:42:45.829931'),(5, 8, 'Moderada', true, '2022-06-02 21:42:45.870966', '2022-06-02 21:42:45.870966'),(6, 8, 'Severa', true, '2022-06-02 21:42:45.874595', '2022-06-02 21:42:45.874595'),(7, 9, 'Leve', true, '2022-06-02 21:43:57.601521', '2022-06-02 21:43:57.601521'),(8, 9, 'Moderada', true, '2022-06-02 21:43:57.607877', '2022-06-02 21:43:57.607877'),(9, 9, 'Severa', true, '2022-06-02 21:43:57.609901', '2022-06-02 21:43:57.609901'),(10, 14, 'Macro plaquetas', true, '2022-06-02 22:00:12.332632', '2022-06-02 22:00:12.332632'),(11, 14, 'Micro plaquetas', true, '2022-06-02 22:00:12.336844', '2022-06-02 22:00:12.336844'),(12, 19, 'Grupo A', true, '2022-06-02 23:19:10.123995', '2022-06-02 23:19:10.123995'),(13, 19, 'Grupo B', true, '2022-06-02 23:19:10.127122', '2022-06-02 23:19:10.127122'),(14, 19, 'Grupo O', true, '2022-06-02 23:19:10.128212', '2022-06-02 23:19:10.128212'),(15, 19, 'Grupo AB', true, '2022-06-02 23:19:10.129409', '2022-06-02 23:19:10.129409'),(16, 20, 'Rh Positivo', true, '2022-06-02 23:19:58.751468', '2022-06-02 23:19:58.751468'),(17, 20, 'Rh Negativo', true, '2022-06-02 23:19:58.763958', '2022-06-02 23:19:58.763958')";
+    const opcionesResp = await sqlee.query(sqlopciones);
+
     //SIRVEN PARA PONER AL DIA LOS SERIALES DESPUES DE LOS INSERT ANTERIORES
     sqlSerialMunicipio = "SELECT setval(pg_get_serial_sequence('municipio', 'idmunicipio'), coalesce(max(idmunicipio),0) + 1, false) FROM municipio";
     sqlSerialDepartamento = "SELECT setval(pg_get_serial_sequence('departamento', 'iddepartamento'), coalesce(max(iddepartamento),0) + 1, false) FROM departamento";
     sqlSerialLaboratorio = "SELECT setval(pg_get_serial_sequence('laboratorio', 'idlaboratorio'), coalesce(max(idlaboratorio),0) + 1, false) FROM laboratorio";
     sqlSerialUsuario = "SELECT setval(pg_get_serial_sequence('usuario', 'idusuario'), coalesce(max(idusuario),0) + 1, false) FROM usuario";
+    sqlSerialarea = "SELECT setval(pg_get_serial_sequence('area', 'idarea'), coalesce(max(idarea),0) + 1, false) FROM area";
+    sqlSerialpoblacion = "SELECT setval(pg_get_serial_sequence('poblacion', 'idpoblacion'), coalesce(max(idpoblacion),0) + 1, false) FROM poblacion";
+    sqlSerialunidad = "SELECT setval(pg_get_serial_sequence('unidad', 'idunidad'), coalesce(max(idunidad),0) + 1, false) FROM unidad";
+    sqlSerialparam = "SELECT setval(pg_get_serial_sequence('parametro', 'idparametro'), coalesce(max(idparametro),0) + 1, false) FROM parametro";
+    sqlSerialinter = "SELECT setval(pg_get_serial_sequence('intervalo', 'idintervalo'), coalesce(max(idintervalo),0) + 1, false) FROM intervalo";
+    sqlSerialopciones = "SELECT setval(pg_get_serial_sequence('opcion', 'idopcion'), coalesce(max(idopcion),0) + 1, false) FROM opcion";
+    
+
     await sqlee.query(sqlSerialMunicipio);
     await sqlee.query(sqlSerialDepartamento);
     await sqlee.query(sqlSerialLaboratorio);
     await sqlee.query(sqlSerialUsuario);
+    await sqlee.query(sqlSerialarea);
+    await sqlee.query(sqlSerialpoblacion);
+    await sqlee.query(sqlSerialunidad);
+    await sqlee.query(sqlSerialparam);
+    await sqlee.query(sqlSerialinter);
+    await sqlee.query(sqlSerialopciones);
   }
 };
 

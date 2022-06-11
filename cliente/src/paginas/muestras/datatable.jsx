@@ -45,7 +45,7 @@ export default function DatatableRoles({
              && heading!='idestado' && heading!='nombrepaciente'  && heading!='apellido' && heading!='direccion' && heading!='fechanacimiento' && heading!='correopaciente'
              && heading!='observaciones' && heading!='idmuestra' && heading!='nombrelaboratorio'
              && heading!='idresultado' && heading!='idparametro'  && heading!='valor' && heading!='positivo' && heading!='comentario' && heading!='presencia'
-             && heading!='genero' && heading!='fecharegistro' && heading!='horaregistro' && heading!='estadoexamen')
+             && heading!='genero'  && heading!='fechaactualizacion' && heading!='fechacreacion' && heading!='fecharegistro' && heading!='horaregistro' && heading!='estadoexamen')
             return(<th>{heading}</th>)
             })}
           <th>Acciones</th>

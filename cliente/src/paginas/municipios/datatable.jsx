@@ -27,7 +27,7 @@ export default function DatatableRoles(
       <thead class="table-dark">
         <tr>
           {data[0] && columns.map((heading) => {
-             if(heading!='iddepartamento')
+             if(heading!='iddepartamento'  && heading!='fechaactualizacion' && heading!='fechacreacion')
             return(<th>{heading}</th>)
             })}
           <th>Acciones</th>
@@ -39,7 +39,7 @@ export default function DatatableRoles(
            
             {columns.map((column) => {
               
-            if(column!='idmunicipio' && column!='iddepartamento' &&  column!='departamento')
+            if(column=='municipio')
             return(
                 
               <td> <input type="text" class="form-control form-control-sm" onChange={(event)=>{
