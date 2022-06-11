@@ -4,7 +4,7 @@ export default function DatatableRoles({ data,eliminarRegistro,actualizarRegistr
   
   const dataOriginal = data;
   const [paginaActual, setPaginaActual] = useState(1);
-  const [registrosXpagina] = useState(5);
+  const [registrosXpagina] = useState(12);
 
   //Obtener los actuales 
   const indexUltimoRegistro = paginaActual * registrosXpagina;

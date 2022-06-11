@@ -11,7 +11,8 @@ const sqlee = new Pool({
 const iniciarBaseDatos = async(req,res)=>{
   sql = 'SELECT * FROM usuario';
   const response = await sqlee.query(sql);
-  
+  sql2 = 'SELECT * FROM rol';
+  const response2= await sqlee.query(sql2);
   if(response.rows.length>0){
      //Si tienre registros no hace nada por ahora.
   }else{
@@ -49,6 +50,8 @@ const iniciarBaseDatos = async(req,res)=>{
     sqlopciones = "INSERT INTO public.opcion (idopcion, idparametro, opcion, referencia, fechacreacion, fechaactualizacion) VALUES (1, 7, 'Leve', true, '2022-06-02 21:36:13.308289', '2022-06-02 21:36:13.308289'),(2, 7, 'Moderada', true, '2022-06-02 21:36:13.314584', '2022-06-02 21:36:13.314584'),(3, 7, 'Severa', true, '2022-06-02 21:36:13.317337', '2022-06-02 21:36:13.317337'),(4, 8, 'Leve', true, '2022-06-02 21:42:45.829931', '2022-06-02 21:42:45.829931'),(5, 8, 'Moderada', true, '2022-06-02 21:42:45.870966', '2022-06-02 21:42:45.870966'),(6, 8, 'Severa', true, '2022-06-02 21:42:45.874595', '2022-06-02 21:42:45.874595'),(7, 9, 'Leve', true, '2022-06-02 21:43:57.601521', '2022-06-02 21:43:57.601521'),(8, 9, 'Moderada', true, '2022-06-02 21:43:57.607877', '2022-06-02 21:43:57.607877'),(9, 9, 'Severa', true, '2022-06-02 21:43:57.609901', '2022-06-02 21:43:57.609901'),(10, 14, 'Macro plaquetas', true, '2022-06-02 22:00:12.332632', '2022-06-02 22:00:12.332632'),(11, 14, 'Micro plaquetas', true, '2022-06-02 22:00:12.336844', '2022-06-02 22:00:12.336844'),(12, 19, 'Grupo A', true, '2022-06-02 23:19:10.123995', '2022-06-02 23:19:10.123995'),(13, 19, 'Grupo B', true, '2022-06-02 23:19:10.127122', '2022-06-02 23:19:10.127122'),(14, 19, 'Grupo O', true, '2022-06-02 23:19:10.128212', '2022-06-02 23:19:10.128212'),(15, 19, 'Grupo AB', true, '2022-06-02 23:19:10.129409', '2022-06-02 23:19:10.129409'),(16, 20, 'Rh Positivo', true, '2022-06-02 23:19:58.751468', '2022-06-02 23:19:58.751468'),(17, 20, 'Rh Negativo', true, '2022-06-02 23:19:58.763958', '2022-06-02 23:19:58.763958')";
     const opcionesResp = await sqlee.query(sqlopciones);
 
+  
+
     //SIRVEN PARA PONER AL DIA LOS SERIALES DESPUES DE LOS INSERT ANTERIORES
     sqlSerialMunicipio = "SELECT setval(pg_get_serial_sequence('municipio', 'idmunicipio'), coalesce(max(idmunicipio),0) + 1, false) FROM municipio";
     sqlSerialDepartamento = "SELECT setval(pg_get_serial_sequence('departamento', 'iddepartamento'), coalesce(max(iddepartamento),0) + 1, false) FROM departamento";
@@ -72,7 +75,31 @@ const iniciarBaseDatos = async(req,res)=>{
     await sqlee.query(sqlSerialparam);
     await sqlee.query(sqlSerialinter);
     await sqlee.query(sqlSerialopciones);
+
+   
   }
+  if(response2.rows.length>0){
+    //Si tienre registros no hace nada por ahora.
+ }else{
+    sqlroles = "INSERT INTO rol (idrol, nombrerol, fechacreacion, fechaactualizacion) VALUES (1, 'Administrador', '2022-06-07 10:26:22.611541', '2022-06-07 10:26:22.611541'), (2, 'Laboratorista', '2022-06-07 10:26:22.611541', '2022-06-07 10:26:22.611541')";
+    const rolesResp = await sqlee.query(sqlroles);
+    //1-28
+    sqlopcionespermisos ="INSERT INTO opcionpermiso (idopcionpermiso, accion, fechacreacion, fechaactualizacion) VALUES (1, 'Ver Laboratorios', '2022-06-07 10:26:22.611541', '2022-06-07 10:26:22.611541'),(4, 'Eliminar Laboratorio', '2022-06-07 10:26:22.611541', '2022-06-07 10:26:22.611541'),(2, 'Crear Laboratorio', '2022-06-07 10:26:22.611541', '2022-06-07 10:26:22.611541'),(3, 'Modificar Laboratorio', '2022-06-07 10:26:22.611541', '2022-06-07 10:26:22.611541'),(5, 'Ver Departamentos', '2022-06-07 10:26:22.611541', '2022-06-07 10:26:22.611541'),(6, 'Crear Departamento', '2022-06-11 10:53:57.193858', '2022-06-11 10:53:57.193858'),(7, 'Actualizar Departamento', '2022-06-11 10:54:10.842029', '2022-06-11 10:54:10.842029'),(8, 'Eliminar Departamento', '2022-06-11 10:54:19.04517', '2022-06-11 10:54:19.04517'),(9, 'Consultar Municipios', '2022-06-11 10:54:33.916198', '2022-06-11 10:54:33.916198'),(10, 'Crear Municipio', '2022-06-11 10:54:43.835433', '2022-06-11 10:54:43.835433'),(11, 'Actualizar Municipio', '2022-06-11 10:54:55.547727', '2022-06-11 10:54:55.547727'),(12, 'Eliminar Municipio', '2022-06-11 10:55:10.615108', '2022-06-11 10:55:10.615108'),(13, 'Consultar Poblaciones', '2022-06-11 10:55:20.243286', '2022-06-11 10:55:20.243286'),(14, 'Crear Población', '2022-06-11 10:55:30.660273', '2022-06-11 10:55:30.660273'),(15, 'Actualizar Población', '2022-06-11 10:55:41.299947', '2022-06-11 10:55:41.299947'),(16, 'Eliminar Poblacion', '2022-06-11 10:55:49.626208', '2022-06-11 10:55:49.626208'),(17, 'Consultar Profesiones', '2022-06-11 11:32:20.767401', '2022-06-11 11:32:20.767401'),(18, 'Crear Profesión', '2022-06-11 11:32:33.270292', '2022-06-11 11:32:33.270292'),(19, 'Actualizar Profesion', '2022-06-11 11:32:44.212856', '2022-06-11 11:32:44.212856'),(20, 'Eliminar Profesión', '2022-06-11 11:33:05.162631', '2022-06-11 11:33:05.162631'),(21, 'Consultar Areas', '2022-06-11 11:33:37.855226', '2022-06-11 11:33:37.855226'),(23, 'Actualizar Área', '2022-06-11 11:34:01.589012', '2022-06-11 11:34:01.589012'),(22, 'Crear Área', '2022-06-11 11:33:48.661198', '2022-06-11 11:34:06.223956'),(24, 'Eliminar Área', '2022-06-11 11:34:19.819255', '2022-06-11 11:34:19.819255'),(25, 'Consultar Unidades', '2022-06-11 11:34:34.853424', '2022-06-11 11:34:34.853424'),(26, 'Crear Unidad', '2022-06-11 11:34:40.896805', '2022-06-11 11:34:40.896805'),(27, 'Actualizar Unidad', '2022-06-11 11:34:52.423213', '2022-06-11 11:34:52.423213'),(28, 'Eliminar Unidad', '2022-06-11 11:35:00.108806', '2022-06-11 11:35:00.108806')";
+    const opcpermisosResp = await sqlee.query(sqlopcionespermisos);
+
+    //No tiene serial
+    sqldetallerol = "INSERT INTO detallerol (idusuario, idrol, fechacreacion, fechaactualizacion) VALUES (2, 1, '2022-06-07 10:26:22.611541', '2022-06-07 10:26:22.611541'),(1, 1, '2022-06-07 10:26:22.611541', '2022-06-07 10:26:22.611541'),(1, 2, '2022-06-07 10:26:22.611541', '2022-06-07 10:26:22.611541')";
+    const detrolResp = await sqlee.query(sqldetallerol);    
+
+    sqldetallepermiso ="INSERT INTO public.permiso (idopcionpermiso, idrol, fechacreacion, fechaactualizacion) VALUES (4, 2, '2022-06-07 10:26:22.611541', '2022-06-07 10:26:22.611541'),(1, 2, '2022-06-07 10:26:22.611541', '2022-06-07 10:26:22.611541'),(1, 1, '2022-06-11 11:57:31.489933', '2022-06-11 11:57:31.489933'),(2, 1, '2022-06-11 11:57:31.491651', '2022-06-11 11:57:31.491651'),(3, 1, '2022-06-11 11:57:31.493033', '2022-06-11 11:57:31.493033'),(4, 1, '2022-06-11 11:57:31.494637', '2022-06-11 11:57:31.494637'),(6, 1, '2022-06-11 11:57:31.49606', '2022-06-11 11:57:31.49606'),(7, 1, '2022-06-11 11:57:31.497742', '2022-06-11 11:57:31.497742'),(8, 1, '2022-06-11 11:57:31.499343', '2022-06-11 11:57:31.499343'),(5, 1, '2022-06-11 11:57:31.500942', '2022-06-11 11:57:31.500942'),(9, 1, '2022-06-11 11:57:31.50224', '2022-06-11 11:57:31.50224'),(10, 1, '2022-06-11 11:57:31.503588', '2022-06-11 11:57:31.503588'),(11, 1, '2022-06-11 11:57:31.505687', '2022-06-11 11:57:31.505687'),(12, 1, '2022-06-11 11:57:31.507727', '2022-06-11 11:57:31.507727'),(13, 1, '2022-06-11 11:57:31.509654', '2022-06-11 11:57:31.509654'),(14, 1, '2022-06-11 11:57:31.51228', '2022-06-11 11:57:31.51228'),(16, 1, '2022-06-11 11:57:31.514194', '2022-06-11 11:57:31.514194'),(15, 1, '2022-06-11 11:57:31.516573', '2022-06-11 11:57:31.516573'),(17, 1, '2022-06-11 11:57:31.518582', '2022-06-11 11:57:31.518582'),(18, 1, '2022-06-11 11:57:31.521525', '2022-06-11 11:57:31.521525'),(20, 1, '2022-06-11 11:57:31.524231', '2022-06-11 11:57:31.524231'),(19, 1, '2022-06-11 11:57:31.527425', '2022-06-11 11:57:31.527425'),(21, 1, '2022-06-11 11:57:31.530577', '2022-06-11 11:57:31.530577'),(22, 1, '2022-06-11 11:57:31.534105', '2022-06-11 11:57:31.534105'),(24, 1, '2022-06-11 11:57:31.540948', '2022-06-11 11:57:31.540948'),(23, 1, '2022-06-11 11:57:31.544361', '2022-06-11 11:57:31.544361'),(25, 1, '2022-06-11 11:57:31.547267', '2022-06-11 11:57:31.547267'),(26, 1, '2022-06-11 11:57:31.550314', '2022-06-11 11:57:31.550314'),(27, 1, '2022-06-11 11:57:31.554877', '2022-06-11 11:57:31.554877'),(28, 1, '2022-06-11 11:57:31.557582', '2022-06-11 11:57:31.557582')";
+    const detPermiResp = await sqlee.query(sqldetallepermiso);
+
+    sqlSerialrol = "SELECT setval(pg_get_serial_sequence('rol', 'idrol'), coalesce(max(idrol),0) + 1, false) FROM rol";
+    sqlSerialoppermiso = "SELECT setval(pg_get_serial_sequence('opcionpermiso', 'idopcionpermiso'), coalesce(max(idopcionpermiso),0) + 1, false) FROM opcionpermiso";
+
+    await sqlee.query(sqlSerialrol);
+    await sqlee.query(sqlSerialoppermiso);
+ }
 };
 
 module.exports = {

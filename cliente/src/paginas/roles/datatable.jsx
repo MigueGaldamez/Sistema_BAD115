@@ -117,7 +117,7 @@ export default function DatatableRoles({ actualizaPermisos,nuevosPermisos,data,e
     </table>
      {/* Modal para permisos */}
      <div class="modal fade" id='permisosM' tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-                <div class="modal-dialog">
+                <div class="modal-dialog modal-lg">
                   <div class="modal-content">
                     <div class="modal-header">
                       <h5 class="modal-title" id="exampleModalLabel">Modificar Permisos</h5>
@@ -143,7 +143,7 @@ export default function DatatableRoles({ actualizaPermisos,nuevosPermisos,data,e
                                   }else
                                   {permitido=false;}
                                   return(
-                                    <div class="form-check col col-6" key={permiso}>
+                                    <div class="form-check col col-4" key={permiso}>
                                     <input class="form-check-input" type="checkbox" value={permiso.idopcionpermiso} id="flexCheckChecked" defaultChecked={permitido} onChange={manejarChecks} />
                                     <label class="form-check-label" for="flexCheckChecked">
                                     {permiso.accion}
