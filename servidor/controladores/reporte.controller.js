@@ -619,15 +619,29 @@ const generarReporteEpidemiologico =  async (req, res) => {
     if (padecimiento==='1' && filtro === '5'){ 
 //Triglicéridos altos con zona geográfica filtro 1 = 5
         filename = 'TriglicéridosAltos_ZonaGeografica' + '_' + (Math.floor(Math.random() * 9999) + 10000) + '.pdf';
-        
+        //consulta sql
+        sql = "select count(p.idpaciente) as cuenta, m.municipio " +
+        "from resultado r "+
+        "join detallechequeo dc on dc.iddetalle = r.iddetalle " +
+        "join chequeo c on c.idchequeo = dc.idchequeo " +
+        "join paciente p on p.idpaciente = c.idpaciente " +
+        "join parametro pa on pa.idparametro = r.idparametro " +
+        "join municipio m on m.idmunicipio = p.idmunicipio " +
+        "where r.valor > 200.00 AND pa.parametro like '%glicerid%' " +
+        "group by m.idmunicipio " ;
+        const response = await sqlee.query(sql);
         var municipios = response.rows;
         for(const municipio of municipios){
-
+            const elemento = {
+                nombre: municipio.municipio,
+                cuenta: municipio.cuenta,
+            }
+            array.push(elemento);
         }
         // esta sera la data que vamos a mandar al template(plantilla) para crear el pdf
         obj = {
             nombrelaboratorio: 'Laboratorio Nacional',
-            nombrereporte: 'Reporte de Triglicéridos Altos por zona geografica',
+            nombrereporte: 'Reporte de triglicéridos altos por zona geográfica',
             datosLista: array,
         }
 
@@ -671,11 +685,20 @@ const generarReporteEpidemiologico =  async (req, res) => {
             
         ]
         for(const edad of edades){
+            sql = "select count(p.idpaciente) as cuenta, AGE(p.fechanacimiento) " +
+            "from resultado r " +
+            "join detallechequeo dc on dc.iddetalle = r.iddetalle " +
+            "join chequeo c on c.idchequeo = dc.idchequeo " +
+            "join paciente p on p.idpaciente = c.idpaciente " +
+            "join parametro pa  on pa.idparametro = r.idparametro " +
+            "where r.valor > 200.00 AND pa.parametro like '%glicerid%' " +
+            "group by p.fechanacimiento" ;
+            const response = await sqlee.query(sql);
         }
         // esta sera la data que vamos a mandar al template(plantilla) para crear el pdf
         obj = {
             nombrelaboratorio: 'Laboratorio Nacional',
-            nombrereporte: 'Reporte de Triglicéridos Altos por edades',
+            nombrereporte: 'Reporte de triglicéridos altos por edades',
             datosLista: array,
         }
 
@@ -684,16 +707,29 @@ const generarReporteEpidemiologico =  async (req, res) => {
         filename = 'TriglicéridosAltos_Genero' + '_' + (Math.floor(Math.random() * 9999) + 10000) + '.pdf';
         var fecha = new Date();
         var y = fecha.getFullYear();
+        sql = "select count(p.idpaciente) as cuenta, p.genero " + 
+            "from resultado r " +
+            "join parametro pa on pa.idparametro = r.idparametro " +
+            "join detallechequeo dc on dc.iddetalle = r.iddetalle " +
+            "join chequeo c on c.idchequeo = dc.idchequeo " +
+            "join paciente p on p.idpaciente = c.idpaciente " +
+            "where r.valor > 200.00 AND pa.parametro like '%glicerid%' " +
+            "group by p.genero ";
+            const response = await sqlee.query(sql);
 
-        var generos = [{genero: 'Masculino'}, {genero: 'Femenino'}]
-
+        var generos = response.rows;
         
         for(const genero of generos){
+            const elemento = {
+                nombre: genero.genero,
+                cuenta: genero.cuenta,
+            }
+            array.push(elemento);
         }
         // esta sera la data que vamos a mandar al template(plantilla) para crear el pdf
         obj = {
             nombrelaboratorio: 'Laboratorio Nacional',
-            nombrereporte: 'Reporte de Trigliceridos Altos por genero',
+            nombrereporte: 'Reporte de trigliceridos altos por género',
             datosLista: array,
         }
 
@@ -701,14 +737,29 @@ const generarReporteEpidemiologico =  async (req, res) => {
 //Colesterol con zona geografica filtro 2 = 5
         filename = 'Colesterol_ZonaGeográfica' + '_' + (Math.floor(Math.random() * 9999) + 10000) + '.pdf';
         
+        sql = "select count(p.idpaciente) as cuenta, m.municipio " +
+        "from resultado r "+
+        "join detallechequeo dc on dc.iddetalle = r.iddetalle " +
+        "join chequeo c on c.idchequeo = dc.idchequeo " +
+        "join paciente p on p.idpaciente = c.idpaciente " +
+        "join parametro pa on pa.idparametro = r.idparametro " +
+        "join municipio m on m.idmunicipio = p.idmunicipio " +
+        "where r.valor > 200.00 AND pa.parametro like '%olester%' " +
+        "group by m.idmunicipio " ;
+        const response = await sqlee.query(sql);
+
         var municipios = response.rows;
         for(const municipio of municipios){
-
+            const elemento = {
+                nombre: municipio.municipio,
+                cuenta: municipio.cuenta,
+            }
+            array.push(elemento);
         }
         // esta sera la data que vamos a mandar al template(plantilla) para crear el pdf
         obj = {
             nombrelaboratorio: 'Laboratorio Nacional',
-            nombrereporte: 'Reporte Colesterol por zona geografica',
+            nombrereporte: 'Reporte de colesterol alto por zona geográfica',
             datosLista: array,
         }
 
@@ -752,11 +803,20 @@ const generarReporteEpidemiologico =  async (req, res) => {
             
         ]
         for(const edad of edades){
+            sql = "select count(p.idpaciente) as cuenta, AGE(p.fechanacimiento) " +
+            "from resultado r " +
+            "join detallechequeo dc on dc.iddetalle = r.iddetalle " +
+            "join chequeo c on c.idchequeo = dc.idchequeo " +
+            "join paciente p on p.idpaciente = c.idpaciente " +
+            "join parametro pa  on pa.idparametro = r.idparametro " +
+            "where r.valor > 200.00 AND pa.parametro like '%olestero%' " +
+            "group by p.fechanacimiento" ;
+            const response = await sqlee.query(sql);
         }
         // esta sera la data que vamos a mandar al template(plantilla) para crear el pdf
         obj = {
             nombrelaboratorio: 'Laboratorio Nacional',
-            nombrereporte: 'Reporte de Colesterol por edades',
+            nombrereporte: 'Reporte de colesterol alto por edades',
             datosLista: array,
         }
 
@@ -766,16 +826,29 @@ const generarReporteEpidemiologico =  async (req, res) => {
         
         var fecha = new Date();
         var y = fecha.getFullYear();
+        sql = "select count(p.idpaciente) as cuenta, p.genero " +
+            "from resultado r " +
+            "join parametro pa on pa.idparametro = r.idparametro " + 
+            "join detallechequeo dc on dc.iddetalle = r.iddetalle " +
+            "join chequeo c on c.idchequeo = dc.idchequeo " +
+            "join paciente p on p.idpaciente = c.idpaciente " +
+            "where r.valor > 200.00 AND pa.parametro like '%olestero%' " +
+            "group by p.genero";
+            const response = await sqlee.query(sql);
 
-        var generos = [{genero: 'Masculino'}, {genero: 'Femenino'}]
-
+        var generos = response.rows;
         
         for(const genero of generos){
+            const elemento = {
+                nombre: genero.genero,
+                cuenta: genero.cuenta,
+            }
+            array.push(elemento);
         }
         // esta sera la data que vamos a mandar al template(plantilla) para crear el pdf
         obj = {
             nombrelaboratorio: 'Laboratorio Nacional',
-            nombrereporte: 'Reporte de Colesterol Altos por genero',
+            nombrereporte: 'Reporte de colesterol alto por género',
             datosLista: array,
         }
 
@@ -783,14 +856,29 @@ const generarReporteEpidemiologico =  async (req, res) => {
 //AcidoUrico con zona geografica filtro 3 = 5
         filename = 'AcidoUrico_ZonaGeográfica' + '_' + (Math.floor(Math.random() * 9999) + 10000) + '.pdf';
         
+        sql = "select count(p.idpaciente) as cuenta, m.municipio " +
+        "from resultado r "+
+        "join detallechequeo dc on dc.iddetalle = r.iddetalle " +
+        "join chequeo c on c.idchequeo = dc.idchequeo " +
+        "join paciente p on p.idpaciente = c.idpaciente " +
+        "join parametro pa on pa.idparametro = r.idparametro " +
+        "join municipio m on m.idmunicipio = p.idmunicipio " +
+        "where ((p.genero like '%asculino%' AND r.valor > 7) OR (p.genero like '%emenino%' AND r.valor > 5.7)) AND pa.parametro like '%cido%' AND pa.parametro like '%rico%' " +
+        "group by m.idmunicipio " ;
+        const response = await sqlee.query(sql);
+
         var municipios = response.rows;
         for(const municipio of municipios){
-
+            const elemento = {
+                nombre: municipio.municipio,
+                cuenta: municipio.cuenta,
+            }
+            array.push(elemento);
         }
         // esta sera la data que vamos a mandar al template(plantilla) para crear el pdf
         obj = {
             nombrelaboratorio: 'Laboratorio Nacional',
-            nombrereporte: 'Reporte Acido Úrrico por zona geografica',
+            nombrereporte: 'Reporte de ácido úrico alto por zona geográfica',
             datosLista: array,
         }
 
@@ -834,11 +922,19 @@ const generarReporteEpidemiologico =  async (req, res) => {
             
         ]
         for(const edad of edades){
+            sql = "select count(p.idpaciente) as cuenta, AGE(p.fechanacimiento) " +
+            "from resultado r " +
+            "join detallechequeo dc on dc.iddetalle = r.iddetalle " +
+            "join chequeo c on c.idchequeo = dc.idchequeo " +
+            "join paciente p on p.idpaciente = c.idpaciente " +
+            "join parametro pa  on pa.idparametro = r.idparametro " +
+            "where ((p.genero like '%asculino%' AND r.valor > 7) OR (p.genero like '%emenino%' AND r.valor > 5.7)) AND pa.parametro like '%cido%' AND pa.parametro like '%rico%' " +
+            "group by p.fechanacimiento" ;
         }
         // esta sera la data que vamos a mandar al template(plantilla) para crear el pdf
         obj = {
             nombrelaboratorio: 'Laboratorio Nacional',
-            nombrereporte: 'Reporte de Acido Úrico Altos por edades',
+            nombrereporte: 'Reporte de ácido úrico alto por edades',
             datosLista: array,
         }
 
@@ -849,15 +945,29 @@ const generarReporteEpidemiologico =  async (req, res) => {
         var fecha = new Date();
         var y = fecha.getFullYear();
 
-        var generos = [{genero: 'Masculino'}, {genero: 'Femenino'}]
+        sql = "select count(p.idpaciente) as cuenta, p.genero " +
+            "from resultado r " +
+            "join parametro pa on pa.idparametro = r.idparametro " + 
+            "join detallechequeo dc on dc.iddetalle = r.iddetalle " +
+            "join chequeo c on c.idchequeo = dc.idchequeo " +
+            "join paciente p on p.idpaciente = c.idpaciente " +
+            "where ((p.genero like '%asculino%' AND r.valor > 7) OR (p.genero like '%emenino%' AND r.valor > 5.7)) AND pa.parametro like '%cido%' AND pa.parametro like '%rico%' " +
+            "group by p.genero";
+            const response = await sqlee.query(sql);
 
+        var generos = response.rows;
         
         for(const genero of generos){
+            const elemento = {
+                nombre: genero.genero,
+                cuenta: genero.cuenta,
+            }
+            array.push(elemento);
         }
         // esta sera la data que vamos a mandar al template(plantilla) para crear el pdf
         obj = {
             nombrelaboratorio: 'Laboratorio Nacional',
-            nombrereporte: 'Reporte de Acido Úrico Altos por genero',
+            nombrereporte: 'Reporte de ácido úrico alto por género',
             datosLista: array,
         }
 
@@ -865,14 +975,29 @@ const generarReporteEpidemiologico =  async (req, res) => {
 //Glucosa con zona geografica filtro 4 = 5
         filename = 'Glucosa_ZonaGeográfica' + '_' + (Math.floor(Math.random() * 9999) + 10000) + '.pdf';
         
+        sql = "select count(p.idpaciente) as cuenta, m.municipio " +
+        "from resultado r "+
+        "join detallechequeo dc on dc.iddetalle = r.iddetalle " +
+        "join chequeo c on c.idchequeo = dc.idchequeo " +
+        "join paciente p on p.idpaciente = c.idpaciente " +
+        "join parametro pa on pa.idparametro = r.idparametro " +
+        "join municipio m on m.idmunicipio = p.idmunicipio " +
+        "where r.valor > 115.00 AND pa.parametro like '%lucosa%' " +
+        "group by m.idmunicipio " ;
+        const response = await sqlee.query(sql);
+
         var municipios = response.rows;
         for(const municipio of municipios){
-
+            const elemento = {
+                nombre: municipio.municipio,
+                cuenta: municipio.cuenta,
+            }
+            array.push(elemento);
         }
         // esta sera la data que vamos a mandar al template(plantilla) para crear el pdf
         obj = {
             nombrelaboratorio: 'Laboratorio Nacional',
-            nombrereporte: 'Reporte Glucosa por zona geografica',
+            nombrereporte: 'Reporte de glucosa alta por zona geográfica',
             datosLista: array,
         }
 
@@ -916,11 +1041,20 @@ const generarReporteEpidemiologico =  async (req, res) => {
             
         ]
         for(const edad of edades){
+            sql = "select count(p.idpaciente) as cuenta, AGE(p.fechanacimiento) " +
+            "from resultado r " +
+            "join detallechequeo dc on dc.iddetalle = r.iddetalle " +
+            "join chequeo c on c.idchequeo = dc.idchequeo " +
+            "join paciente p on p.idpaciente = c.idpaciente " +
+            "join parametro pa  on pa.idparametro = r.idparametro " +
+            "where r.valor > 115.00 AND pa.parametro like '%lucosa%' " +
+            "group by p.fechanacimiento" ;
+            const response = await sqlee.query(sql);
         }
         // esta sera la data que vamos a mandar al template(plantilla) para crear el pdf
         obj = {
             nombrelaboratorio: 'Laboratorio Nacional',
-            nombrereporte: 'Reporte de Glucosa por edades',
+            nombrereporte: 'Reporte de glucosa alta por edades',
             datosLista: array,
         }
 
@@ -931,19 +1065,56 @@ const generarReporteEpidemiologico =  async (req, res) => {
         var fecha = new Date();
         var y = fecha.getFullYear();
 
-        var generos = [{genero: 'Masculino'}, {genero: 'Femenino'}]
+        sql = "select count(p.idpaciente) as cuenta, p.genero " +
+            "from resultado r " +
+            "join parametro pa on pa.idparametro = r.idparametro " + 
+            "join detallechequeo dc on dc.iddetalle = r.iddetalle " +
+            "join chequeo c on c.idchequeo = dc.idchequeo " +
+            "join paciente p on p.idpaciente = c.idpaciente " +
+            "where r.valor > 115.00 AND pa.parametro like '%lucosa%' " +
+            "group by p.genero";
+            const response = await sqlee.query(sql);
+
+        var generos = response.rows;
 
         
         for(const genero of generos){
+            const elemento = {
+                nombre: genero.genero,
+                cuenta: genero.cuenta,
+            }
+            array.push(elemento);
         }
         // esta sera la data que vamos a mandar al template(plantilla) para crear el pdf
         obj = {
             nombrelaboratorio: 'Laboratorio Nacional',
-            nombrereporte: 'Reporte de Glucosa por genero',
+            nombrereporte: 'Reporte de glucosa alta por género',
             datosLista: array,
         }
-
     }
+    // creamos el documento
+    const document = {
+        html: html,
+        data: {
+            datos: obj   // aqui enviamos toda la data
+        },
+        path: './docs/' + filename
+    }
+
+    // creamos el pdf
+    pdf.create(document, options)
+    .then(resp => {
+        res.status(200).json({
+            message: 'Creado con exito',
+            body: {
+                path: filename //enviamos el nombre del archivo como respuesta
+            }
+        });
+    }).catch(error => {
+        console.log(error);
+    });
+
+    const filepath = `http://${process.env.REACT_APP_SERVER_IP}/docs/` + filename;
 }
 
 const generarReporteCantidadExamenes =  async (req, res) => {
