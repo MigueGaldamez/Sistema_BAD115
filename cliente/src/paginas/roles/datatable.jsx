@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import Pagination from '../../componentes/Paginacion/paginacion';
-export default function DatatableRoles({ actualizaPermisos,nuevosPermisos,data,eliminarRegistro,actualizarRegistro,setNuevoNombre,permisos,setNuevosPermisos }) {
+export default function DatatableRoles({validarLista, actualizaPermisos,nuevosPermisos,data,eliminarRegistro,actualizarRegistro,setNuevoNombre,permisos,setNuevosPermisos }) {
   
   const dataOriginal = data;
   const [paginaActual, setPaginaActual] = useState(1);
@@ -69,10 +69,12 @@ export default function DatatableRoles({ actualizaPermisos,nuevosPermisos,data,e
               
                 )})}
               <td  >
-              <a class="btn btn-success btn-sm mx-1" onClick={()=>{actualizarRegistro(id)}}>Actualizar</a>
-              <a class="btn btn-danger btn-sm mx-1" data-bs-toggle="modal" data-bs-target={'#eliminarModal'+id} >Eliminar</a>
+              {validarLista.includes(43) &&
+              <a class="btn btn-success btn-sm mx-1" onClick={()=>{actualizarRegistro(id)}}>Actualizar</a>}
+               {validarLista.includes(44) &&<a class="btn btn-danger btn-sm mx-1" data-bs-toggle="modal" data-bs-target={'#eliminarModal'+id} >Eliminar</a>}
+               {validarLista.includes(43) &&
               <a class="btn btn-warning btn-sm mx-1" data-bs-toggle="modal" data-bs-target={'#permisosM'}  onClick={()=>{establevervalores(row['nombrerol'],row['permisos'],row['idrol'])}} >Modificar Permisos</a>
-              
+               }
               </td>
               {/* Modal para eliminar */}
               <div class="modal fade" id={'eliminarModal'+id} tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
@@ -117,7 +119,7 @@ export default function DatatableRoles({ actualizaPermisos,nuevosPermisos,data,e
     </table>
      {/* Modal para permisos */}
      <div class="modal fade" id='permisosM' tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-                <div class="modal-dialog modal-lg">
+                <div class="modal-dialog modal-xl">
                   <div class="modal-content">
                     <div class="modal-header">
                       <h5 class="modal-title" id="exampleModalLabel">Modificar Permisos</h5>
@@ -143,7 +145,7 @@ export default function DatatableRoles({ actualizaPermisos,nuevosPermisos,data,e
                                   }else
                                   {permitido=false;}
                                   return(
-                                    <div class="form-check col col-4" key={permiso}>
+                                    <div class="form-check col col-3" key={permiso}>
                                     <input class="form-check-input" type="checkbox" value={permiso.idopcionpermiso} id="flexCheckChecked" defaultChecked={permitido} onChange={manejarChecks} />
                                     <label class="form-check-label" for="flexCheckChecked">
                                     {permiso.accion}

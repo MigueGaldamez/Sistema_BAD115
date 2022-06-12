@@ -30,6 +30,7 @@ export default function DatatableRoles(
     eliminarNumeroActu,
     agregarNumeroActu,
     setNuevoGenero,
+    validarLista,
  }) {
   Moment.locale('es');
   const dataOriginal = data;
@@ -148,10 +149,14 @@ export default function DatatableRoles(
             )
             })}
               <td  >
-              <a class="btn btn-success btn-sm mx-1" onClick={()=>{actualizarRegistro(id)}}>Actualizar</a>
+              {validarLista.includes(39) &&
+              <a class="btn btn-success btn-sm mx-1" onClick={()=>{actualizarRegistro(id)}}>Actualizar</a>}
+                 {validarLista.includes(40) &&
               <a class="btn btn-danger btn-sm mx-1" data-bs-toggle="modal" data-bs-target={'#eliminarModal'+id} >Eliminar</a>
-              <a class="btn btn-info btn-sm mx-1" data-bs-toggle="modal" data-bs-target={'#detalles'+id} >Detalles</a>
-              <a class="btn btn-dark btn-sm mx-1" onClick={()=>{abrirModalA(id)}} >Modificar</a>
+                 }
+                 <a class="btn btn-info btn-sm mx-1" data-bs-toggle="modal" data-bs-target={'#detalles'+id} >Detalles</a>
+                 {validarLista.includes(39) &&
+              <a class="btn btn-dark btn-sm mx-1" onClick={()=>{abrirModalA(id)}} >Modificar</a>}
               
               </td>
               {/* Modal para eliminar */}

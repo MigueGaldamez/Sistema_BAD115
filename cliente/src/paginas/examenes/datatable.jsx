@@ -9,7 +9,8 @@ export default function DatatableRoles(
     consultarParametros,
     areaLista,
     setNuevosParametros,
-    nuevosParametros
+    nuevosParametros,
+    validarLista
      }) {
   
   const dataOriginal = data;
@@ -71,9 +72,11 @@ export default function DatatableRoles(
            
             )})}
               <td  >
-              <a class="btn btn-success btn-sm mx-1" onClick={()=>{actualizarRegistro(id)}}>Actualizar</a>
+              {validarLista.includes(55) &&
+              <a class="btn btn-success btn-sm mx-1" onClick={()=>{actualizarRegistro(id)}}>Actualizar</a>}
+              {validarLista.includes(56) &&
               <a class="btn btn-danger btn-sm mx-1" data-bs-toggle="modal" data-bs-target={'#eliminarModal'+id} >Eliminar</a>
-              <a class="btn btn-dark btn-sm mx-1" data-bs-toggle="modal" data-bs-target={'#modificarmodal'}  onClick={()=>{consultarPara(id)}}>Modificar Parametros</a>
+              }{validarLista.includes(55) &&<a class="btn btn-dark btn-sm mx-1" data-bs-toggle="modal" data-bs-target={'#modificarmodal'}  onClick={()=>{consultarPara(id)}}>Modificar Parametros</a>}
               </td>
               {/* Modal para eliminar */}
               <div class="modal fade" id={'eliminarModal'+id} tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
@@ -122,7 +125,7 @@ export default function DatatableRoles(
                     </div>
                     <div class="modal-body px-5">
                     <h5>Parametros de <span class="text-primary text-decoration-underline">{areaActual} </span></h5>
-                    {parametrosActual}
+                   
                     {parametrosActual.map((parametro,index) => {
                         if(index==0){
                           return(<div class="row" key={parametro}>
@@ -136,7 +139,7 @@ export default function DatatableRoles(
                             <div class="form-check col col-6"  key={parametro}>
                               <input class="form-check-input" defaultChecked={permitido} value={parametro.idparametro} type="checkbox"  id="flexCheckDefault"/>
                               <label class="form-check-label" for="flexCheckDefault">
-                              {parametro.parametro} , {parametro.idparametro}
+                              {parametro.parametro}
                               </label>
                             </div>
                             )})}

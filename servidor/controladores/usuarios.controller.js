@@ -1,7 +1,7 @@
 
 //SIEMPRE PONERLO
 const { sqlee } = require('./controlador');
-
+const {verificarPermiso} = require('./validarpermisos.controller');
 var CryptoJS = require('crypto-js');
 
 generarAuthToken = function() {
@@ -96,115 +96,146 @@ const crearUsuario =  async (req, res) => {
     const { nombre,correo,contrasenia,confirmarC,estado,laboratorio} = req.body;
     var erroresC ={};
     var correcto = true;
-    try{
-        if(nombre==''){
-            erroresC.nombre = "Este campo es obligatorio";  
-            correcto =false;
+    const idusuario = req.headers.idusuario;
+    //segundo parametro es la opcion
+    let permiso = await verificarPermiso(idusuario,46);
+    if(permiso){
+        try{
+            if(nombre==''){
+                erroresC.nombre = "Este campo es obligatorio";  
+                correcto =false;
+            }
+            if(laboratorio<=0){
+                erroresC.laboratorio = "Este campo es obligatorio";  
+                correcto =false;
+            }
+            if(correo==""){
+                erroresC.correo = "Este campo es obligatorio";  
+                correcto =false;
+            }
+            if(contrasenia==""){
+                erroresC.contrasenia = "Este campo es obligatorio";  
+                correcto =false;
+            }
+            if(confirmarC==""){
+                erroresC.confirmarC = "Este campo es obligatorio";  
+                correcto =false;
+            }
+            if(contrasenia!=confirmarC){
+                erroresC.confirmarC = "Contraseñas no coinciden";  
+                correcto =false;
+            }
+            if(correcto==false)
+            {
+                res.status(200).json({
+                    error:'hay error',
+                    errores: erroresC,
+                })
+            }else{
+                const response = await sqlee.query('INSERT INTO usuario (idlaboratorio,contrasenia,estado,nombreusuario,correousuario) VALUES ($1,$2,$3,$4,$5)', 
+                [laboratorio,contrasenia,estado,nombre,correo]);
+                res.status(200).json({
+                    message: 'Añadido con Exito',
+                    body: {
+                    poblacion: {response}
+                    }
+                })
+            }
+        }catch(error){
+            console.log(error);
+            res.status(500).json(error);
         }
-        if(laboratorio<=0){
-            erroresC.laboratorio = "Este campo es obligatorio";  
-            correcto =false;
-        }
-        if(correo==""){
-            erroresC.correo = "Este campo es obligatorio";  
-            correcto =false;
-        }
-        if(contrasenia==""){
-            erroresC.contrasenia = "Este campo es obligatorio";  
-            correcto =false;
-        }
-        if(confirmarC==""){
-            erroresC.confirmarC = "Este campo es obligatorio";  
-            correcto =false;
-        }
-        if(contrasenia!=confirmarC){
-            erroresC.confirmarC = "Contraseñas no coinciden";  
-            correcto =false;
-        }
-        if(correcto==false)
-        {
-            res.status(200).json({
-                error:'hay error',
-                errores: erroresC,
-            })
-        }else{
-            const response = await sqlee.query('INSERT INTO usuario (idlaboratorio,contrasenia,estado,nombreusuario,correousuario) VALUES ($1,$2,$3,$4,$5)', 
-            [laboratorio,contrasenia,estado,nombre,correo]);
-            res.status(200).json({
-                message: 'Añadido con Exito',
-                body: {
-                poblacion: {response}
-                }
-            })
-        }
-    }catch(error){
-        console.log(error);
-        res.status(500).json(error);
+    }else{
+      res.status(400).send('No tiene permisos para esta acción');
     }
+  
 };
 
 const actualizarUsuario = async (req,res)=>{
     const id = req.body.idusuario;
     var { nombre,laboratorio,correo,estado } = req.body;
- 
-    try{
-        registroSQL = 'SELECT * FROM usuario where idusuario=$1 limit 1';
-        const responseRe = await sqlee.query(registroSQL,[id]);
-        registro = responseRe.rows[0];
-        
-        if(nombre==''){
-            nombre = registro.nombreusuario;
+    const idusuario = req.headers.idusuario;
+    //segundo parametro es la opcion
+    let permiso = await verificarPermiso(idusuario,47);
+    if(permiso){
+        try{
+            registroSQL = 'SELECT * FROM usuario where idusuario=$1 limit 1';
+            const responseRe = await sqlee.query(registroSQL,[id]);
+            registro = responseRe.rows[0];
+            
+            if(nombre==''){
+                nombre = registro.nombreusuario;
+            }
+            if(laboratorio<=0){
+                laboratorio = registro.idlaboratorio
+            }
+            if(correo==""){
+               correo = registro.correousuario
+            }
+            if(estado==null){
+                estado = registro.estado
+             }
+            sql = "UPDATE usuario SET nombreusuario=$1, correousuario=$2, idlaboratorio=$3,estado=$4 WHERE idusuario=$5";
+            const response = await sqlee.query(sql,[nombre,correo,laboratorio,estado,id]);
+           
+            res.status(200).json({
+            poblacion:{response}
+            })
+        }catch(error){
+            res.status(500).json(error);
         }
-        if(laboratorio<=0){
-            laboratorio = registro.idlaboratorio
-        }
-        if(correo==""){
-           correo = registro.correousuario
-        }
-        if(estado==null){
-            estado = registro.estado
-         }
-        sql = "UPDATE usuario SET nombreusuario=$1, correousuario=$2, idlaboratorio=$3,estado=$4 WHERE idusuario=$5";
-        const response = await sqlee.query(sql,[nombre,correo,laboratorio,estado,id]);
-       
-        res.status(200).json({
-        poblacion:{response}
-        })
-    }catch(error){
-        res.status(500).json(error);
+    }else{
+      res.status(400).send('No tiene permisos para esta acción');
     }
+   
 };
 
 const actualizarUsuarioRoles = async (req,res)=>{
     const id = req.body.idusuario;
     const { roles } = req.body;
-    try{
-        sql = "DELETE from detallerol WHERE idusuario=$1";
-        const response = await sqlee.query(sql,[id]);
-        //console.log(response.rows);
-        for (const rol of roles) {
-            sql2 = "Insert into detallerol(idrol,idusuario) VALUES($1,$2)";
-            const response2 = await sqlee.query(sql2,[rol,id]);
-        };
-        sql2 = "Select from detallerol WHERE idusuario=$1";
-        const response2 = await sqlee.query(sql2,[id]);
-
-        res.status(200).json(response2.rows);
-    }catch(error){
-        res.status(500).json(error);
+    const idusuario = req.headers.idusuario;
+    //segundo parametro es la opcion
+    let permiso = await verificarPermiso(idusuario,47);
+    if(permiso){
+        try{
+            sql = "DELETE from detallerol WHERE idusuario=$1";
+            const response = await sqlee.query(sql,[id]);
+            //console.log(response.rows);
+            for (const rol of roles) {
+                sql2 = "Insert into detallerol(idrol,idusuario) VALUES($1,$2)";
+                const response2 = await sqlee.query(sql2,[rol,id]);
+            };
+            sql2 = "Select from detallerol WHERE idusuario=$1";
+            const response2 = await sqlee.query(sql2,[id]);
+    
+            res.status(200).json(response2.rows);
+        }catch(error){
+            res.status(500).json(error);
+        }
+    }else{
+      res.status(400).send('No tiene permisos para esta acción');
     }
+    
 };
 
 const eliminarUsuario =  async (req, res) => {
     const id = parseInt(req.params.idusuario);
-    try{
-        await sqlee.query('DELETE FROM usuario where idusuario = $1', [
-            id
-        ]);
-        res.status(200).json('Eliminado satisfactoriamente');
-    }catch(error){
-        res.status(500).json(error);
+    const idusuario = req.headers.idusuario;
+    //segundo parametro es la opcion
+    let permiso = await verificarPermiso(idusuario,48);
+    if(permiso){
+        try{
+            await sqlee.query('DELETE FROM usuario where idusuario = $1', [
+                id
+            ]);
+            res.status(200).json('Eliminado satisfactoriamente');
+        }catch(error){
+            res.status(500).json(error);
+        }
+    }else{
+      res.status(400).send('No tiene permisos para esta acción');
     }
+   
 };
 const validarPermiso =  async (req, res) => {
 

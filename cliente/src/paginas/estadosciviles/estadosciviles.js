@@ -4,6 +4,8 @@ import Axios from 'axios';
 import DatatableRoles from "./datatable";
 import { Modal } from 'bootstrap/dist/js/bootstrap.bundle.min';
 import swal from 'sweetalert';
+import Cookies from 'universal-cookie';
+const cookies = new Cookies();
 
 const EstadosCiviles = () => { 
     //PARA los ERRORES
@@ -15,6 +17,7 @@ const EstadosCiviles = () => {
   //LA LISTA QUEMOSTRAREMOS
   const[estadoCivilLista, setEstadoCivilLista] = useState([]);
   const[modalB, setModalB] = useState([]);
+  const[validarLista, setValidarLista] = useState([]);
   //PARA LA BUSQUEDA
   const [q, setQ] = useState('');
   //TODAS LAS COLUMNAS
@@ -27,10 +30,19 @@ const EstadosCiviles = () => {
     'idestado',
     'estadocivil',
   ]);
-
+  //esto es para validar en el backend y mandar siempre el id usuario
+  Axios.interceptors.request.use(function (config) {
+    var id = cookies.get('usuario').idusuario;
+    config.headers.idusuario =  id;
+    return config;
+});
   const obtenerRegistros=()=>{
     Axios.get(`http://${process.env.REACT_APP_SERVER_IP}/estadosciviles`).then((response)=>{
       setEstadoCivilLista(response.data);  });
+      var id = cookies.get('usuario').idusuario;
+      Axios.get(`http://${process.env.REACT_APP_SERVER_IP}/validarpermisos/${id}`).then((response)=>{
+        setValidarLista(response.data);
+      });
   };
 
   const abrirModal=()=>{
@@ -100,12 +112,21 @@ const EstadosCiviles = () => {
       });    
     }).catch(function (error) {
       if(error.response!=null){
-       swal({
-         title: "Error!",
-         text: error.response.data.detail,
-         icon: "error",
-         button: "Aww yiss!",
-       });
+        if(error.response.data.detail){
+          swal({
+            title: "Error!",
+            text: error.response.data.detail,
+            icon: "error",
+            button: "Aww yiss!",
+          });
+        }else if(error.response.data){
+          swal({
+            title: "Error!",
+            text: error.response.data,
+            icon: "error",
+            button: "Aww yiss!",
+          });
+        }
      }if(error.response==null){
        swal({
          title: "Error!",
@@ -128,12 +149,21 @@ const EstadosCiviles = () => {
       });      
     }).catch(function (error) {
       if(error.response!=null){
-       swal({
-         title: "Error!",
-         text: error.response.data.detail,
-         icon: "error",
-         button: "Aww yiss!",
-       });
+        if(error.response.data.detail){
+          swal({
+            title: "Error!",
+            text: error.response.data.detail,
+            icon: "error",
+            button: "Aww yiss!",
+          });
+        }else if(error.response.data){
+          swal({
+            title: "Error!",
+            text: error.response.data,
+            icon: "error",
+            button: "Aww yiss!",
+          });
+        }
      }if(error.response==null){
        swal({
          title: "Error!",
@@ -164,6 +194,15 @@ const EstadosCiviles = () => {
  
   },[]);
   return (
+    <> {/*asi validamos cada permiso*/}
+    {(!validarLista.includes(29)) && 
+    <div class="col container mx-auto my-auto text-center">
+      <h1 class="text-primary">Ups...</h1>
+       <h4>No tiene permisos para ver estos registros</h4>
+   </div>}{
+   
+ }
+    {validarLista.includes(29) &&
     <div class="col container my-4">
       <div class="modal fade" id="nuevoRegistro" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true" data-bs-backdrop="static">
         <div class="modal-dialog">
@@ -192,9 +231,10 @@ const EstadosCiviles = () => {
       <div class="mt-4 mb-4">
         <div class="row bordeLateral mb-3">
         <h2 class="m-0"><span>Gestión de Estados Civiles</span>
+        {validarLista.includes(30) &&
           <button type="button" class="btn btn-primary btn-sm ms-3"  onClick={abrirModal}>
             Nuevo Registro
-          </button>
+          </button>}
           </h2>
         </div>
          
@@ -244,14 +284,14 @@ const EstadosCiviles = () => {
               </div>
             </div>
           </div>
-          <DatatableRoles  data={buscar(estadoCivilLista)} eliminarRegistro={eliminarRegistro} actualizarRegistro={actualizaRegistro} setNuevoNombre={setNuevoNombre}/>
+          <DatatableRoles validarLista={validarLista} data={buscar(estadoCivilLista)} eliminarRegistro={eliminarRegistro} actualizarRegistro={actualizaRegistro} setNuevoNombre={setNuevoNombre}/>
   
 
 
 
 
       </div>    
-    </div>
+    </div>}</>
   );
 };
   

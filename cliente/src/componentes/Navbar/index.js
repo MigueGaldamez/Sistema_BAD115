@@ -91,6 +91,9 @@ const Navbar = () => {
                     </ul>
                 </li>
                 <li class="nav-item w-100">
+                    <NavLink to="/examenes" class="nav-link  text-light" aria-current="page" href="#">Examenes</NavLink>
+                </li>
+                <li class="nav-item w-100">
                     <NavLink to="/chequeos" class="nav-link  text-light" aria-current="page" href="#">Chequeos</NavLink>
                 </li>
                 <li class="nav-item w-100">
