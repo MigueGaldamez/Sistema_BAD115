@@ -20,7 +20,7 @@ const { crearPaciente, obtenerPacientes, actualizarPaciente, eliminarPaciente, o
 
 const { obtenerChequeos, crearChequeo, actualizarChequeo, eliminarChequeo, /*obtenerChequeosPaciente,*/ } = require('../controladores/chequeos.controller');
 
-const { obtenerUsuarios, iniciarSesion,crearUsuario,actualizarUsuario,actualizarUsuarioRoles,eliminarUsuario,obtenerUsuariosLibres} = require('../controladores/usuarios.controller');
+const { obtenerUsuarios, iniciarSesion,crearUsuario,actualizarUsuario,actualizarUsuarioRoles,eliminarUsuario,obtenerUsuariosLibres, obtenerUsuariosLaboratoristas} = require('../controladores/usuarios.controller');
 const { crearExamen, obtenerExamenes, actualizarExamen, eliminarExamen, } = require('../controladores/examenes.controller');
 
 const { obtenerOrdenes, obtenerParametrosResultados, obtenerOpcionesResultados, guardarResultado, obtenerIntervalosResultados, validarResultado, obtenerResultados, actualizarResultado, eliminarResultado, obtenerIntervalosRefResultados, } = require('../controladores/detalleChequeo.controller');
@@ -61,6 +61,7 @@ router.delete('/poblaciones/:idpoblacion', eliminarPoblacion);
 //CRUD USUARIOS
 router.get('/usuarios', obtenerUsuarios);
 router.get('/usuariosLibres', obtenerUsuariosLibres);
+router.get('/usuariosLaboratoristas', obtenerUsuariosLaboratoristas);
 router.post('/iniciarSesion', iniciarSesion)
 router.post('/usuarios', crearUsuario);
 router.put('/usuarios', actualizarUsuario)

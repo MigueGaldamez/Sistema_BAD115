@@ -68,6 +68,31 @@ const obtenerUsuariosLibres = async(req,res)=>{
  
 };
 
+const obtenerUsuariosLaboratoristas = async(req,res)=>{
+    valor = req.headers.authorization;
+ 
+    try{
+        
+        sql = 'select * from usuario where idusuario in(SELECT idusuario FROM laboratorista) order by idusuario asc';
+        const response = await sqlee.query(sql);
+        usuarios = response.rows;
+
+        for(const usuario of usuarios){
+            sql2 = 'SELECT * FROM laboratorio where idlaboratorio=($1) limit 1';
+            const responseHija = await sqlee.query(sql2,[usuario.idlaboratorio]);
+            usuario.laboratorio = responseHija.rows[0].nombrelaboratorio;
+            usuario.infolaboratorio = responseHija.rows[0]; 
+        
+        }
+
+        res.status(200).json(usuarios);
+    }catch(error){
+        res.status(500).json(error);
+    }
+    
+ 
+};
+
 const iniciarSesion = async(req,res)=>{
    
     const { correo,contrasenia} = req.body;
@@ -217,5 +242,6 @@ module.exports = {
    eliminarUsuario,
    generarAuthToken,
    obtenerUsuariosLibres,
+   obtenerUsuariosLaboratoristas,
    actualizarUsuarioRoles,
 };

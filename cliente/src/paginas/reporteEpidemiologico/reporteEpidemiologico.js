@@ -7,7 +7,7 @@ import swal from 'sweetalert';
 const Laboratorios = () => { 
 
   //PARA CADA ATRIBUTO
-  const[filtro,setFiltro]=useState('1');
+  const[filtro,setFiltro]=useState('5');
   const[padecimiento,setPadecimiento]=useState('1');
   
   const generarReporte=() =>{
@@ -65,7 +65,7 @@ const Laboratorios = () => {
                             <div class="col col-6">
                             <select class="form-select form-select-sm my-2" aria-label="Default select example" onChange={(event)=>{setFiltro(event.target.value)}}>
                                 <option value="5">Zona Geográfica</option>
-                                {/*<option value="6">Edad</option>*/}
+                                <option value="6">Edad</option>
                                 <option value="7">Género</option>
                             </select>
                             </div>

@@ -70,7 +70,7 @@ const obtenerChequeosPaciente = async(req,res)=>{
 };
 
 const crearChequeo =  async (req, res) => {
-    const {paciente, laboratorio, fechaChequeo, horaChequeo,examenes} = req.body;
+    const {paciente, laboratorio, fechaChequeo, horaChequeo,examenes,usuario} = req.body;
     console.log(req.body);
     var erroresC ={};
     var correcto = true;
@@ -78,6 +78,10 @@ const crearChequeo =  async (req, res) => {
        
         if(paciente=='' || paciente==0){
             erroresC.paciente = "Este campo es obligatorio";  
+            correcto =false;
+        }
+        if(usuario=='' || usuario==0){
+            erroresC.usuario = "Este campo es obligatorio";  
             correcto =false;
         }
         if(laboratorio=='' || laboratorio==0){
@@ -107,8 +111,8 @@ const crearChequeo =  async (req, res) => {
         }
         else{
             const archivo = "nada";
-            const response =  await sqlee.query('INSERT INTO chequeo (idpaciente, idlaboratorio, idUsuario, fechaChequeo, horaChequeo) VALUES ($1,$2, 1, $3,$4) RETURNING idchequeo',
-            [paciente, laboratorio, fechaChequeo, horaChequeo]);
+            const response =  await sqlee.query('INSERT INTO chequeo (idpaciente, idlaboratorio, idUsuario, fechaChequeo, horaChequeo) VALUES ($1,$2,$3,$4,$5) RETURNING idchequeo',
+            [paciente, laboratorio, usuario, fechaChequeo, horaChequeo]);
             for(const examen of examenes){
                 const response2 =  await sqlee.query('INSERT INTO detallechequeo (idchequeo, idexamen,estadoexamen) VALUES ($1,$2,false)',
                 [response.rows[0].idchequeo,examen]);

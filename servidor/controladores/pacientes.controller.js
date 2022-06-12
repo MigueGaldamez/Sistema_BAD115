@@ -35,14 +35,16 @@ const obtenerPacientes = async(req,res)=>{
 
 const obtenerPacienteExamenes = async(req,res)=>{
     try{
+        idusuario = 1;
         sql = 'select chequeo.idchequeo as idcheq, nombrepaciente, apellido, fechanacimiento, count(chequeo.idchequeo) as cuenta ' +
         'from detallechequeo ' +
         'join chequeo on detallechequeo.idchequeo = chequeo.idchequeo ' +
         'join paciente on paciente.idpaciente = chequeo.idpaciente ' +
+        'where chequeo.idusuario = $1 ' +
         'group by (chequeo.idchequeo, nombrepaciente, apellido, fechanacimiento) ' +
         'order by chequeo.idchequeo asc';
         //sql = 'select * from paciente';
-        const response = await sqlee.query(sql);
+        const response = await sqlee.query(sql, [idusuario]);
 
         pacientes = response.rows;
 
