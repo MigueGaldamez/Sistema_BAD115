@@ -14,7 +14,7 @@
             </td>
             <td align="center" bgcolor="#ffe77b" style="background-color: #fff;">
               <h2 style="font-weight: 900;color: brown;">{{ datos.nombrelaboratorio }}</h2>
-              <p> Laboratorio  clínico<br/> otro texto</p>
+              <p> Laboratorio  clínico<br/> 2022 - BAD115</p>
             </td>
         </tr>
     </table> 
@@ -30,11 +30,11 @@
           </td>
       </tr>
       <tr>
-        
+        {{#ifCond datos.filtro "==" 1}}
         <td width="50%" align="left"   bgcolor="#ffe77b" style="background-color: #fff;">
-          <p style="font-size: 12px; margin-top: 5px; margin-bottom: 5px; padding-left: 10px;">Filtrado por: {{ datos.filtro }}</p>            
+          <p style="font-size: 12px; margin-top: 5px; margin-bottom: 5px; padding-left: 10px;">Filtrado por: {{ datos.nombrelaboratorio }}</p>            
         </td>
-        
+        {{/ifCond}}
       </tr>
 
     </table>  
@@ -42,25 +42,31 @@
     
    
     <h1 style="font-size: 15px;font-weight: 600;  margin-top: 20px; text-align: center;">{{ this.nombrelaboratorio }}</h1>
-    <table style="font-size: 12px; text-align: center; width: 50%; margin-left: 25%;" class="table" width="50%">
-      <thead>
-        <tr>
-          <th style="border-bottom-width:1px; padding: 0; padding-left: 10px; padding-bottom: 5px;" scope="col">Examen</th>
-          <th style="border-bottom-width:1px; padding: 0; padding-left: 10px; padding-bottom: 5px;" scope="col">Area</th>
-          <th style="border-bottom-width:1px; padding: 0; padding-left: 10px; padding-bottom: 5px;" scope="col">Cuenta</th>
-        </tr>
-      </thead>
-      <tbody>
+   
        
         {{#each datos.examenes }}
-        <tr>
-          <td style="border-bottom: hidden;" width="25%">{{ this.nombreexamen }}</td>
-          <td style="border-bottom: hidden;" width="25%">{{ this.nombrearea }}</td>
-          <td style="border-bottom: hidden;" width="25%">{{ this.count }}</td>
-        </tr>
-        {{/each}}
+        <h2 style="text-align: center;">{{this.nombrelaboratorio}}</h2>
+        <table style="font-size: 12px; text-align: center; width: 50%; margin-left: 25%;" class="table" width="50%">
+          <thead>
+            <tr>
+              <th style="border-bottom-width:1px; padding: 0; padding-left: 10px; padding-bottom: 5px;" scope="col">Examen</th>
+              <th style="border-bottom-width:1px; padding: 0; padding-left: 10px; padding-bottom: 5px;" scope="col">Area</th>
+              <th style="border-bottom-width:1px; padding: 0; padding-left: 10px; padding-bottom: 5px;" scope="col">Cuenta</th>
+            </tr>
+          </thead>
+          <tbody>
+            {{#each this.examenes}}
+            <tr>
+              <td style="border-bottom: hidden;" width="100%">{{ this.nombreexamen }}</td>
+              <td style="border-bottom: hidden;" width="25%">{{ this.nombrearea }}</td>
+              <td style="border-bottom: hidden;" width="25%">{{ this.count }}</td>
+            </tr>
+            {{/each}}
+       
       </tbody>
     </table>
+        {{/each}}
+      
     
 </body>
 </html>

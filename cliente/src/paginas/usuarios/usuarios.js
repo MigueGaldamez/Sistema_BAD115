@@ -274,7 +274,62 @@ const Usuarios = () => {
       ),
     );
   }
+function validarContrasenia(password){
+  var password_strength = document.getElementById("password_strength");
+  if(password.length==0){
+    password_strength.innerHTML = "";
+    return;
+  }
+  var regex = new Array();
+  regex.push("[A-Z]"); //For Uppercase Alphabet
+  regex.push("[a-z]"); //For Lowercase Alphabet
+  regex.push("[0-9]"); //For Numeric Digits
+  regex.push("[$@$!%*#?&]"); //For Special Characters
 
+  var passed = 0;
+
+  //Validation for each Regular Expression
+  for (var i = 0; i < regex.length; i++) {
+      if((new RegExp (regex[i])).test(password)){
+          passed++;
+      }
+  }
+
+  //Validation for Length of Password
+  if(passed > 2 && password.length > 8){
+      passed++;
+  }
+
+  //Display of Status
+  var color = "";
+  var passwordStrength = "";
+  switch(passed){
+      case 0:
+          break;
+      case 1:
+          passwordStrength = "Contraseña debil.";
+          color = "Red";
+          break;
+      case 2:
+          passwordStrength = "Contraseña moderada.";
+          color = "darkorange";
+          break;
+      case 3:
+        passwordStrength = "Contraseña moderada.";
+        color = "darkorange";
+          break;
+      case 4:
+          passwordStrength = "Contraseña fuerte.";
+          color = "Green";
+          break;
+      case 5:
+          passwordStrength = "Contraseña muy fuerte.";
+          color = "darkgreen";
+          break;
+  }
+  password_strength.innerHTML = passwordStrength;
+  password_strength.style.color = color;
+}
   
 
 
@@ -329,11 +384,14 @@ const Usuarios = () => {
                     }
               </div>
               <div class="col col-6">
+                  
                   <label class="form-label mt-3">Contrasenia:</label>
-                    <input type="password" class="form-control form-control-sm" placeholder='Ingrese su contraseña' onChange={(event)=>{ setContrasenia(event.target.value)}}/>        
+                    <input type="password" class="form-control form-control-sm" placeholder='Ingrese su contraseña' onChange={(event)=>{ setContrasenia(event.target.value);validarContrasenia(event.target.value)}}/>        
+                    <small id="password_strength"></small>
                     { 
                     errores.contrasenia &&
                   <small class="text-danger">* {errores.contrasenia}</small>
+                  
                   }
               </div>
               <div class="col col-6">
