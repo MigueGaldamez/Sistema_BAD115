@@ -73,7 +73,7 @@ const DetalleChequeo = () => {
     });
 
     Axios.get(`${process.env.REACT_APP_SERVER_IP}/intervalosResultados`).then((response)=>{
-      setIntervalosLista(response
+      setIntervalosLista(response)
     });
     
     Axios.get(`${process.env.REACT_APP_SERVER_IP}/intervalosRefResultados`).then((response)=>{
