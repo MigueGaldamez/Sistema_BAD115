@@ -1160,7 +1160,7 @@ const generarReporteEpidemiologico =  async (req, res) => {
         console.log(error);
     });
 
-    const filepath = `http://${process.env.REACT_APP_SERVER_IP}/docs/` + filename;
+    const filepath = `${process.env.REACT_APP_SERVER_IP}/docs/` + filename;
 }
 
 const generarReporteCantidadExamenes =  async (req, res) => {
@@ -1453,7 +1453,7 @@ const generarReporteTipos=  async (req, res) => {
         console.log(error);
     });
 
-    const filepath = `http://${process.env.REACT_APP_SERVER_IP}/docs/` + filename;
+    const filepath = `${process.env.REACT_APP_SERVER_IP}/docs/` + filename;
 
 }
 module.exports = {
