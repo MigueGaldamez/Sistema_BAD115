@@ -108,7 +108,7 @@ const Navbar = () => {
                             <NavLinkDrop to="/resultados" class="dropdown-item" aria-current="page" href="#">Registrar resultados</NavLinkDrop>
                         </li>
                         <li class="nav-item w-100 text-light">
-                            <NavLinkDrop to="/resultados" class="dropdown-item" aria-current="page" href="#">Ver resultados</NavLinkDrop>
+                            <NavLinkDrop to="/resultadoslista" class="dropdown-item" aria-current="page" href="#">Ver resultados</NavLinkDrop>
                         </li>
                        
                     </ul>

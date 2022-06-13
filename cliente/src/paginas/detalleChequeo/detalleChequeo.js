@@ -5,6 +5,8 @@ import DatatableRoles from "./datatable";
 import Moment from 'moment';
 import { Modal } from 'bootstrap/dist/js/bootstrap.bundle.min';
 import swal from 'sweetalert';
+import Cookies from 'universal-cookie';
+const cookies = new Cookies();
 var SHA256 = require("crypto-js/sha256");
 
 const DetalleChequeo = () => { 
@@ -53,6 +55,12 @@ const DetalleChequeo = () => {
     'fechanacimiento',
     'cuenta',
   ]);
+
+  Axios.interceptors.request.use(function (config) {
+    var id = cookies.get('usuario').idusuario;
+    config.headers.idusuario =  id;
+    return config;
+  });
   
 
   const obtenerRegistros=()=>{

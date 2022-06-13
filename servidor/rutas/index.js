@@ -23,7 +23,7 @@ const { obtenerChequeos, crearChequeo, actualizarChequeo, eliminarChequeo, /*obt
 const { obtenerUsuarios, iniciarSesion,crearUsuario,actualizarUsuario,actualizarUsuarioRoles,eliminarUsuario,obtenerUsuariosLibres, obtenerUsuariosLaboratoristas} = require('../controladores/usuarios.controller');
 const { crearExamen, obtenerExamenes, actualizarExamen, eliminarExamen, } = require('../controladores/examenes.controller');
 
-const { obtenerOrdenes, obtenerParametrosResultados, obtenerOpcionesResultados, guardarResultado, obtenerIntervalosResultados, validarResultado, obtenerResultados, actualizarResultado, eliminarResultado, obtenerIntervalosRefResultados, } = require('../controladores/detalleChequeo.controller');
+const { obtenerOrdenes, obtenerParametrosResultados, obtenerOpcionesResultados, guardarResultado, obtenerIntervalosResultados, validarResultado, obtenerResultados, actualizarResultado, eliminarResultado, obtenerIntervalosRefResultados, obtenerOrdenesAll} = require('../controladores/detalleChequeo.controller');
 
 const { crearMuestra, eliminarMuestra, obtenerMuestras} = require('../controladores/muestras.controller');
 
@@ -146,6 +146,7 @@ router.delete('/examenes/:idexamen', eliminarExamen);
 
 //REGISTRO DE RESULTADOS
 router.get('/ordenes/:idchequeo', obtenerOrdenes);
+router.get('/ordenesLista/', obtenerOrdenesAll);
 router.get('/parametrosResultados/:idexamen', obtenerParametrosResultados);
 router.get('/opcionesResultados', obtenerOpcionesResultados);
 router.get('/intervalosResultados', obtenerIntervalosResultados);
