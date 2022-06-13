@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import Pagination from '../../componentes/Paginacion/paginacion';
-export default function DatatableRoles({ data,eliminarRegistro,actualizarRegistro,setNuevoNombre }) {
+export default function DatatableRoles({ data,eliminarRegistro,actualizarRegistro,setNuevoNombre,validarLista }) {
   
   const dataOriginal = data;
   const [paginaActual, setPaginaActual] = useState(1);
@@ -20,7 +20,8 @@ export default function DatatableRoles({ data,eliminarRegistro,actualizarRegistr
     <table class="table table-striped mt-4 table-hover table-responsive-lg" cellPadding={0} cellSpacing={0}>
       <thead class="table-dark">
         <tr>
-          {data[0] && columns.map((heading) => <th>{heading}</th>)}
+          {data[0] && columns.map((heading) =>  { if(heading!='fechaactualizacion' && heading!='fechacreacion')
+          {return(<th>{heading}</th>)}})}
           <th>Acciones</th>
         </tr>
       </thead>
@@ -44,10 +45,11 @@ export default function DatatableRoles({ data,eliminarRegistro,actualizarRegistr
               <td>{row[column]}  </td>
            
             )})}
-              <td  >
-              <a class="btn btn-success btn-sm mx-1" onClick={()=>{actualizarRegistro(id)}}>Actualizar</a>
+              <td  > {validarLista.includes(23) &&
+              <a class="btn btn-success btn-sm mx-1" onClick={()=>{actualizarRegistro(id)}}>Actualizar</a>}
+               {validarLista.includes(24) &&
               <a class="btn btn-danger btn-sm mx-1" data-bs-toggle="modal" data-bs-target={'#eliminarModal'+id} >Eliminar</a>
-              </td>
+               }</td>
               {/* Modal para eliminar */}
               <div class="modal fade" id={'eliminarModal'+id} tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
                 <div class="modal-dialog">

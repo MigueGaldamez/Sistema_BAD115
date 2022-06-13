@@ -5,6 +5,9 @@ import DatatableRoles from "./datatable";
 import Moment from 'moment';
 import { Modal } from 'bootstrap/dist/js/bootstrap.bundle.min';
 import swal from 'sweetalert';
+
+import Cookies from 'universal-cookie';
+const cookies = new Cookies();
 var SHA256 = require("crypto-js/sha256");
 
 const DetalleChequeo = () => { 
@@ -29,6 +32,8 @@ const DetalleChequeo = () => {
 
   const[modalRegistro, setModalRegistro] = useState([]);
   const[modalVerMuestra, setModalVerMuestra] = useState([]);
+  const[validarLista, setValidarLista] = useState([]);
+
   //PARA LA BUSQUEDA
   /*
   const [q, setQ] = useState('');
@@ -46,15 +51,25 @@ const DetalleChequeo = () => {
     'area',
   ]);
   */
+ //esto es para validar en el backend y mandar siempre el id usuario
+ Axios.interceptors.request.use(function (config) {
+  var id = cookies.get('usuario').idusuario;
+  config.headers.idusuario =  id;
+  return config;
+});
 
   const obtenerRegistros=()=>{
-    Axios.get(`https://${process.env.REACT_APP_SERVER_IP}/pacientesPacienteExamenes`).then((response)=>{
+    Axios.get(`${process.env.REACT_APP_SERVER_IP}/pacientesPacienteMuestras`).then((response)=>{
       setPacientesLista(response.data);
     });    
+    var id = cookies.get('usuario').idusuario;
+    Axios.get(`${process.env.REACT_APP_SERVER_IP}/validarpermisos/${id}`).then((response)=>{
+      setValidarLista(response.data);
+    });
   };
 
   const obtenerTabla=(id)=>{
-    Axios.get(`https://${process.env.REACT_APP_SERVER_IP}/ordenes/${id}`).then((response)=>{
+    Axios.get(`${process.env.REACT_APP_SERVER_IP}/ordenes/${id}`).then((response)=>{
       setOrdenesLista(response.data);
     });
   };
@@ -96,7 +111,7 @@ const DetalleChequeo = () => {
   }
 
   const guardar=(iddetalle, idchequeo)=>{
-    Axios.post(`https://${process.env.REACT_APP_SERVER_IP}/muestras`,{
+    Axios.post(`${process.env.REACT_APP_SERVER_IP}/muestras`,{
       observaciones:observaciones, 
       horaIngreso:horaIngreso,
       fechaIngreso:fechaIngreso,
@@ -118,12 +133,21 @@ const DetalleChequeo = () => {
       //obtenerRegistros();
     }).catch(function (error) {
       if(error.response!=null){
-        swal({
-          title: "Error!",
-          text: error.response.data.detail,
-          icon: "error",
-          button: "Aww yiss!",
-        });
+        if(error.response.data.detail){
+          swal({
+            title: "Error!",
+            text: error.response.data.detail,
+            icon: "error",
+            button: "Aww yiss!",
+          });
+        }else if(error.response.data){
+          swal({
+            title: "Error!",
+            text: error.response.data,
+            icon: "error",
+            button: "Aww yiss!",
+          });
+        }
       }if(error.response==null){
         swal({
           title: "Error!",
@@ -146,7 +170,7 @@ const DetalleChequeo = () => {
     })
     .then(willDelete => {
       if (willDelete) {
-        Axios.delete(`https://${process.env.REACT_APP_SERVER_IP}/muestras/${iddetalle}`).then(()=>{
+        Axios.delete(`${process.env.REACT_APP_SERVER_IP}/muestras/${iddetalle}`).then(()=>{
           swal({
             title: "Exito!",
             text: "Eliminado con exito",
@@ -159,12 +183,21 @@ const DetalleChequeo = () => {
           //obtenerRegistros();
         }).catch(function (error) {
           if(error.response!=null){
-            swal({
-              title: "Error!",
-              text: error.response.data.detail,
-              icon: "error",
-              button: "Aww yiss!",
-            });
+            if(error.response.data.detail){
+              swal({
+                title: "Error!",
+                text: error.response.data.detail,
+                icon: "error",
+                button: "Aww yiss!",
+              });
+            }else if(error.response.data){
+              swal({
+                title: "Error!",
+                text: error.response.data,
+                icon: "error",
+                button: "Aww yiss!",
+              });
+            }
           }if(error.response==null){
             console.log(error);
             swal({
@@ -200,7 +233,17 @@ const DetalleChequeo = () => {
   },[]);
 
   return (
-    <div class="container my-4">
+    <>{/*asi validamos cada permiso*/}
+    {(!validarLista.includes(70)) && 
+    <div class="col container mx-auto my-auto text-center">
+      <h1 class="text-primary">Ups...</h1>
+       <h4>No tiene permisos para ver estos registros</h4>
+   </div>}{
+   
+ }
+    {validarLista.includes(70) &&
+
+    <div class="col container my-4">
       
       
       <div class="mt-4 mb-4">
@@ -251,6 +294,7 @@ const DetalleChequeo = () => {
                       eliminar={eliminar}
                       setObservaciones={setObservaciones}
                       errores={errores}
+                      validarLista={validarLista}
                       />
                     </div>
                 </div>
@@ -261,7 +305,7 @@ const DetalleChequeo = () => {
           
           
       </div>    
-    </div>
+    </div>}</>
   );
 };
   

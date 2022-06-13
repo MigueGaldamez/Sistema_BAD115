@@ -23,8 +23,7 @@ export default function DatatableRoles({
   guardar,
   modificar,
   eliminar,
-  generarReporteResultados,
-  validarLista
+  generarReporteResultados
   }) {
   
   const dataOriginal = data;
@@ -65,11 +64,12 @@ export default function DatatableRoles({
         {data[0] && columns.map((heading) => {
              if(heading!='idarea' && heading!='iddetalle'  && heading!='idexamen' && heading!='idchequeo' && heading!='idpaciente' && heading!='idlaboratorio' 
              && heading!='idusuario' && heading!='fechachequeo'  && heading!='horachequeo' && heading!='archivo' && heading!='estadochequeo' && heading!='idmunicipio' 
-             && heading!='idestado' && heading!='nombrepaciente'  && heading!='apellido' && heading!='direccion' && heading!='fechanacimiento' && heading!='correopaciente'
+             && heading!='idestado'  && heading!='apellido' && heading!='direccion' && heading!='fechanacimiento' && heading!='correopaciente'
              && heading!='observaciones' && heading!='fechaingreso'  && heading!='horaingreso' && heading!='idmuestra' && heading!='nombrelaboratorio'
              && heading!='idresultado' && heading!='idparametro'  && heading!='valor' && heading!='positivo' && heading!='comentario' && heading!='presencia' 
-             && heading!='genero' && heading!='fecharegistro' && heading!='horaregistro' && heading!='nombreusuario'    && heading!='fechaactualizacion' && heading!='fechacreacion')
-           
+             && heading!='genero' && heading!='horaregistro'   && heading!='fechaactualizacion' && heading!='fechacreacion'
+             && heading!='contrasenia' && heading!='estado' && heading!='correousuario')
+            
              return(<th>{heading}</th>)
             })}
           <th>Acciones</th>
@@ -80,6 +80,13 @@ export default function DatatableRoles({
           <tr>
            
             {columns.map((column) => {
+
+            if(column=='nombrepaciente')
+            return(
+                
+              <td>{row['nombrepaciente']} {row['apellido']}</td>
+
+            )
             
             if(column=='nombreexamen')
             return(
@@ -94,6 +101,19 @@ export default function DatatableRoles({
               <td>{row[column]}</td>
            
             )
+            if(column=='nombreusuario')
+            return(
+                
+              <td>{row[column]}</td>
+           
+            )
+            if(column=='fecharegistro')
+            return(
+                
+              <td>{(row[column]!=null)?Moment(row[column]).format('D MMMM YYYY'):' - '}</td>
+           
+            )
+            
             if(column=='estadoexamen')
             return(
                 
@@ -108,8 +128,8 @@ export default function DatatableRoles({
 
             <td>
             {row['idmuestra']==null?<p class="mx-1"><i>No se encontró muestra</i></p>: null}
-            {(row['idmuestra']!=null && row['estadoexamen']==false && validarLista.includes(67))?<a class="btn btn-success btn-sm mx-1" onClick={()=>{abrirModalRegistrar(id)}}>Registrar resultados</a>: null}
-            {(row['estadoexamen']==true && validarLista.includes(66))?<a class="btn btn-success btn-sm mx-1" onClick={()=>{abrirModalResultados(id)}}>Ver resultados</a>: null}
+            {(row['idmuestra']!=null && row['estadoexamen']==false)?<p class="mx-1"><i>Sin resultados</i></p>: null}
+            {(row['estadoexamen']==true)?<a class="btn btn-success btn-sm mx-1" onClick={()=>{abrirModalResultados(id)}}>Ver resultados</a>: null}
             </td>
 
             
@@ -259,12 +279,16 @@ export default function DatatableRoles({
               <div class="col col-6">
                 <p class="m-0"><b>Edad: </b>{Moment().diff(valores.fechanacimiento, 'years')} años </p> 
                 <p class="m-0" ><b>Genero: </b>{valores.genero}</p>
-                <p class="m-0" ><b>Fecha resultados: </b>{Moment(valores.fecharegistro).format('DD/MM/YYYY')}&nbsp;&nbsp;&nbsp;{valores.horaregistro}</p>
+                <p class="m-0 "><b>Ingreso de muestra: </b>{Moment(valores.fechaingreso).format('DD/MM/YYYY')}&nbsp;&nbsp;&nbsp;{valores.horaingreso}</p>
               </div>
               <div class="col col-6">
-                <p class="m-0 "><b>Ingreso de muestra: </b>{Moment(valores.fechaingreso).format('DD/MM/YYYY')}&nbsp;&nbsp;&nbsp;{valores.horaingreso}</p>
                 <p class="m-0 "><b>Laboratorio: </b>{valores.nombrelaboratorio}</p>
                 <p class="m-0 "><b>Laboratorista: </b>{valores.nombreusuario}</p>
+                
+                <p class="m-0" ><b>Fecha resultados: </b>{Moment(valores.fecharegistro).format('DD/MM/YYYY')}&nbsp;&nbsp;&nbsp;{valores.horaregistro}</p>
+              </div>
+              <div class="col col-12">
+                <p class="m-0 "><b>Observaciones de muestra: </b>{valores.observaciones}</p>
               </div>
             </div>
             <br></br>
@@ -289,7 +313,7 @@ export default function DatatableRoles({
                                           if(result.idparametro === id){
                                             return(
                                             <div class="input-group input-group-sm">
-                                              <input defaultValue={result.valor} id={'mod_'+row["parametro"]} type="text" class="form-control" aria-label="dfg"></input>
+                                              <p type="text" class="form-control" aria-label="dfg">{result.valor}</p>
                                               <span class="input-group-text">{intervalo.simbolo}</span>
                                             </div>)
                                           }
@@ -303,7 +327,9 @@ export default function DatatableRoles({
                             <div class="col col-6">
                               {resultadosLista.map((result) => {
                                   if(result.idparametro === id){
-                                    return(<input  defaultValue={result.comentario} type="text" id={'mod_comentario_'+row["parametro"]} class="form-control form-control-sm"  aria-label="dfg"/>)
+                                    return(<div class="input-group input-group-sm">
+                                    <p type="text" class="form-control" aria-label="dfg">{result.comentario}</p>
+                                  </div>)
                                   }
                                 })
                               }
@@ -331,32 +357,21 @@ export default function DatatableRoles({
                           <label for="exampleInput" class="form-label">{row['parametro']}</label>
                           <div class="row">
                             <div class="col col-5">
-                              <select id={'mod_'+row["parametro"]} class="form-select form-select-sm" aria-label="Default select example" onChange="">
-                                <option value='0' selected>Seleccione una opcion </option>
-
-                                  {opcionesLista.map((opcion) => {
-                                  
-                                  if((opcion.idparametro === row['idparametro'] /*&& opcion.opcion === valores.comentario*/)){
-                                      
-                                    return(  
-                                        resultadosLista.map((result) => {
-                                          if(id===result.idparametro && opcion.opcion === result.opcion){
-                                            return(<option value={opcion.idopcion} selected>{opcion.opcion}</option>)
-                                          }
-                                          if(id===result.idparametro && opcion.opcion !== result.opcion){
-                                            return(<option value={opcion.idopcion}>{opcion.opcion}</option>)
-                                          }
-                                        })
-                                      )
-                                  }
-                                
+                                {resultadosLista.map((result) => {
+                                      if(result.idparametro === id){
+                                        return(
+                                        <div class="input-group input-group-sm">
+                                          <p type="text" class="form-control" aria-label="dfg">{result.opcion}</p>
+                                        </div>)
+                                      }
                                   })}
-                              </select>
                             </div>
                             <div class="col col-6">
                               {resultadosLista.map((result) => {
                                 if(id===result.idparametro && valores.iddetalle===result.iddetalle){
-                                  return(<input defaultValue={result.comentario} type="text" id={'mod_comentario_'+row["parametro"]} class="form-control form-control-sm"  aria-label="dfg"/>)
+                                  return(<div class="input-group input-group-sm">
+                                  <p type="text" class="form-control" aria-label="dfg">{result.comentario}</p>
+                                </div>)
                                 }
                               })}
                             
@@ -390,11 +405,8 @@ export default function DatatableRoles({
           <div class="modal-footer">
             
             <a type="btn btn-success" class="btn btn-success col-auto me-auto " onClick={()=>{generarReporteResultados(valores, resultadosLista, parametroLista, intervalosLista, opcionesLista)}}>Mostrar PDF</a>
-            <a type="btn" class="btn btn-secondary col-auto" data-bs-dismiss="modal" >Cancelar</a>
-            {validarLista.includes(68) &&
-            <a type="btn btn-danger" class="btn btn-danger col-auto" onClick={()=>{eliminar(valores.iddetalle, valores.idchequeo)}}>Eliminar</a>
-            } {validarLista.includes(69) &&<a type="btn btn-success" class="btn btn-primary col-auto" onClick={()=>{modificar(valores.iddetalle, valores.idchequeo)}}>Modificar</a>
-          }</div>
+            <a type="btn" class="btn btn-secondary col-auto" data-bs-dismiss="modal" >Cerrar</a>
+          </div>
         </div>
       </div>
     </div>

@@ -5,6 +5,8 @@ import DatatableRoles from "./datatable";
 import Moment from 'moment';
 import { Modal } from 'bootstrap/dist/js/bootstrap.bundle.min';
 import swal from 'sweetalert';
+import Cookies from 'universal-cookie';
+const cookies = new Cookies();
 var SHA256 = require("crypto-js/sha256");
 
 const DetalleChequeo = () => { 
@@ -28,60 +30,78 @@ const DetalleChequeo = () => {
   const[parametroLista, setParametrosLista] = useState([]);
   const[opcionesLista, setOpcionesLista] = useState([]);
   const[intervalosLista, setIntervalosLista] = useState([]);
-
+  const[intervalosRefLista, setIntervalosRefLista] = useState([]);
+  const[validarLista, setValidarLista] = useState([]);
   const columns = pacientesLista[0] && Object.keys(pacientesLista[0]);
 
   const[modalB, setModalB] = useState([]);
   const[modalRegistro, setModalRegistro] = useState([]);
   const[modalVerResultado, setModalVerResultado] = useState([]);
   //PARA LA BUSQUEDA
-  /*
+  
   const [q, setQ] = useState('');
   //TODAS LAS COLUMNAS
-  const [columns] =useState([
+  /*const [columns] =useState([
     'idexamen',
     'nombreexamen',
     'area',
     
-  ]);
+  ]);*/
   //LAS COLUMNAS POR LAS QUE SEPUEDEN FILTRAR
   const [buscarColumnas, setBuscarColumnas] = useState([
-    'idexamen',
-    'nombreexamen',
-    'area',
+    'idcheq',
+    'nombrepaciente',
+    'apellido',
+    'fechanacimiento',
+    'cuenta',
   ]);
-  */
+
+  Axios.interceptors.request.use(function (config) {
+    var id = cookies.get('usuario').idusuario;
+    config.headers.idusuario =  id;
+    return config;
+  });
+  
 
   const obtenerRegistros=()=>{
-    Axios.get(`https://${process.env.REACT_APP_SERVER_IP}/pacientesPacienteExamenes`).then((response)=>{
+    Axios.get(`${process.env.REACT_APP_SERVER_IP}/pacientesPacienteExamenes`).then((response)=>{
       setPacientesLista(response.data);
     });
 
-    Axios.get(`https://${process.env.REACT_APP_SERVER_IP}/opcionesResultados`).then((response)=>{
+    Axios.get(`${process.env.REACT_APP_SERVER_IP}/opcionesResultados`).then((response)=>{
       setOpcionesLista(response.data);
     });
 
-    Axios.get(`https://${process.env.REACT_APP_SERVER_IP}/intervalosResultados`).then((response)=>{
+    Axios.get(`${process.env.REACT_APP_SERVER_IP}/intervalosResultados`).then((response)=>{
       setIntervalosLista(response.data);
     });
     
+    Axios.get(`${process.env.REACT_APP_SERVER_IP}/intervalosRefResultados`).then((response)=>{
+      setIntervalosRefLista(response.data);
+    });
+    var id = cookies.get('usuario').idusuario;
+    Axios.get(`${process.env.REACT_APP_SERVER_IP}/validarpermisos/${id}`).then((response)=>{
+      setValidarLista(response.data);
+      console.log(response.data);
+    });
+
   };
 
   const obtenerTabla=(id)=>{
-    Axios.get(`https://${process.env.REACT_APP_SERVER_IP}/ordenes/${id}`).then((response)=>{
+    Axios.get(`${process.env.REACT_APP_SERVER_IP}/ordenes/${id}`).then((response)=>{
       setOrdenesLista(response.data);
     });
   };
 
   
   const obtenerParametros=(id)=>{
-    Axios.get(`https://${process.env.REACT_APP_SERVER_IP}/parametrosResultados/${id}`).then((response)=>{
+    Axios.get(`${process.env.REACT_APP_SERVER_IP}/parametrosResultados/${id}`).then((response)=>{
       setParametrosLista(response.data);
     });
   };
 
   const obtenerResultados=(id)=>{
-    Axios.get(`https://${process.env.REACT_APP_SERVER_IP}/resultados/${id}`).then((response)=>{
+    Axios.get(`${process.env.REACT_APP_SERVER_IP}/resultados/${id}`).then((response)=>{
       setResultadosLista(response.data);
     });
   };
@@ -143,17 +163,17 @@ const DetalleChequeo = () => {
     parametroLista.map((element) => {
       if (element.tipo == 1) {
         variables = {
-          idopcion: document.getElementById(element.parametro).value,
-          valor: 0,
-        }
-      } else if (element.tipo == 2) {
-        variables = {
           idopcion: 0,
           valor: document.getElementById(element.parametro).value,
         }
+      } else if (element.tipo == 2) {
+        variables = {
+          idopcion: document.getElementById(element.parametro).value,
+          valor: 0,
+        }
       }
       
-      Axios.post(`https://${process.env.REACT_APP_SERVER_IP}/validarResultados`,{
+      Axios.post(`${process.env.REACT_APP_SERVER_IP}/validarResultados`,{
         tipo: element.tipo,
         idparametro:element.idparametro,
         iddetalle:iddetalle,
@@ -178,7 +198,7 @@ const DetalleChequeo = () => {
           if (cont==parametroLista.length){
 
             registros.forEach( function (element) {
-              Axios.post(`https://${process.env.REACT_APP_SERVER_IP}/resultados`,{
+              Axios.post(`${process.env.REACT_APP_SERVER_IP}/resultados`,{
                 tipo: element.tipo,
                 idparametro: element.idparametro,
                 iddetalle: element.iddetalle,
@@ -210,12 +230,21 @@ const DetalleChequeo = () => {
         //obtenerRegistros();
       }).catch(function (error) {
         if(error.response!=null){
-          swal({
-            title: "Error!",
-            text: error.response.data.detail,
-            icon: "error",
-            button: "Aww yiss!",
-          });
+          if(error.response.data.detail){
+            swal({
+              title: "Error!",
+              text: error.response.data.detail,
+              icon: "error",
+              button: "Aww yiss!",
+            });
+          }else if(error.response.data){
+            swal({
+              title: "Error!",
+              text: error.response.data,
+              icon: "error",
+              button: "Aww yiss!",
+            });
+          }
         }if(error.response==null){
           swal({
             title: "Error!",
@@ -240,16 +269,16 @@ const DetalleChequeo = () => {
     parametroLista.map((element) => {
       if (element.tipo == 1) {
         variables = {
-          idopcion: document.getElementById('mod_'+element.parametro).value,
-          valor: 0,
-        }
-      } else if (element.tipo == 2) {
-        variables = {
           idopcion: 0,
           valor: document.getElementById('mod_'+element.parametro).value,
         }
+      } else if (element.tipo == 2) {
+        variables = {
+          idopcion: document.getElementById('mod_'+element.parametro).value,
+          valor: 0,
+        }
       }
-      Axios.post(`https://${process.env.REACT_APP_SERVER_IP}/validarResultados`,{
+      Axios.post(`${process.env.REACT_APP_SERVER_IP}/validarResultados`,{
         tipo: element.tipo,
         idparametro:element.idparametro,
         iddetalle:iddetalle,
@@ -274,7 +303,7 @@ const DetalleChequeo = () => {
           if (cont==parametroLista.length){
 
             registros.forEach( function (element) {
-              Axios.put(`https://${process.env.REACT_APP_SERVER_IP}/resultados`,{
+              Axios.put(`${process.env.REACT_APP_SERVER_IP}/resultados`,{
                 tipo: element.tipo,
                 idparametro: element.idparametro,
                 iddetalle: element.iddetalle,
@@ -306,12 +335,21 @@ const DetalleChequeo = () => {
         //obtenerRegistros();
       }).catch(function (error) {
         if(error.response!=null){
-          swal({
-            title: "Error!",
-            text: error.response.data.detail,
-            icon: "error",
-            button: "Aww yiss!",
-          });
+          if(error.response.data.detail){
+            swal({
+              title: "Error!",
+              text: error.response.data.detail,
+              icon: "error",
+              button: "Aww yiss!",
+            });
+          }else if(error.response.data){
+            swal({
+              title: "Error!",
+              text: error.response.data,
+              icon: "error",
+              button: "Aww yiss!",
+            });
+          }
         }if(error.response==null){
           swal({
             title: "Error!",
@@ -334,7 +372,7 @@ const DetalleChequeo = () => {
     })
     .then(willDelete => {
       if (willDelete) {
-        Axios.delete(`https://${process.env.REACT_APP_SERVER_IP}/resultados/${iddetalle}`).then(()=>{
+        Axios.delete(`${process.env.REACT_APP_SERVER_IP}/resultados/${iddetalle}`).then(()=>{
           swal({
             title: "Exito!",
             text: "Eliminado con exito",
@@ -347,12 +385,21 @@ const DetalleChequeo = () => {
           //obtenerRegistros();
         }).catch(function (error) {
           if(error.response!=null){
-            swal({
-              title: "Error!",
-              text: error.response.data.detail,
-              icon: "error",
-              button: "Aww yiss!",
-            });
+            if(error.response.data.detail){
+              swal({
+                title: "Error!",
+                text: error.response.data.detail,
+                icon: "error",
+                button: "Aww yiss!",
+              });
+            }else if(error.response.data){
+              swal({
+                title: "Error!",
+                text: error.response.data,
+                icon: "error",
+                button: "Aww yiss!",
+              });
+            }
           }if(error.response==null){
             swal({
               title: "Error!",
@@ -369,7 +416,7 @@ const DetalleChequeo = () => {
   }
 
   const generarReporteResultados=(valores, resultados, parametros, intervalos, opciones) =>{
-    Axios.post(`https://${process.env.REACT_APP_SERVER_IP}/generarpdfresultados`,{
+    Axios.post(`${process.env.REACT_APP_SERVER_IP}/generarpdfresultados`,{
       valores:valores,
       resultados:resultados,
       parametros:parametros,
@@ -382,7 +429,7 @@ const DetalleChequeo = () => {
       console.log(response.data.body.path);
       var link = document.createElement("a");
       link.download =true;
-      link.href = `https://${process.env.REACT_APP_SERVER_IP}/docs/${filename}`;
+      link.href = `${process.env.REACT_APP_SERVER_IP}/docs/${filename}`;
       link.target = "_blank";
       link.click();
       //document.getElementById('my_iframe').src = url;
@@ -392,7 +439,9 @@ const DetalleChequeo = () => {
   }
 
   /*function buscar(rows) {
-    return rows.filter((row) =>
+    //var ListaTemp = pacientesLista;
+    console.log(ListaTemp);
+    setPacientesLista(rows.filter((row) =>
       buscarColumnas.some(
         (column) =>
           row[column]
@@ -400,7 +449,7 @@ const DetalleChequeo = () => {
             .toLowerCase()
             .indexOf(q.toLowerCase()) > -1,
       ),
-    );
+    ));
   }*/
 
 
@@ -410,7 +459,14 @@ const DetalleChequeo = () => {
   },[]);
 
   return (
-    <div class="container my-4">
+    <>{/*asi validamos cada permiso*/}
+    {(!validarLista.includes(65)) && 
+    <div class="col container mx-auto my-auto text-center">
+      <h1 class="text-primary">Ups...</h1>
+       <h4>No tiene permisos para ver estos registros</h4>
+   </div>}
+    {validarLista.includes(65) &&
+    <div class="col container my-4">
       
       
       <div class="mt-4 mb-4">
@@ -466,11 +522,13 @@ const DetalleChequeo = () => {
                       obtenerResultados={obtenerResultados}
                       parametroLista={parametroLista}
                       intervalosLista={intervalosLista}
+                      intervalosRefLista={intervalosRefLista}
                       opcionesLista={opcionesLista}
                       guardar={guardar}
                       modificar={modificar}
                       eliminar={eliminar}
                       generarReporteResultados={generarReporteResultados}
+                      validarLista={validarLista}
                       />
                     </div>
                 </div>
@@ -481,7 +539,7 @@ const DetalleChequeo = () => {
           
           
       </div>    
-    </div>
+    </div>}</>
   );
 };
   

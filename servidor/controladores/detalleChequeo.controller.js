@@ -26,6 +26,29 @@ const obtenerOrdenes = async(req,res)=>{
   
 };
 
+const obtenerOrdenesAll = async(req,res)=>{
+    try{
+        //sql = 'SELECT detallechequeo.iddetalle as iddetalle, detallechequeo.idexamen as idexamen, detallechequeo.idchequeo as idchequeo, estadoexamen, fecharegistro, horaregistro, examen.idarea as idarea, nombreexamen, examen.idarea, nombrearea, chequeo.idpaciente as idpaciente, chequeo.idlaboratorio as idlaboratorio, usuario.idusuario as idusuario, nombreusuario, fechachequeo, horachequeo, archivo, estadochequeo, idestado, nombrepaciente, apellido, direccion, fechanacimiento, correopaciente, genero, idmuestra, observaciones, fechaingreso, horaingreso, nombrelaboratorio FROM detallechequeo ' + 
+        sql = 'SELECT * FROM detallechequeo ' + 
+        'join examen on examen.idexamen = detallechequeo.idexamen ' + 
+        'join area on area.idarea = examen.idarea ' + 
+        'join chequeo on chequeo.idchequeo = detallechequeo.idchequeo ' +
+        'join paciente on paciente.idpaciente = chequeo.idpaciente ' +
+        'join muestra on muestra.iddetalle = detallechequeo.iddetalle ' +
+        'join laboratorio on laboratorio.idlaboratorio = chequeo.idlaboratorio ' +
+        'join usuario on usuario.idusuario = chequeo.idusuario ' +
+        'order by detallechequeo.iddetalle desc';
+        const response = await sqlee.query(sql);
+
+        examenes = response.rows;
+        res.status(200).json(examenes);
+    }catch(error){
+        res.status(500).json(error);
+        console.log(error);
+    }
+  
+};
+
 const obtenerParametrosResultados = async(req,res)=>{
     const id = parseInt(req.params.idexamen);
     try{
@@ -61,7 +84,22 @@ const obtenerOpcionesResultados = async(req,res)=>{
 
 const obtenerIntervalosResultados = async(req,res)=>{
     try{
-        sql = 'select * from intervalo join unidad on unidad.idunidad = intervalo.idunidad';
+        sql = 'select distinct idparametro, simbolo from intervalo i join unidad u on u.idunidad = i.idunidad ';
+        const response = await sqlee.query(sql);
+
+        intervalos = response.rows;
+
+        res.status(200).json(intervalos);
+    }catch(error){
+        res.status(500).json(error);
+        console.log(error);
+    }
+  
+};
+
+const obtenerIntervalosRefResultados = async(req,res)=>{
+    try{
+        sql = 'select * from intervalo join unidad on unidad.idunidad = intervalo.idunidad join poblacion on poblacion.idpoblacion = intervalo.idpoblacion';
         const response = await sqlee.query(sql);
 
         intervalos = response.rows;
@@ -84,14 +122,14 @@ const validarResultado =  async (req, res) => {
         const response1 =  await sqlee.query('select * from parametro where idparametro = $1 limit 1',[idparametro]);
         var parametro = response1.rows[0].parametro;
         
-        if(tipo==1){
-            if(idopcion==null || idopcion==0){
-                erroresC.errorParametros = "Debe seleccionar una opción para el parametro de: " + parametro;  
-                correcto =false;
-            }
-        } else if(tipo==2){
+        if(tipo===1){
             if(valor=='' || valor==0){
                 erroresC.errorParametros = "Debe ingresar un valor para el parametro de: " + parametro;  
+                correcto =false;
+            }
+        } else if(tipo===2){
+            if(idopcion==null || idopcion==0){
+                erroresC.errorParametros = "Debe seleccionar una opción para el parametro de: " + parametro;  
                 correcto =false;
             }
         }
@@ -128,10 +166,17 @@ const guardarResultado =  async (req, res) => {
     var response = null;
     var erroresC ={};
     var correcto = true;
+    console.log(req.body);
     try{
         
 
         if(tipo==1){
+            var opcion ="";
+            response =  await sqlee.query('INSERT INTO resultado (idparametro, iddetalle, valor, positivo, opcion, comentario, presencia) '+
+            'VALUES ($1,$2,$3,$4,$5,$6,$7) ',
+            [idparametro, iddetalle, valor, positivo, opcion, comentario, presencia]);
+        
+        } else if(tipo==2){
             // valor = 0;
             
             idopcion = valor;
@@ -141,12 +186,6 @@ const guardarResultado =  async (req, res) => {
             response =  await sqlee.query('INSERT INTO resultado (idparametro, iddetalle, valor, positivo, opcion, comentario, presencia) '+
             'VALUES ($1,$2,$3,$4,$5,$6,$7) ',
             [idparametro, iddetalle, 0, positivo, valorOpcion, comentario, presencia]);
-        
-        } else if(tipo==2){
-            var opcion ="";
-            response =  await sqlee.query('INSERT INTO resultado (idparametro, iddetalle, valor, positivo, opcion, comentario, presencia) '+
-            'VALUES ($1,$2,$3,$4,$5,$6,$7) ',
-            [idparametro, iddetalle, valor, positivo, opcion, comentario, presencia]);
         
         }
         
@@ -195,17 +234,17 @@ const actualizarResultado =  async (req, res) => {
         
 
         if(tipo==1){
+
+            response =  await sqlee.query('UPDATE resultado SET valor = $1, comentario = $2 WHERE iddetalle = $3 AND idparametro = $4',
+            [valor, comentario, iddetalle, idparametro]);
+        
+        } else if(tipo==2){
             idopcion = valor;
             const response1 =  await sqlee.query('select * from opcion where idopcion = $1 limit 1',[idopcion]);
             var valorOpcion = response1.rows[0].opcion;
 
             response =  await sqlee.query('UPDATE resultado SET opcion = $1, comentario = $2 WHERE iddetalle = $3 AND idparametro = $4',
             [valorOpcion, comentario, iddetalle, idparametro ]);
-        
-        } else if(tipo==2){
-
-            response =  await sqlee.query('UPDATE resultado SET valor = $1, comentario = $2 WHERE iddetalle = $3 AND idparametro = $4',
-            [valor, comentario, iddetalle, idparametro]);
         
         }
 
@@ -230,7 +269,7 @@ const eliminarResultado =  async (req, res) => {
     try{
         const response = await sqlee.query('DELETE FROM resultado where iddetalle = $1', [id]);
 
-        const response2 = await sqlee.query('UPDATE detallechequeo SET estadoExamen=false WHERE iddetalle = $1 ',[id]);   
+        const response2 = await sqlee.query('UPDATE detallechequeo SET estadoExamen=false, fecharegistro=null, horaregistro=null WHERE iddetalle = $1 ',[id]);   
         res.status(200).json(`Eliminado satisfactoriamente`);
     }catch(error){
         res.status(500).json(error);
@@ -240,11 +279,13 @@ const eliminarResultado =  async (req, res) => {
 
 module.exports = {
     obtenerOrdenes,
+    obtenerOrdenesAll,
     obtenerParametrosResultados,
     obtenerOpcionesResultados,
     validarResultado,
     guardarResultado,
     obtenerIntervalosResultados,
+    obtenerIntervalosRefResultados,
     obtenerResultados,
     actualizarResultado,
     eliminarResultado,

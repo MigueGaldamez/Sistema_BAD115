@@ -32,6 +32,8 @@ const Usuarios = () => {
   const[usuarioLista, setUsuarioLista] = useState([]);
   const[laboratorioLista, setLaboratorioLista] = useState([]);
   const[modalB, setModalB] = useState([]);
+  
+  const[validarLista, setValidarLista] = useState([]);
   //PARA LA BUSQUEDA
   const [q, setQ] = useState('');
   //TODAS LAS COLUMNAS
@@ -48,19 +50,28 @@ const Usuarios = () => {
     'correousuario',
     'nombreusuario'
   ]);
-
+  //esto es para validar en el backend y mandar siempre el id usuario
+  Axios.interceptors.request.use(function (config) {
+    var id = cookies.get('usuario').idusuario;
+    config.headers.idusuario =  id;
+    return config;
+});
   const obtenerRegistros=()=>{
     const token = cookies.get("usuario");
     console.log("Sip: "+token);
     const config = {
         headers: { Authorization:token }
     };
-    Axios.get(`https://${process.env.REACT_APP_SERVER_IP}/usuarios`,config).then((response)=>{
+    Axios.get(`${process.env.REACT_APP_SERVER_IP}/usuarios`,config).then((response)=>{
       setUsuarioLista(response.data);  });
-    Axios.get(`https://${process.env.REACT_APP_SERVER_IP}/laboratorios`).then((response)=>{
+    Axios.get(`${process.env.REACT_APP_SERVER_IP}/laboratorios`).then((response)=>{
       setLaboratorioLista(response.data);  });
-      Axios.get(`https://${process.env.REACT_APP_SERVER_IP}/roles`).then((response)=>{
+      Axios.get(`${process.env.REACT_APP_SERVER_IP}/roles`).then((response)=>{
         setRolLista(response.data);
+      });
+      var id = cookies.get('usuario').idusuario;
+      Axios.get(`${process.env.REACT_APP_SERVER_IP}/validarpermisos/${id}`).then((response)=>{
+        setValidarLista(response.data);
       });
   };
 
@@ -91,7 +102,7 @@ const Usuarios = () => {
     event.preventDefault();
     var contraseniaEncriptada = (SHA256(contrasenia)).toString();
     var confirmacionEncriptada = (SHA256(confirmarC)).toString();
-    Axios.post(`https://${process.env.REACT_APP_SERVER_IP}/usuarios`,{
+    Axios.post(`${process.env.REACT_APP_SERVER_IP}/usuarios`,{
       //TODOS LOS CAMPOS
       nombre:nombre,
       correo:correo,
@@ -115,12 +126,21 @@ const Usuarios = () => {
       obtenerRegistros();
     }).catch(function (error) {
       if(error.response!=null){
-       swal({
-         title: "Error!",
-         text: error.response.data.detail,
-         icon: "error",
-         button: "Aww yiss!",
-       });
+        if(error.response.data.detail){
+          swal({
+            title: "Error!",
+            text: error.response.data.detail,
+            icon: "error",
+            button: "Aww yiss!",
+          });
+        }else if(error.response.data){
+          swal({
+            title: "Error!",
+            text: error.response.data,
+            icon: "error",
+            button: "Aww yiss!",
+          });
+        }
      }if(error.response==null){
        swal({
          title: "Error!",
@@ -133,7 +153,7 @@ const Usuarios = () => {
   };
 
   const eliminarRegistro=(idusuario)=>{
-    Axios.delete(`https://${process.env.REACT_APP_SERVER_IP}/usuarios/${idusuario}`).then(()=>{
+    Axios.delete(`${process.env.REACT_APP_SERVER_IP}/usuarios/${idusuario}`).then(()=>{
       obtenerRegistros();
       swal({
         title: "Exito!",
@@ -143,12 +163,21 @@ const Usuarios = () => {
       });  
     }).catch(function (error) {
       if(error.response!=null){
-       swal({
-         title: "Error!",
-         text: error.response.data.detail,
-         icon: "error",
-         button: "Aww yiss!",
-       });
+        if(error.response.data.detail){
+          swal({
+            title: "Error!",
+            text: error.response.data.detail,
+            icon: "error",
+            button: "Aww yiss!",
+          });
+        }else if(error.response.data){
+          swal({
+            title: "Error!",
+            text: error.response.data,
+            icon: "error",
+            button: "Aww yiss!",
+          });
+        }
      }if(error.response==null){
        swal({
          title: "Error!",
@@ -161,7 +190,7 @@ const Usuarios = () => {
   };
 
   const actualizaRegistro=(idusuario)=>{
-    Axios.put(`https://${process.env.REACT_APP_SERVER_IP}/usuarios`,{nombre:nuevoNombre,idusuario:idusuario,laboratorio:nuevoLaboratorio,correo:nuevoCorreo,estado:nuevoEstado}).then(()=>{
+    Axios.put(`${process.env.REACT_APP_SERVER_IP}/usuarios`,{nombre:nuevoNombre,idusuario:idusuario,laboratorio:nuevoLaboratorio,correo:nuevoCorreo,estado:nuevoEstado}).then(()=>{
       obtenerRegistros();
       swal({
         title: "Exito!",
@@ -171,12 +200,21 @@ const Usuarios = () => {
       });    
     }).catch(function (error) {
       if(error.response!=null){
-       swal({
-         title: "Error!",
-         text: error.response.data.detail,
-         icon: "error",
-         button: "Aww yiss!",
-       });
+        if(error.response.data.detail){
+          swal({
+            title: "Error!",
+            text: error.response.data.detail,
+            icon: "error",
+            button: "Aww yiss!",
+          });
+        }else if(error.response.data){
+          swal({
+            title: "Error!",
+            text: error.response.data,
+            icon: "error",
+            button: "Aww yiss!",
+          });
+        }
      }if(error.response==null){
        swal({
          title: "Error!",
@@ -189,7 +227,7 @@ const Usuarios = () => {
   };
   
   const actualizaRoles=(idusuario)=>{
-    Axios.post(`https://${process.env.REACT_APP_SERVER_IP}/usuariosroles`,{roles:nuevosRoles,idusuario:idusuario}).then(()=>{
+    Axios.post(`${process.env.REACT_APP_SERVER_IP}/usuariosroles`,{roles:nuevosRoles,idusuario:idusuario}).then(()=>{
       obtenerRegistros(); 
       swal({
         title: "Exito!",
@@ -199,12 +237,21 @@ const Usuarios = () => {
       })
     }).catch(function (error) {
       if(error.response!=null){
-       swal({
-         title: "Error!",
-         text: error.response.data.detail,
-         icon: "error",
-         button: "Aww yiss!",
-       });
+        if(error.response.data.detail){
+          swal({
+            title: "Error!",
+            text: error.response.data.detail,
+            icon: "error",
+            button: "Aww yiss!",
+          });
+        }else if(error.response.data){
+          swal({
+            title: "Error!",
+            text: error.response.data,
+            icon: "error",
+            button: "Aww yiss!",
+          });
+        }
      }if(error.response==null){
        swal({
          title: "Error!",
@@ -227,7 +274,62 @@ const Usuarios = () => {
       ),
     );
   }
+function validarContrasenia(password){
+  var password_strength = document.getElementById("password_strength");
+  if(password.length==0){
+    password_strength.innerHTML = "";
+    return;
+  }
+  var regex = new Array();
+  regex.push("[A-Z]"); //For Uppercase Alphabet
+  regex.push("[a-z]"); //For Lowercase Alphabet
+  regex.push("[0-9]"); //For Numeric Digits
+  regex.push("[$@$!%*#?&]"); //For Special Characters
 
+  var passed = 0;
+
+  //Validation for each Regular Expression
+  for (var i = 0; i < regex.length; i++) {
+      if((new RegExp (regex[i])).test(password)){
+          passed++;
+      }
+  }
+
+  //Validation for Length of Password
+  if(passed > 2 && password.length > 8){
+      passed++;
+  }
+
+  //Display of Status
+  var color = "";
+  var passwordStrength = "";
+  switch(passed){
+      case 0:
+          break;
+      case 1:
+          passwordStrength = "Contraseña debil.";
+          color = "Red";
+          break;
+      case 2:
+          passwordStrength = "Contraseña moderada.";
+          color = "darkorange";
+          break;
+      case 3:
+        passwordStrength = "Contraseña moderada.";
+        color = "darkorange";
+          break;
+      case 4:
+          passwordStrength = "Contraseña fuerte.";
+          color = "Green";
+          break;
+      case 5:
+          passwordStrength = "Contraseña muy fuerte.";
+          color = "darkgreen";
+          break;
+  }
+  password_strength.innerHTML = passwordStrength;
+  password_strength.style.color = color;
+}
   
 
 
@@ -237,7 +339,17 @@ const Usuarios = () => {
  
   },[]);
   return (
-    <div class="container my-4">
+    <>{/*asi validamos cada permiso*/}
+    {(!validarLista.includes(45)) && 
+    <div class="col container mx-auto my-auto text-center">
+      <h1 class="text-primary">Ups...</h1>
+       <h4>No tiene permisos para ver estos registros</h4>
+   </div>}{
+   
+ }
+    {validarLista.includes(45) &&
+
+    <div class="col container my-4">
       <div class="modal fade" id="nuevoRegistro" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true" data-bs-backdrop="static">
         <div class="modal-dialog modal-lg">
           <div class="modal-content">
@@ -272,11 +384,14 @@ const Usuarios = () => {
                     }
               </div>
               <div class="col col-6">
+                  
                   <label class="form-label mt-3">Contrasenia:</label>
-                    <input type="password" class="form-control form-control-sm" placeholder='Ingrese su contraseña' onChange={(event)=>{ setContrasenia(event.target.value)}}/>        
+                    <input type="password" class="form-control form-control-sm" placeholder='Ingrese su contraseña' onChange={(event)=>{ setContrasenia(event.target.value);validarContrasenia(event.target.value)}}/>        
+                    <small id="password_strength"></small>
                     { 
                     errores.contrasenia &&
                   <small class="text-danger">* {errores.contrasenia}</small>
+                  
                   }
               </div>
               <div class="col col-6">
@@ -328,10 +443,10 @@ const Usuarios = () => {
       <div class="mt-4 mb-4">
         <div class="row bordeLateral mb-3">
         <h2 class="m-0"><span>Gestión de Usuarios</span>
-        
+        {validarLista.includes(46) &&
           <button type="button" class="btn btn-primary btn-sm ms-3"  onClick={abrirModal}>
             Nuevo Registro
-          </button>
+          </button>}
               
           </h2>
         </div>
@@ -382,14 +497,14 @@ const Usuarios = () => {
               </div>
             </div>
           </div>
-          <DatatableRoles nuevosRoles={nuevosRoles} setNuevosRoles={setNuevosRoles} actualizaRoles={actualizaRoles} roles={rolLista} data={buscar(usuarioLista)} laboratorios={laboratorioLista} eliminarRegistro={eliminarRegistro} actualizarRegistro={actualizaRegistro} setNuevoNombre={setNuevoNombre} setNuevaContrasenia={setNuevaContrasenia} setNuevoCorreo={setNuevoCorreo} setNuevoEstado={setNuevoEstado} setNuevoLaboratorio={setNuevoLaboratorio}/>
+          <DatatableRoles validarLista={validarLista} nuevosRoles={nuevosRoles} setNuevosRoles={setNuevosRoles} actualizaRoles={actualizaRoles} roles={rolLista} data={buscar(usuarioLista)} laboratorios={laboratorioLista} eliminarRegistro={eliminarRegistro} actualizarRegistro={actualizaRegistro} setNuevoNombre={setNuevoNombre} setNuevaContrasenia={setNuevaContrasenia} setNuevoCorreo={setNuevoCorreo} setNuevoEstado={setNuevoEstado} setNuevoLaboratorio={setNuevoLaboratorio}/>
   
 
 
 
 
       </div>    
-    </div> 
+    </div> }</>
   );
 };
   

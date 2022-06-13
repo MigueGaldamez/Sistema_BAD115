@@ -7,7 +7,7 @@ export default function DatatableRoles(
     setNuevoNombre,
     setNuevoIdMunicipio,
     municipios,
-    generarReporte }) {
+    generarReporte,validarLista }) {
   
   const dataOriginal = data;
   const [paginaActual, setPaginaActual] = useState(1);
@@ -28,7 +28,7 @@ export default function DatatableRoles(
       <thead class="table-dark">
         <tr>
           {data[0] && columns.map((heading) => {
-             if(heading!='idmunicipio')
+             if(heading!='idmunicipio'  && heading!='fechaactualizacion' && heading!='fechacreacion')
             return(<th>{heading}</th>)
             })}
           <th>Acciones</th>
@@ -64,9 +64,7 @@ export default function DatatableRoles(
                     })}
                   </select>
                 </td>
-              /*<td> <input type="s" class="form-control form-control-sm" onChange={(event)=>{
-                setNuevoNombre(event.target.value)
-                }} key={id} defaultValue={row[column]} /></td>*/
+           
              
             )
             if(column=='idmunicipio')
@@ -75,9 +73,14 @@ export default function DatatableRoles(
               <td>{row[column]}  </td>
            
             )})}
-              <td  >
+            
+              <td>
+              {validarLista.includes(3) &&
               <a class="btn btn-success btn-sm mx-1" onClick={()=>{actualizarRegistro(id)}}>Actualizar</a>
+              }
+               {validarLista.includes(4) &&
               <a class="btn btn-danger btn-sm mx-1" data-bs-toggle="modal" data-bs-target={'#eliminarModal'+id} >Eliminar</a>
+               }
               </td>
               {/* Modal para eliminar */}
               <div class="modal fade" id={'eliminarModal'+id} tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">

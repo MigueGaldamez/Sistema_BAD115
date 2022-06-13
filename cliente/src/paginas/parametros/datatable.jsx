@@ -30,7 +30,8 @@ export default function DatatableRoles(
     agregarOpcion,
     eliminardeListaOpcion,
     opcionesP,
-    setOpcionesP
+    setOpcionesP,
+    validarLista
   }) {
   
   const dataOriginal = data;
@@ -127,15 +128,17 @@ export default function DatatableRoles(
                 }}> 
                        <option value="1">Intervalo</option>
                        <option value="2">Por opción</option>
+                       <option value="3">Especificación</option>
                    </select>
                 </td>
              
             )})}
               <td  >
-              <a class="btn btn-success btn-sm mx-1" onClick={()=>{actualizarRegistro(id)}}>Actualizar</a>
-              <a class="btn btn-danger btn-sm mx-1" data-bs-toggle="modal" data-bs-target={'#eliminarModal'+id} >Eliminar</a>
-              <a class="btn btn-dark btn-sm mx-1" data-bs-toggle="modal"data-bs-target={'#parametrosM'} onClick={()=>{abrirmodal(id)}}>Modificar</a>
-              </td>
+              {validarLista.includes(63) &&
+              <a class="btn btn-success btn-sm mx-1" onClick={()=>{actualizarRegistro(id)}}>Actualizar</a>}
+               {validarLista.includes(64) &&<a class="btn btn-danger btn-sm mx-1" data-bs-toggle="modal" data-bs-target={'#eliminarModal'+id} >Eliminar</a>
+               } {validarLista.includes(63) &&<a class="btn btn-dark btn-sm mx-1" data-bs-toggle="modal"data-bs-target={'#parametrosM'} onClick={()=>{abrirmodal(id)}}>Modificar</a>
+        }</td>
               {/* Modal para eliminar */}
               <div class="modal fade" id={'eliminarModal'+id} tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
                 <div class="modal-dialog">
@@ -261,12 +264,21 @@ export default function DatatableRoles(
                        
                         <option value="1" selected>Intervalo</option>
                         <option value="2">Por opción</option>
+                        <option value="3">Especificación</option>
                     </select>}
                     {registro.tipo==2 &&
                         <select class="form-select form-select-sm" onChange={(event)=>{setNuevoTipo(event.target.value)}}> 
                        
                         <option value="1">Intervalo</option>
                         <option value="2"  selected>Por opción</option>
+                        <option value="3">Especificación</option>
+                    </select>}
+                    {registro.tipo==3 &&
+                        <select class="form-select form-select-sm" onChange={(event)=>{setNuevoTipo(event.target.value)}}> 
+                       
+                        <option value="1">Intervalo</option>
+                        <option value="2" >Por opción</option>
+                        <option value="3"  selected>Especificación</option>
                     </select>}
                 
                  
@@ -395,6 +407,9 @@ export default function DatatableRoles(
           </form>
              
                }
+                {nuevoTipo ==3 &&
+              <div class="mx-auto fw-bold text-center"><span>Permite ingresar un valor textual</span></div>
+              }
               
                     </div>
                   </div>

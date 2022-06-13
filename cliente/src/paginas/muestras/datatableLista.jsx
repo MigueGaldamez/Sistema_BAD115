@@ -9,10 +9,18 @@ export default function DatatableRoles({
   eliminar,
   setObservaciones,
   errores,
-  validarLista,
   }) {
-  
   const dataOriginal = data;
+  const [paginaActual, setPaginaActual] = useState(1);
+  const [registrosXpagina] = useState(5);
+  
+  // obtener los actuales
+  const indexUltimoRegistro = paginaActual * registrosXpagina;
+  const indicePrimerRegistro = indexUltimoRegistro - registrosXpagina;
+  data = data.slice(indicePrimerRegistro, indexUltimoRegistro);
+  
+  const paginate = numeroPagina => setPaginaActual(numeroPagina);
+  
   const [valores, setvalores] = useState([]);
   const columns = data[0] && Object.keys(data[0]);
 
@@ -37,14 +45,14 @@ export default function DatatableRoles({
   
   return (
     <>
-    <table class="table table-striped mt-0 table-hover table-responsive-lg" cellPadding={0} cellSpacing={0}>
+    <table class="table table-striped mt-3 table-hover table-responsive-lg" cellPadding={0} cellSpacing={0}>
       <thead class="table-dark">
         <tr>
         {data[0] && columns.map((heading) => {
              if(heading!='idarea' && heading!='iddetalle'  && heading!='idexamen' && heading!='idchequeo' && heading!='idpaciente' && heading!='idlaboratorio' 
-             && heading!='idusuario' && heading!='fechachequeo'  && heading!='horachequeo' && heading!='archivo' && heading!='estadochequeo' && heading!='idmunicipio' 
-             && heading!='idestado' && heading!='nombrepaciente'  && heading!='apellido' && heading!='direccion' && heading!='fechanacimiento' && heading!='correopaciente'
-             && heading!='observaciones' && heading!='idmuestra' && heading!='nombrelaboratorio'
+             && heading!='idusuario'  && heading!='horachequeo' && heading!='archivo' && heading!='estadochequeo' && heading!='idmunicipio' 
+             && heading!='idestado' && heading!='apellido' && heading!='direccion' && heading!='fechanacimiento' && heading!='correopaciente'
+             && heading!='observaciones' && heading!='idmuestra' && heading!='nombrelaboratorio' && heading!='horaingreso' 
              && heading!='idresultado' && heading!='idparametro'  && heading!='valor' && heading!='positivo' && heading!='comentario' && heading!='presencia'
              && heading!='genero'  && heading!='fechaactualizacion' && heading!='fechacreacion' && heading!='fecharegistro' && heading!='horaregistro' && heading!='estadoexamen')
             return(<th>{heading}</th>)
@@ -53,11 +61,26 @@ export default function DatatableRoles({
         </tr>
       </thead>
       <tbody>
-      {data.map((row) =>{  const id = row['iddetalle'];  return(
-          <tr>
+      {data.map((row, index) =>{  const id = row['iddetalle'];  return(
+          <tr key={index}>
            
             {columns.map((column) => {
             
+            if(column=='nombrepaciente')
+            return(
+                
+              <td>{row['nombrepaciente']} {row['apellido']}</td>
+           
+            )
+
+            if(column=='nombreexamen')
+            return(
+                
+              <td>{row[column]}</td>
+           
+            )
+
+
             if(column=='nombreexamen')
             return(
                 
@@ -72,26 +95,25 @@ export default function DatatableRoles({
            
             )
 
-            if(column=='fechaingreso')
+            if(column=='fechachequeo')
             return(
                 
               <td>{(row[column]!=null)?Moment(row[column]).format('D MMMM YYYY'):' - '}</td>
            
             )
 
-            if(column=='horaingreso')
+            if(column=='fechaingreso')
             return(
                 
-              <td>{(row[column]!=null)?row[column]:' - '}</td>
+              <td>{(row[column]!=null)?Moment(row[column]).format('D MMMM YYYY'):' - '} &nbsp; {row['horaingreso']}</td>
            
             )
 
             })}
 
             <td>
-              
-            {(validarLista.includes(71) && row['idmuestra']==null)?<a class="btn btn-success btn-sm mx-1" onClick={()=>{abrirModalRegistrar(id)}}>Registrar muestra</a>: null}
-            {(validarLista.includes(72) && row['idmuestra']!=null)?<a class="btn btn-success btn-sm mx-1" onClick={()=>{abrirModalMuestra(id)}}>Ver muestra</a>: null}
+            {(row['idmuestra']==null)?<p class="mx-1"><i>No se encontró muestra</i></p>: null}
+            {(row['idmuestra']!=null)?<a class="btn btn-success btn-sm mx-1" onClick={()=>{abrirModalMuestra(id)}}>Ver muestra</a>: null}
             </td>
 
             
@@ -102,62 +124,11 @@ export default function DatatableRoles({
         }
       </tbody>
     </table>
-    {/* modal de registro de examen  */}
-    <div class="modal fade" id="registrarMuestra" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true"  data-bs-backdrop="static">
-      <div class="modal-dialog modal-lg">
-        <div class="modal-content">
-          <div class="modal-header">
-            <h5 class="modal-title" id="exampleModalLabel">Registro de muestra para {valores.nombreexamen}</h5>
-            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-          </div>
-          <div class="modal-body">
-            <div class="row px-2">
-              <div class="bordeLateral"><h6>Información del paciente:</h6></div>
-              <div class="col col-12">
-                
-              </div>
-              <div class="col col-6">
-                <p class="m-0 mt-1 ml-2"><b>Nombre: </b>{valores.nombrepaciente + ' ' + valores.apellido}</p>
-                <p class="m-0 ml-2"><b>Genero: </b>{valores.genero}</p>
-                
-                
-              </div>
-              <div class="col col-6">
-                <p class="m-0 ml-2"><b>Edad: </b>{Moment().diff(valores.fechanacimiento, 'years')} años </p> 
-                <p class="m-0 ml-2"><b>Laboratorio: </b>{valores.nombrelaboratorio}</p>
-                
-                <p class="m-0"></p>
-              </div>
-            </div>
-            <br></br>
-            <form id="formulario">
-              <div class="row px-2">
-                <div class="bordeLateral"><h6>Información de la muestra:</h6></div>
-                <div class="col col-5">
-                  <p class="m-0 mt-3">Fecha ingreso: <i>{Moment().format('D MMMM YYYY')}</i></p> 
-                  <p class="m-0 mt-3">Hora ingreso: {Moment().format('h:mm:ss a')}</p>
-                </div>
-                <div class="col col-12">
-                  <label class="mt-3" for="textarea">Observaciones:</label>
-                  <textarea class="form-control" placeholder="" id="textarea" onChange={(event)=>{setObservaciones(event.target.value)}}></textarea>
-                  { 
-                    errores.observaciones &&
-                    <p><small class="text-danger">* {errores.observaciones}</small></p>
-                  }
-                </div>
-              </div>
-            </form>
-            
-          </div>
-          <div class="modal-footer">
-            <a type="btn" class="btn btn-secondary" data-bs-dismiss="modal" >Cancelar</a>
-            <a type="btn btn-success" class="btn btn-primary" onClick={()=>{guardar(valores.iddetalle, valores.idchequeo)}}>Guardar</a>
-          </div>
-        </div>
-      </div>
-    </div>
-    {/* FINAL modal de registro de examen  */}
-
+    <Pagination
+        registrosPorPagina={registrosXpagina}
+        registrosTotales={dataOriginal.length}
+        paginate={paginate}
+      />
     {/* modal de mostrar resultados de examen  */}
     <div class="modal fade" id="verMuestra" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true" data-bs-backdrop="static">
       <div class="modal-dialog modal-lg">

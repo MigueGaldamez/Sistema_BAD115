@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import Pagination from '../../componentes/Paginacion/paginacion';
 import Moment from 'moment';
-export default function DatatableRoles({ examenes,labs,pacientes,data,eliminarRegistro,actualizarRegistro,setNuevaHoraChequeo,setNuevaFechaChequeo,setNuevoLaboratorio, laboratorios, setNuevoUsuario,setNuevaProfesion,profesiones }) {
+export default function DatatableRoles({ validarLista,examenes,labs,pacientes,data,eliminarRegistro,actualizarRegistro,setNuevaHoraChequeo,setNuevaFechaChequeo,setNuevoLaboratorio, laboratorios, setNuevoUsuario,setNuevaProfesion,profesiones }) {
   
   const dataOriginal = data;
   const[registro,setRegistro]=useState([]);
@@ -39,7 +39,7 @@ export default function DatatableRoles({ examenes,labs,pacientes,data,eliminarRe
       <thead class="table-dark">
         <tr>
         {data[0] && columns.map((heading) => {
-             if(heading!='examenes' && heading!='idchequeo' && heading!='idusuario' && heading!='idlaboratorio' && heading!='idpaciente' && heading!='archivo')
+             if(heading!='fechaactualizacion' && heading!='fechacreacion' && heading!='examenes' && heading!='idchequeo' && heading!='idusuario' && heading!='idlaboratorio' && heading!='idpaciente' && heading!='archivo')
             return(<th>{heading}</th>)
             })}
           <th>Acciones</th>
@@ -97,10 +97,12 @@ export default function DatatableRoles({ examenes,labs,pacientes,data,eliminarRe
 
             })}
               <td  >
-              <a class="btn btn-success btn-sm mx-1" onClick={()=>{actualizarRegistro(id)}}>Actualizar</a>
+              {validarLista.includes(59) &&
+              <a class="btn btn-success btn-sm mx-1" onClick={()=>{actualizarRegistro(id)}}>Actualizar</a>}
+              {validarLista.includes(60) &&
               <a class="btn btn-danger btn-sm mx-1" data-bs-toggle="modal" data-bs-target={'#eliminarModal'+id} >Eliminar</a>
-              <a class="btn btn-dark btn-sm mx-1" data-bs-toggle="modal" data-bs-target={'#detallesModal'} onClick={()=>{mostrarDatos(id)}} >Ver detalles</a>
-              
+              }{validarLista.includes(59) &&<a class="btn btn-dark btn-sm mx-1" data-bs-toggle="modal" data-bs-target={'#detallesModal'} onClick={()=>{mostrarDatos(id)}} >Ver detalles</a>
+            }
               </td>
               {/* Modal para eliminar */}
               <div class="modal fade" id={'eliminarModal'+id} tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">

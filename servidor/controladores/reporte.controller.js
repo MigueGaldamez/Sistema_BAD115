@@ -51,9 +51,6 @@ const generarReporte =  async (req, res) => {
 
     const filepath = `https://${process.env.REACT_APP_SERVER_IP}/docs/` + filename;
 
-    
-
-
 }
 
 
@@ -79,6 +76,28 @@ const generarReporteResultados =  async (req, res) => {
         parametros.forEach(parametro => {
             if(parametro.tipo==='1'){
 
+                intervalos.forEach(intervalo => {
+                    if(parametro.idparametro === intervalo.idparametro){
+
+                        resultados.forEach(resultado => {
+                            if(parametro.idparametro === resultado.idparametro){
+
+                                const elemento = {
+                                    nombreparametro : parametro.parametro,
+                                    valor : resultado.valor,
+                                    unidad : intervalo.simbolo,
+                                    comentario : resultado.comentario,
+                                }
+
+                                array.push(elemento);
+                            }
+                        
+                        });
+                    }
+                
+                });
+            } else if(parametro.tipo==='2'){
+
                 opciones.forEach(opcion => {
                     if(parametro.idparametro === opcion.idparametro){
 
@@ -100,30 +119,7 @@ const generarReporteResultados =  async (req, res) => {
                 
                 });
 
-            } else if(parametro.tipo==='2'){
-
-                intervalos.forEach(intervalo => {
-                    if(parametro.idparametro === intervalo.idparametro){
-
-                        resultados.forEach(resultado => {
-                            if(parametro.idparametro === resultado.idparametro){
-
-                                const elemento = {
-                                    nombreparametro : parametro.parametro,
-                                    valor : resultado.valor,
-                                    unidad : intervalo.simbolo,
-                                    comentario : resultado.comentario,
-                                }
-
-                                array.push(elemento);
-                            }
-                        
-                        });
-                    }
-                
-                });
-            }
-
+            } 
         });
 
 
@@ -208,21 +204,22 @@ const generarReporteTipeoSanguineo =  async (req, res) => {
     var obj = null;
     let array = [];
 
-    console.log(filtro);
     if (filtro==='1'){
         filename = 'TipeoSanguineo_ZonaGeografica' + '_' + (Math.floor(Math.random() * 9999) + 10000) + '.pdf';
 
-        sql = 'select DISTINCT p.idmunicipio as idmunicipio, municipio from resultado r ' +
-        'join detallechequeo d on d.iddetalle = r.iddetalle '+
-        'join chequeo c on c.idchequeo = d.idchequeo '+
-        'join paciente p on c.idpaciente = p.idpaciente '+
-        'join municipio m on p.idmunicipio = m.idmunicipio '+
-        'where idparametro=11 ';
+        sql = "select DISTINCT r.idparametro as idparametro, p.idmunicipio as idmunicipio, municipio from resultado r " +
+        "join detallechequeo d on d.iddetalle = r.iddetalle "+
+        "join parametro pa on pa.idparametro = r.idparametro " +
+        "join chequeo c on c.idchequeo = d.idchequeo "+
+        "join paciente p on c.idpaciente = p.idpaciente "+
+        "join municipio m on p.idmunicipio = m.idmunicipio "+
+        "where lower(pa.parametro) LIKE '%ipo de sangre' OR parametro LIKE '%ipeo de sangre' OR parametro LIKE '%ipeo sangu_neo' OR parametro LIKE '%ipo sangu_neo'";
         const response = await sqlee.query(sql);
 
         var municipios = response.rows;
         for(const municipio of municipios){
-        
+            
+            var idparametro = municipio.idparametro;
             var idmunicipio = municipio.idmunicipio;
 
             var AP = 0;
@@ -234,38 +231,79 @@ const generarReporteTipeoSanguineo =  async (req, res) => {
             var BN = 0;
             var ABN = 0;
 
-            sql = 'select p.idpaciente, opcion, p.idmunicipio as idmunicipio ' +
+            sql = 'select p.idpaciente, opcion, p.idmunicipio as idmunicipio, r.iddetalle as iddetalle  ' +
             'from resultado r '+
             'join detallechequeo d on d.iddetalle = r.iddetalle '+
             'join chequeo c on c.idchequeo = d.idchequeo '+
             'join paciente p on c.idpaciente = p.idpaciente '+
             'join municipio m on p.idmunicipio = m.idmunicipio '+
-            'where idparametro=11 ' +
-            'and p.idmunicipio=$1 '+        
-            'group by opcion, p.idmunicipio, p.idpaciente';
-            const response = await sqlee.query(sql, [idmunicipio]);
+            'where idparametro=$1 ' +
+            'and p.idmunicipio=$2 ';
+            const response = await sqlee.query(sql, [idparametro, idmunicipio]);
             
             var resultados = response.rows;
-            resultados.forEach(resultado => {
+            //console.log(resultados);
+            for(var resultado of resultados){
+
+                var iddetalle = resultado.iddetalle;
+
+                sql = "select p.idpaciente, opcion, p.idmunicipio as idmunicipio " +
+                "from resultado r " +
+                "join parametro pa on pa.idparametro = r.idparametro " +
+                "join detallechequeo d on d.iddetalle = r.iddetalle "+
+                "join chequeo c on c.idchequeo = d.idchequeo "+
+                "join paciente p on c.idpaciente = p.idpaciente "+
+                "join municipio m on p.idmunicipio = m.idmunicipio "+
+                "where  parametro LIKE 'Variante Du' " +
+                "and p.idmunicipio=$1 "+ 
+                "and r.iddetalle=$2 " +       
+                "group by opcion, p.idmunicipio, p.idpaciente";
+                const response = await sqlee.query(sql, [idmunicipio, iddetalle]);
+
+                var resultados2 = response.rows;
+                for (var resultado2 of resultados2){
+
+                    if (((resultado.opcion === 'Grupo A' || resultado.opcion === 'A') && resultado2.opcion === 'Rh+') || (resultado.opcion === 'A+' || resultado.opcion === 'ARH+')){
+                        AP++;
+                    } else if (((resultado.opcion === 'Grupo O' || resultado.opcion === 'O') && resultado2.opcion === 'Rh+') || (resultado.opcion === 'O+' || resultado.opcion === 'ORH+')){
+                        OP++;
+                    } else if (((resultado.opcion === 'Grupo B' || resultado.opcion === 'B') && resultado2.opcion === 'Rh+') || (resultado.opcion === 'B+' || resultado.opcion === 'BRH+')){
+                        BP++;
+                    }else if (((resultado.opcion === 'Grupo AB' || resultado.opcion === 'AB') && resultado2.opcion === 'Rh+') || (resultado.opcion === 'AB+' || resultado.opcion === 'ABRH+')){
+                        ABP++;
+                    }else if (((resultado.opcion === 'Grupo A' || resultado.opcion === 'A') && resultado2.opcion === 'Rh-') || (resultado.opcion === 'A-' || resultado.opcion === 'ARH-')){
+                        AN++;
+                    } else if (((resultado.opcion === 'Grupo O' || resultado.opcion === 'O') && resultado2.opcion === 'Rh-') || (resultado.opcion === 'O-' || resultado.opcion === 'ORH-')){
+                        ON++;
+                    } else if (((resultado.opcion === 'Grupo B' || resultado.opcion === 'B') && resultado2.opcion === 'Rh-') || (resultado.opcion === 'B-' || resultado.opcion === 'BRH-')){
+                        BN++;
+                    }else if (((resultado.opcion === 'Grupo AB' || resultado.opcion === 'AB') && resultado2.opcion === 'Rh-') || (resultado.opcion === 'AB-' || resultado.opcion === 'ABRH-')){
+                        ABN++;
+                    }
+                };
                 
-                if (resultado.opcion === 'A+'){
-                    AP++;
-                } else if (resultado.opcion === 'O+'){
-                    OP++;
-                } else if (resultado.opcion === 'B+'){
-                    BP++;
-                }else if (resultado.opcion === 'AB+'){
-                    ABP++;
-                }else if (resultado.opcion === 'A-'){
-                    AN++;
-                }else if (resultado.opcion === 'O-'){
-                    ON++;
-                }else if (resultado.opcion === 'B-'){
-                    BN++;
-                }else if (resultado.opcion === 'AB-'){
-                    ABN++;
-                }
-            });
+                if (resultados2.length === 0){
+                    if ((resultado.opcion === 'A+' || resultado.opcion === 'ARH+')){
+                        AP++;
+                    } else if ((resultado.opcion === 'O+' || resultado.opcion === 'ORH+')){
+                        OP++;
+                    } else if ((resultado.opcion === 'B+' || resultado.opcion === 'BRH+')){
+                        BP++;
+                    }else if ((resultado.opcion === 'AB+' || resultado.opcion === 'ABRH+')){
+                        ABP++;
+                    }else if ((resultado.opcion === 'A-' || resultado.opcion === 'ARH-')){
+                        AN++;
+                    } else if ((resultado.opcion === 'O-' || resultado.opcion === 'ORH-')){
+                        ON++;
+                    } else if ((resultado.opcion === 'B-' || resultado.opcion === 'BRH-')){
+                        BN++;
+                    }else if ((resultado.opcion === 'AB-' || resultado.opcion === 'ABRH-')){
+                        ABN++;
+                    }
+                };
+                
+            }
+
 
             const elemento = {
                 agrupacion: municipio.municipio,
@@ -313,7 +351,7 @@ const generarReporteTipeoSanguineo =  async (req, res) => {
                 maxedad: y-18,
             },
             {
-                grupo: 'Adulto juventud (19 - 26 años)',
+                grupo: 'Adulto joven (19 - 26 años)',
                 minedad: y-19,
                 maxedad: y-26,
             },
@@ -323,7 +361,7 @@ const generarReporteTipeoSanguineo =  async (req, res) => {
                 maxedad: y-59,
             },
             {
-                grupo: 'Persona Mayor (60 años o mas)',
+                grupo: 'Adulto Mayor (60 años o mas)',
                 minedad: y-60,
                 maxedad: y-130,
             },
@@ -331,7 +369,7 @@ const generarReporteTipeoSanguineo =  async (req, res) => {
         ]
 
         
-        for(const edad of edades){
+        for(var edad of edades){
 
             var AP = 0;
             var OP = 0;
@@ -342,36 +380,76 @@ const generarReporteTipeoSanguineo =  async (req, res) => {
             var BN = 0;
             var ABN = 0;
 
-            sql = 'select p.idpaciente, opcion, EXTRACT(YEAR FROM fechanacimiento) as anio ' +
-            'from resultado r ' +
-            'join detallechequeo d on d.iddetalle = r.iddetalle ' +
-            'join chequeo c on c.idchequeo = d.idchequeo ' +
-            'join paciente p on c.idpaciente = p.idpaciente ' +
-            'where idparametro=11 ' +
-            'and EXTRACT(YEAR FROM fechanacimiento) BETWEEN $1 AND $2 ' +
-            'group by opcion, p.idpaciente, EXTRACT(YEAR FROM fechanacimiento)';
+            sql = "select p.idpaciente, r.idparametro as idparametro, opcion, EXTRACT(YEAR FROM fechanacimiento) as anio, r.iddetalle as iddetalle " +
+            "from resultado r " +
+            "join detallechequeo d on d.iddetalle = r.iddetalle " +
+            "join parametro pa on pa.idparametro = r.idparametro " +
+            "join chequeo c on c.idchequeo = d.idchequeo " +
+            "join paciente p on c.idpaciente = p.idpaciente " +
+            "where ((lower(pa.parametro) LIKE '%ipo de sangre') OR (parametro LIKE '%ipeo de sangre') OR (parametro LIKE '%ipeo sangu_neo') OR (parametro LIKE '%ipo sangu_neo')) " +
+            "and (EXTRACT(YEAR FROM fechanacimiento) BETWEEN $1 AND $2)";
             const response = await sqlee.query(sql, [edad.maxedad, edad.minedad]);
             
             var resultados = response.rows;
-            resultados.forEach(resultado => {
-                if (resultado.opcion === 'A+'){
-                    AP++;
-                } else if (resultado.opcion === 'O+'){
-                    OP++;
-                } else if (resultado.opcion === 'B+'){
-                    BP++;
-                }else if (resultado.opcion === 'AB+'){
-                    ABP++;
-                }else if (resultado.opcion === 'A-'){
-                    AN++;
-                }else if (resultado.opcion === 'O-'){
-                    ON++;
-                }else if (resultado.opcion === 'B-'){
-                    BN++;
-                }else if (resultado.opcion === 'AB-'){
-                    ABN++;
-                }
-            });
+            for (var resultado of resultados) {
+
+                var iddetalle = resultado.iddetalle;
+
+                sql = "select p.idpaciente, r.idparametro as idparametro, opcion, EXTRACT(YEAR FROM fechanacimiento) as anio " +
+                "from resultado r " +
+                "join detallechequeo d on d.iddetalle = r.iddetalle " +
+                "join parametro pa on pa.idparametro = r.idparametro " +
+                "join chequeo c on c.idchequeo = d.idchequeo " +
+                "join paciente p on c.idpaciente = p.idpaciente " +
+                "where (parametro LIKE 'Variante Du') " +
+                "and (r.iddetalle = $1) " +
+                "and (EXTRACT(YEAR FROM fechanacimiento) BETWEEN $2 AND $3)";
+                const response = await sqlee.query(sql, [iddetalle, edad.maxedad, edad.minedad]);
+
+                var resultados2 = response.rows;
+                for (var resultado2 of resultados2){
+
+                    if (((resultado.opcion === 'Grupo A' || resultado.opcion === 'A') && resultado2.opcion === 'Rh+') || (resultado.opcion === 'A+' || resultado.opcion === 'ARH+')){
+                        AP++;
+                    } else if (((resultado.opcion === 'Grupo O' || resultado.opcion === 'O') && resultado2.opcion === 'Rh+') || (resultado.opcion === 'O+' || resultado.opcion === 'ORH+')){
+                        OP++;
+                    } else if (((resultado.opcion === 'Grupo B' || resultado.opcion === 'B') && resultado2.opcion === 'Rh+') || (resultado.opcion === 'B+' || resultado.opcion === 'BRH+')){
+                        BP++;
+                    }else if (((resultado.opcion === 'Grupo AB' || resultado.opcion === 'AB') && resultado2.opcion === 'Rh+') || (resultado.opcion === 'AB+' || resultado.opcion === 'ABRH+')){
+                        ABP++;
+                    }else if (((resultado.opcion === 'Grupo A' || resultado.opcion === 'A') && resultado2.opcion === 'Rh-') || (resultado.opcion === 'A-' || resultado.opcion === 'ARH-')){
+                        AN++;
+                    } else if (((resultado.opcion === 'Grupo O' || resultado.opcion === 'O') && resultado2.opcion === 'Rh-') || (resultado.opcion === 'O-' || resultado.opcion === 'ORH-')){
+                        ON++;
+                    } else if (((resultado.opcion === 'Grupo B' || resultado.opcion === 'B') && resultado2.opcion === 'Rh-') || (resultado.opcion === 'B-' || resultado.opcion === 'BRH-')){
+                        BN++;
+                    }else if (((resultado.opcion === 'Grupo AB' || resultado.opcion === 'AB') && resultado2.opcion === 'Rh-') || (resultado.opcion === 'AB-' || resultado.opcion === 'ABRH-')){
+                        ABN++;
+                    }
+                };
+                
+                if (resultados2.length === 0){
+                    if ((resultado.opcion === 'A+' || resultado.opcion === 'ARH+')){
+                        AP++;
+                    } else if ((resultado.opcion === 'O+' || resultado.opcion === 'ORH+')){
+                        OP++;
+                    } else if ((resultado.opcion === 'B+' || resultado.opcion === 'BRH+')){
+                        BP++;
+                    }else if ((resultado.opcion === 'AB+' || resultado.opcion === 'ABRH+')){
+                        ABP++;
+                    }else if ((resultado.opcion === 'A-' || resultado.opcion === 'ARH-')){
+                        AN++;
+                    } else if ((resultado.opcion === 'O-' || resultado.opcion === 'ORH-')){
+                        ON++;
+                    } else if ((resultado.opcion === 'B-' || resultado.opcion === 'BRH-')){
+                        BN++;
+                    }else if ((resultado.opcion === 'AB-' || resultado.opcion === 'ABRH-')){
+                        ABN++;
+                    }
+                };
+                
+                
+            };
 
             const elemento = {
                 agrupacion: edad.grupo,
@@ -416,36 +494,76 @@ const generarReporteTipeoSanguineo =  async (req, res) => {
             var BN = 0;
             var ABN = 0;
 
-            sql = 'select p.idpaciente, opcion, genero ' +
-            'from resultado r ' +
-            'join detallechequeo d on d.iddetalle = r.iddetalle ' +
-            'join chequeo c on c.idchequeo = d.idchequeo ' +
-            'join paciente p on c.idpaciente = p.idpaciente ' +
-            'where idparametro=11 ' +
-            'and genero = $1 ' +
-            'group by opcion, p.idpaciente ';
+            sql = "select p.idpaciente, opcion, genero, r.iddetalle as iddetalle " +
+            "from resultado r " +
+            "join detallechequeo d on d.iddetalle = r.iddetalle " +
+            "join parametro pa on pa.idparametro = r.idparametro " +
+            "join chequeo c on c.idchequeo = d.idchequeo " +
+            "join paciente p on c.idpaciente = p.idpaciente " +
+            "where ((lower(pa.parametro) LIKE '%ipo de sangre') OR (parametro LIKE '%ipeo de sangre') OR (parametro LIKE '%ipeo sangu_neo') OR (parametro LIKE '%ipo sangu_neo')) " +
+            "and genero = $1 ";
             const response = await sqlee.query(sql, [genero.genero]);
             
             var resultados = response.rows;
-            resultados.forEach(resultado => {
-                if (resultado.opcion === 'A+'){
-                    AP++;
-                } else if (resultado.opcion === 'O+'){
-                    OP++;
-                } else if (resultado.opcion === 'B+'){
-                    BP++;
-                }else if (resultado.opcion === 'AB+'){
-                    ABP++;
-                }else if (resultado.opcion === 'A-'){
-                    AN++;
-                }else if (resultado.opcion === 'O-'){
-                    ON++;
-                }else if (resultado.opcion === 'B-'){
-                    BN++;
-                }else if (resultado.opcion === 'AB-'){
-                    ABN++;
-                }
-            });
+            for(var resultado of resultados){
+
+                var iddetalle = resultado.iddetalle;
+
+                sql = "select p.idpaciente, opcion, genero " +
+                "from resultado r " +
+                "join detallechequeo d on d.iddetalle = r.iddetalle " +
+                "join parametro pa on pa.idparametro = r.idparametro " +
+                "join chequeo c on c.idchequeo = d.idchequeo " +
+                "join paciente p on c.idpaciente = p.idpaciente " +
+                "where  parametro LIKE 'Variante Du' " +
+                "and r.iddetalle = $1 " +
+                "and genero = $2 ";
+                const response = await sqlee.query(sql, [iddetalle, genero.genero]);
+
+                var resultados2 = response.rows;
+                for (var resultado2 of resultados2){
+
+                    if (((resultado.opcion === 'Grupo A' || resultado.opcion === 'A') && resultado2.opcion === 'Rh+') || (resultado.opcion === 'A+' || resultado.opcion === 'ARH+')){
+                        AP++;
+                    } else if (((resultado.opcion === 'Grupo O' || resultado.opcion === 'O') && resultado2.opcion === 'Rh+') || (resultado.opcion === 'O+' || resultado.opcion === 'ORH+')){
+                        OP++;
+                    } else if (((resultado.opcion === 'Grupo B' || resultado.opcion === 'B') && resultado2.opcion === 'Rh+') || (resultado.opcion === 'B+' || resultado.opcion === 'BRH+')){
+                        BP++;
+                    }else if (((resultado.opcion === 'Grupo AB' || resultado.opcion === 'AB') && resultado2.opcion === 'Rh+') || (resultado.opcion === 'AB+' || resultado.opcion === 'ABRH+')){
+                        ABP++;
+                    }else if (((resultado.opcion === 'Grupo A' || resultado.opcion === 'A') && resultado2.opcion === 'Rh-') || (resultado.opcion === 'A-' || resultado.opcion === 'ARH-')){
+                        AN++;
+                    } else if (((resultado.opcion === 'Grupo O' || resultado.opcion === 'O') && resultado2.opcion === 'Rh-') || (resultado.opcion === 'O-' || resultado.opcion === 'ORH-')){
+                        ON++;
+                    } else if (((resultado.opcion === 'Grupo B' || resultado.opcion === 'B') && resultado2.opcion === 'Rh-') || (resultado.opcion === 'B-' || resultado.opcion === 'BRH-')){
+                        BN++;
+                    }else if (((resultado.opcion === 'Grupo AB' || resultado.opcion === 'AB') && resultado2.opcion === 'Rh-') || (resultado.opcion === 'AB-' || resultado.opcion === 'ABRH-')){
+                        ABN++;
+                    }
+                };
+                
+                if (resultados2.length === 0){
+                    if ((resultado.opcion === 'A+' || resultado.opcion === 'ARH+')){
+                        AP++;
+                    } else if ((resultado.opcion === 'O+' || resultado.opcion === 'ORH+')){
+                        OP++;
+                    } else if ((resultado.opcion === 'B+' || resultado.opcion === 'BRH+')){
+                        BP++;
+                    }else if ((resultado.opcion === 'AB+' || resultado.opcion === 'ABRH+')){
+                        ABP++;
+                    }else if ((resultado.opcion === 'A-' || resultado.opcion === 'ARH-')){
+                        AN++;
+                    } else if ((resultado.opcion === 'O-' || resultado.opcion === 'ORH-')){
+                        ON++;
+                    } else if ((resultado.opcion === 'B-' || resultado.opcion === 'BRH-')){
+                        BN++;
+                    }else if ((resultado.opcion === 'AB-' || resultado.opcion === 'ABRH-')){
+                        ABN++;
+                    }
+                };
+                
+            }
+
 
             const elemento = {
                 agrupacion: genero.genero,
@@ -509,15 +627,29 @@ const generarReporteEpidemiologico =  async (req, res) => {
     if (padecimiento==='1' && filtro === '5'){ 
 //Triglicéridos altos con zona geográfica filtro 1 = 5
         filename = 'TriglicéridosAltos_ZonaGeografica' + '_' + (Math.floor(Math.random() * 9999) + 10000) + '.pdf';
-        
+        //consulta sql
+        sql = "select count(p.idpaciente) as cuenta, m.municipio " +
+        "from resultado r "+
+        "join detallechequeo dc on dc.iddetalle = r.iddetalle " +
+        "join chequeo c on c.idchequeo = dc.idchequeo " +
+        "join paciente p on p.idpaciente = c.idpaciente " +
+        "join parametro pa on pa.idparametro = r.idparametro " +
+        "join municipio m on m.idmunicipio = p.idmunicipio " +
+        "where r.valor > 160.00 AND pa.parametro like '%glicerid%' " +
+        "group by m.idmunicipio " ;
+        const response = await sqlee.query(sql);
         var municipios = response.rows;
         for(const municipio of municipios){
-
+            const elemento = {
+                nombre: municipio.municipio,
+                cuenta: municipio.cuenta,
+            }
+            array.push(elemento);
         }
         // esta sera la data que vamos a mandar al template(plantilla) para crear el pdf
         obj = {
             nombrelaboratorio: 'Laboratorio Nacional',
-            nombrereporte: 'Reporte de Triglicéridos Altos por zona geografica',
+            nombrereporte: 'Reporte de triglicéridos altos por zona geográfica',
             datosLista: array,
         }
 
@@ -527,7 +659,7 @@ const generarReporteEpidemiologico =  async (req, res) => {
         var fecha = new Date();
         var y = fecha.getFullYear();
 
-        var edades = [
+        var gruposedades = [
             {
                 grupo: 'Primera infancia (0-5 años)',
                 minedad: y,
@@ -544,7 +676,7 @@ const generarReporteEpidemiologico =  async (req, res) => {
                 maxedad: y-18,
             },
             {
-                grupo: 'Adulto juventud (19 - 26 años)',
+                grupo: 'Adulto joven (19 - 26 años)',
                 minedad: y-19,
                 maxedad: y-26,
             },
@@ -554,18 +686,36 @@ const generarReporteEpidemiologico =  async (req, res) => {
                 maxedad: y-59,
             },
             {
-                grupo: 'Persona Mayor (60 años o mas)',
+                grupo: 'Adulto Mayor (60 años o mas)',
                 minedad: y-60,
                 maxedad: y-130,
             },
             
         ]
-        for(const edad of edades){
+        for(var grupo of gruposedades){
+            sql = "select count(p.idpaciente) as cuenta " +
+            "from resultado r " +
+            "join detallechequeo dc on dc.iddetalle = r.iddetalle " +
+            "join chequeo c on c.idchequeo = dc.idchequeo " +
+            "join paciente p on p.idpaciente = c.idpaciente " +
+            "join parametro pa  on pa.idparametro = r.idparametro " +
+            "where ((r.valor > 160.00) AND (pa.parametro like '%glicerid%')) " +
+            "and (EXTRACT(YEAR FROM fechanacimiento) BETWEEN $1 AND $2)" ;
+            const response = await sqlee.query(sql, [grupo.maxedad, grupo.minedad]);
+
+            var edads = response.rows;
+            for(const edad of edads){
+                const elemento = {
+                    nombre: grupo.grupo,
+                    cuenta: edad.cuenta,
+                }
+                array.push(elemento);
+            }
         }
         // esta sera la data que vamos a mandar al template(plantilla) para crear el pdf
         obj = {
             nombrelaboratorio: 'Laboratorio Nacional',
-            nombrereporte: 'Reporte de Triglicéridos Altos por edades',
+            nombrereporte: 'Reporte de triglicéridos altos por edades',
             datosLista: array,
         }
 
@@ -574,16 +724,29 @@ const generarReporteEpidemiologico =  async (req, res) => {
         filename = 'TriglicéridosAltos_Genero' + '_' + (Math.floor(Math.random() * 9999) + 10000) + '.pdf';
         var fecha = new Date();
         var y = fecha.getFullYear();
+        sql = "select count(p.idpaciente) as cuenta, p.genero " + 
+            "from resultado r " +
+            "join parametro pa on pa.idparametro = r.idparametro " +
+            "join detallechequeo dc on dc.iddetalle = r.iddetalle " +
+            "join chequeo c on c.idchequeo = dc.idchequeo " +
+            "join paciente p on p.idpaciente = c.idpaciente " +
+            "where r.valor > 160.00 AND pa.parametro like '%glicerid%' " +
+            "group by p.genero ";
+            const response = await sqlee.query(sql);
 
-        var generos = [{genero: 'Masculino'}, {genero: 'Femenino'}]
-
+        var generos = response.rows;
         
         for(const genero of generos){
+            const elemento = {
+                nombre: genero.genero,
+                cuenta: genero.cuenta,
+            }
+            array.push(elemento);
         }
         // esta sera la data que vamos a mandar al template(plantilla) para crear el pdf
         obj = {
             nombrelaboratorio: 'Laboratorio Nacional',
-            nombrereporte: 'Reporte de Trigliceridos Altos por genero',
+            nombrereporte: 'Reporte de trigliceridos altos por género',
             datosLista: array,
         }
 
@@ -591,14 +754,29 @@ const generarReporteEpidemiologico =  async (req, res) => {
 //Colesterol con zona geografica filtro 2 = 5
         filename = 'Colesterol_ZonaGeográfica' + '_' + (Math.floor(Math.random() * 9999) + 10000) + '.pdf';
         
+        sql = "select count(p.idpaciente) as cuenta, m.municipio " +
+        "from resultado r "+
+        "join detallechequeo dc on dc.iddetalle = r.iddetalle " +
+        "join chequeo c on c.idchequeo = dc.idchequeo " +
+        "join paciente p on p.idpaciente = c.idpaciente " +
+        "join parametro pa on pa.idparametro = r.idparametro " +
+        "join municipio m on m.idmunicipio = p.idmunicipio " +
+        "where r.valor > 200.00 AND pa.parametro like '%olester%' " +
+        "group by m.idmunicipio " ;
+        const response = await sqlee.query(sql);
+
         var municipios = response.rows;
         for(const municipio of municipios){
-
+            const elemento = {
+                nombre: municipio.municipio,
+                cuenta: municipio.cuenta,
+            }
+            array.push(elemento);
         }
         // esta sera la data que vamos a mandar al template(plantilla) para crear el pdf
         obj = {
             nombrelaboratorio: 'Laboratorio Nacional',
-            nombrereporte: 'Reporte Colesterol por zona geografica',
+            nombrereporte: 'Reporte de colesterol alto por zona geográfica',
             datosLista: array,
         }
 
@@ -608,7 +786,7 @@ const generarReporteEpidemiologico =  async (req, res) => {
         var fecha = new Date();
         var y = fecha.getFullYear();
 
-        var edades = [
+        var gruposedades = [
             {
                 grupo: 'Primera infancia (0-5 años)',
                 minedad: y,
@@ -625,7 +803,7 @@ const generarReporteEpidemiologico =  async (req, res) => {
                 maxedad: y-18,
             },
             {
-                grupo: 'Adulto juventud (19 - 26 años)',
+                grupo: 'Adulto joven (19 - 26 años)',
                 minedad: y-19,
                 maxedad: y-26,
             },
@@ -635,18 +813,37 @@ const generarReporteEpidemiologico =  async (req, res) => {
                 maxedad: y-59,
             },
             {
-                grupo: 'Persona Mayor (60 años o mas)',
+                grupo: 'Adulto Mayor (60 años o mas)',
                 minedad: y-60,
                 maxedad: y-130,
             },
             
         ]
-        for(const edad of edades){
+        for(var grupo of gruposedades){
+            sql = "select count(p.idpaciente) as cuenta " +
+            "from resultado r " +
+            "join detallechequeo dc on dc.iddetalle = r.iddetalle " +
+            "join chequeo c on c.idchequeo = dc.idchequeo " +
+            "join paciente p on p.idpaciente = c.idpaciente " +
+            "join parametro pa  on pa.idparametro = r.idparametro " +
+            "where ((r.valor > 200.00) AND (pa.parametro like '%olestero%')) " +
+            "and (EXTRACT(YEAR FROM fechanacimiento) BETWEEN $1 AND $2)" ;
+            const response = await sqlee.query(sql, [grupo.maxedad, grupo.minedad]);
+
+            var edads = response.rows;
+            for(const edad of edads){
+                const elemento = {
+                    nombre: grupo.grupo,
+                    cuenta: edad.cuenta,
+                }
+                array.push(elemento);
+            }
+
         }
         // esta sera la data que vamos a mandar al template(plantilla) para crear el pdf
         obj = {
             nombrelaboratorio: 'Laboratorio Nacional',
-            nombrereporte: 'Reporte de Colesterol por edades',
+            nombrereporte: 'Reporte de colesterol alto por edades',
             datosLista: array,
         }
 
@@ -656,16 +853,29 @@ const generarReporteEpidemiologico =  async (req, res) => {
         
         var fecha = new Date();
         var y = fecha.getFullYear();
+        sql = "select count(p.idpaciente) as cuenta, p.genero " +
+            "from resultado r " +
+            "join parametro pa on pa.idparametro = r.idparametro " + 
+            "join detallechequeo dc on dc.iddetalle = r.iddetalle " +
+            "join chequeo c on c.idchequeo = dc.idchequeo " +
+            "join paciente p on p.idpaciente = c.idpaciente " +
+            "where r.valor > 200.00 AND pa.parametro like '%olestero%' " +
+            "group by p.genero";
+            const response = await sqlee.query(sql);
 
-        var generos = [{genero: 'Masculino'}, {genero: 'Femenino'}]
-
+        var generos = response.rows;
         
         for(const genero of generos){
+            const elemento = {
+                nombre: genero.genero,
+                cuenta: genero.cuenta,
+            }
+            array.push(elemento);
         }
         // esta sera la data que vamos a mandar al template(plantilla) para crear el pdf
         obj = {
             nombrelaboratorio: 'Laboratorio Nacional',
-            nombrereporte: 'Reporte de Colesterol Altos por genero',
+            nombrereporte: 'Reporte de colesterol alto por género',
             datosLista: array,
         }
 
@@ -673,14 +883,29 @@ const generarReporteEpidemiologico =  async (req, res) => {
 //AcidoUrico con zona geografica filtro 3 = 5
         filename = 'AcidoUrico_ZonaGeográfica' + '_' + (Math.floor(Math.random() * 9999) + 10000) + '.pdf';
         
+        sql = "select count(p.idpaciente) as cuenta, m.municipio " +
+        "from resultado r "+
+        "join detallechequeo dc on dc.iddetalle = r.iddetalle " +
+        "join chequeo c on c.idchequeo = dc.idchequeo " +
+        "join paciente p on p.idpaciente = c.idpaciente " +
+        "join parametro pa on pa.idparametro = r.idparametro " +
+        "join municipio m on m.idmunicipio = p.idmunicipio " +
+        "where ((p.genero like '%asculino%' AND r.valor > 7) OR (p.genero like '%emenino%' AND r.valor > 5.7)) AND pa.parametro like '%cido%' AND pa.parametro like '%rico%' " +
+        "group by municipio " ;
+        const response = await sqlee.query(sql);
+
         var municipios = response.rows;
         for(const municipio of municipios){
-
+            const elemento = {
+                nombre: municipio.municipio,
+                cuenta: municipio.cuenta,
+            }
+            array.push(elemento);
         }
         // esta sera la data que vamos a mandar al template(plantilla) para crear el pdf
         obj = {
             nombrelaboratorio: 'Laboratorio Nacional',
-            nombrereporte: 'Reporte Acido Úrrico por zona geografica',
+            nombrereporte: 'Reporte de ácido úrico alto por zona geográfica',
             datosLista: array,
         }
 
@@ -690,7 +915,7 @@ const generarReporteEpidemiologico =  async (req, res) => {
         var fecha = new Date();
         var y = fecha.getFullYear();
 
-        var edades = [
+        var gruposedades = [
             {
                 grupo: 'Primera infancia (0-5 años)',
                 minedad: y,
@@ -707,7 +932,7 @@ const generarReporteEpidemiologico =  async (req, res) => {
                 maxedad: y-18,
             },
             {
-                grupo: 'Adulto juventud (19 - 26 años)',
+                grupo: 'Adulto joven (19 - 26 años)',
                 minedad: y-19,
                 maxedad: y-26,
             },
@@ -717,18 +942,36 @@ const generarReporteEpidemiologico =  async (req, res) => {
                 maxedad: y-59,
             },
             {
-                grupo: 'Persona Mayor (60 años o mas)',
+                grupo: 'Adulto Mayor (60 años o mas)',
                 minedad: y-60,
                 maxedad: y-130,
             },
             
         ]
-        for(const edad of edades){
+        for(var grupo of gruposedades){
+            sql = "select count(p.idpaciente) as cuenta " +
+            "from resultado r " +
+            "join detallechequeo dc on dc.iddetalle = r.iddetalle " +
+            "join chequeo c on c.idchequeo = dc.idchequeo " +
+            "join paciente p on p.idpaciente = c.idpaciente " +
+            "join parametro pa  on pa.idparametro = r.idparametro " +
+            "where (((p.genero like '%asculino%' AND r.valor > 7) OR (p.genero like '%emenino%' AND r.valor > 5.7)) AND (pa.parametro like '%cido%' AND pa.parametro like '%rico%')) " +
+            "and (EXTRACT(YEAR FROM fechanacimiento) BETWEEN $1 AND $2)" ;
+            const response = await sqlee.query(sql, [grupo.maxedad, grupo.minedad]);
+
+            var edads = response.rows;
+            for(const edad of edads){
+                const elemento = {
+                    nombre: grupo.grupo,
+                    cuenta: edad.cuenta,
+                }
+                array.push(elemento);
+            }
         }
         // esta sera la data que vamos a mandar al template(plantilla) para crear el pdf
         obj = {
             nombrelaboratorio: 'Laboratorio Nacional',
-            nombrereporte: 'Reporte de Acido Úrico Altos por edades',
+            nombrereporte: 'Reporte de ácido úrico alto por edades',
             datosLista: array,
         }
 
@@ -739,15 +982,29 @@ const generarReporteEpidemiologico =  async (req, res) => {
         var fecha = new Date();
         var y = fecha.getFullYear();
 
-        var generos = [{genero: 'Masculino'}, {genero: 'Femenino'}]
+        sql = "select count(p.idpaciente) as cuenta, p.genero " +
+            "from resultado r " +
+            "join parametro pa on pa.idparametro = r.idparametro " + 
+            "join detallechequeo dc on dc.iddetalle = r.iddetalle " +
+            "join chequeo c on c.idchequeo = dc.idchequeo " +
+            "join paciente p on p.idpaciente = c.idpaciente " +
+            "where ((p.genero like '%asculino%' AND r.valor > 7) OR (p.genero like '%emenino%' AND r.valor > 5.7)) AND pa.parametro like '%cido%' AND pa.parametro like '%rico%' " +
+            "group by p.genero";
+            const response = await sqlee.query(sql);
 
+        var generos = response.rows;
         
         for(const genero of generos){
+            const elemento = {
+                nombre: genero.genero,
+                cuenta: genero.cuenta,
+            }
+            array.push(elemento);
         }
         // esta sera la data que vamos a mandar al template(plantilla) para crear el pdf
         obj = {
             nombrelaboratorio: 'Laboratorio Nacional',
-            nombrereporte: 'Reporte de Acido Úrico Altos por genero',
+            nombrereporte: 'Reporte de ácido úrico alto por género',
             datosLista: array,
         }
 
@@ -755,14 +1012,29 @@ const generarReporteEpidemiologico =  async (req, res) => {
 //Glucosa con zona geografica filtro 4 = 5
         filename = 'Glucosa_ZonaGeográfica' + '_' + (Math.floor(Math.random() * 9999) + 10000) + '.pdf';
         
+        sql = "select count(p.idpaciente) as cuenta, m.municipio " +
+        "from resultado r "+
+        "join detallechequeo dc on dc.iddetalle = r.iddetalle " +
+        "join chequeo c on c.idchequeo = dc.idchequeo " +
+        "join paciente p on p.idpaciente = c.idpaciente " +
+        "join parametro pa on pa.idparametro = r.idparametro " +
+        "join municipio m on m.idmunicipio = p.idmunicipio " +
+        "where r.valor > 115.00 AND pa.parametro like '%lucosa%' " +
+        "group by m.idmunicipio " ;
+        const response = await sqlee.query(sql);
+
         var municipios = response.rows;
         for(const municipio of municipios){
-
+            const elemento = {
+                nombre: municipio.municipio,
+                cuenta: municipio.cuenta,
+            }
+            array.push(elemento);
         }
         // esta sera la data que vamos a mandar al template(plantilla) para crear el pdf
         obj = {
             nombrelaboratorio: 'Laboratorio Nacional',
-            nombrereporte: 'Reporte Glucosa por zona geografica',
+            nombrereporte: 'Reporte de glucosa alta por zona geográfica',
             datosLista: array,
         }
 
@@ -772,7 +1044,7 @@ const generarReporteEpidemiologico =  async (req, res) => {
         var fecha = new Date();
         var y = fecha.getFullYear();
 
-        var edades = [
+        var gruposedades = [
             {
                 grupo: 'Primera infancia (0-5 años)',
                 minedad: y,
@@ -789,7 +1061,7 @@ const generarReporteEpidemiologico =  async (req, res) => {
                 maxedad: y-18,
             },
             {
-                grupo: 'Adulto juventud (19 - 26 años)',
+                grupo: 'Adulto joven (19 - 26 años)',
                 minedad: y-19,
                 maxedad: y-26,
             },
@@ -799,18 +1071,36 @@ const generarReporteEpidemiologico =  async (req, res) => {
                 maxedad: y-59,
             },
             {
-                grupo: 'Persona Mayor (60 años o mas)',
+                grupo: 'Adulto Mayor (60 años o mas)',
                 minedad: y-60,
                 maxedad: y-130,
             },
             
         ]
-        for(const edad of edades){
+        for(var grupo of gruposedades){
+            sql = "select count(p.idpaciente) as cuenta " +
+            "from resultado r " +
+            "join detallechequeo dc on dc.iddetalle = r.iddetalle " +
+            "join chequeo c on c.idchequeo = dc.idchequeo " +
+            "join paciente p on p.idpaciente = c.idpaciente " +
+            "join parametro pa  on pa.idparametro = r.idparametro " +
+            "where ((r.valor > 115.00) AND (pa.parametro like '%lucosa%')) " +
+            "and (EXTRACT(YEAR FROM fechanacimiento) BETWEEN $1 AND $2)" ;
+            const response = await sqlee.query(sql, [grupo.maxedad, grupo.minedad]);
+
+            var edads = response.rows;
+            for(const edad of edads){
+                const elemento = {
+                    nombre: grupo.grupo,
+                    cuenta: edad.cuenta,
+                }
+                array.push(elemento);
+            }
         }
         // esta sera la data que vamos a mandar al template(plantilla) para crear el pdf
         obj = {
             nombrelaboratorio: 'Laboratorio Nacional',
-            nombrereporte: 'Reporte de Glucosa por edades',
+            nombrereporte: 'Reporte de glucosa alta por edades',
             datosLista: array,
         }
 
@@ -821,19 +1111,56 @@ const generarReporteEpidemiologico =  async (req, res) => {
         var fecha = new Date();
         var y = fecha.getFullYear();
 
-        var generos = [{genero: 'Masculino'}, {genero: 'Femenino'}]
+        sql = "select count(p.idpaciente) as cuenta, p.genero " +
+            "from resultado r " +
+            "join parametro pa on pa.idparametro = r.idparametro " + 
+            "join detallechequeo dc on dc.iddetalle = r.iddetalle " +
+            "join chequeo c on c.idchequeo = dc.idchequeo " +
+            "join paciente p on p.idpaciente = c.idpaciente " +
+            "where r.valor > 115.00 AND pa.parametro like '%lucosa%' " +
+            "group by p.genero";
+            const response = await sqlee.query(sql);
+
+        var generos = response.rows;
 
         
         for(const genero of generos){
+            const elemento = {
+                nombre: genero.genero,
+                cuenta: genero.cuenta,
+            }
+            array.push(elemento);
         }
         // esta sera la data que vamos a mandar al template(plantilla) para crear el pdf
         obj = {
             nombrelaboratorio: 'Laboratorio Nacional',
-            nombrereporte: 'Reporte de Glucosa por genero',
+            nombrereporte: 'Reporte de glucosa alta por género',
             datosLista: array,
         }
-
     }
+    // creamos el documento
+    const document = {
+        html: html,
+        data: {
+            datos: obj   // aqui enviamos toda la data
+        },
+        path: './docs/' + filename
+    }
+
+    // creamos el pdf
+    pdf.create(document, options)
+    .then(resp => {
+        res.status(200).json({
+            message: 'Creado con exito',
+            body: {
+                path: filename //enviamos el nombre del archivo como respuesta
+            }
+        });
+    }).catch(error => {
+        console.log(error);
+    });
+
+    const filepath = `http://${process.env.REACT_APP_SERVER_IP}/docs/` + filename;
 }
 
 const generarReporteCantidadExamenes =  async (req, res) => {
@@ -1058,10 +1385,82 @@ const generarReporteCantidadExamenes =  async (req, res) => {
 
 }
 
+const generarReporteTipos=  async (req, res) => {
+    const { fechainicio, fechafin,idlaboratorio } = req.body;
+    const html = fs.readFileSync(path.join(__dirname, '../views/template-examenesportipo.html'), 'utf-8')
+    var filename = '';
+    var nombrelaboratorio='';
+    var data = [];
+    var filtro;
+    if(idlaboratorio==0){
+        sqllabos = "select nombrelaboratorio, lab.idlaboratorio, count(d.idexamen) from detallechequeo d inner join examen e on d.idexamen = e.idexamen inner join area a on e.idarea=a.idarea inner join chequeo ch  on ch.idchequeo = d.idchequeo inner join laboratorio lab on lab.idlaboratorio = ch.idlaboratorio group by (lab.idlaboratorio,nombrelaboratorio)";
+        const labos = await sqlee.query(sqllabos);
+        labs = labos.rows;
+        for(const lab of labs){
+            sql ="select nombrelaboratorio,nombrearea,nombreexamen, count(d.idexamen) from detallechequeo d inner join examen e on d.idexamen = e.idexamen inner join area a on e.idarea=a.idarea inner join chequeo ch  on ch.idchequeo = d.idchequeo inner join laboratorio lab on lab.idlaboratorio = ch.idlaboratorio where lab.idlaboratorio=$1 group by (nombreexamen,nombrelaboratorio,nombrearea)";
+            const response = await sqlee.query(sql, [lab.idlaboratorio]);
+            lab.examenes = response.rows;
+        } 
+        filtro=0;
+        data = labs;
+        nombrelaboratorio="Sistema Clinico SIGLAB";
+    }else if(idlaboratorio!=0){
+        sqllabos = "select nombrelaboratorio, lab.idlaboratorio, count(d.idexamen) from detallechequeo d inner join examen e on d.idexamen = e.idexamen inner join area a on e.idarea=a.idarea inner join chequeo ch  on ch.idchequeo = d.idchequeo inner join laboratorio lab on lab.idlaboratorio = ch.idlaboratorio where lab.idlaboratorio=$1 group by (lab.idlaboratorio,nombrelaboratorio)";
+        const labos = await sqlee.query(sqllabos,[idlaboratorio]);
+        labs = labos.rows;
+        for(const lab of labs){
+            sql ="select nombrelaboratorio,nombrearea,nombreexamen, count(d.idexamen) from detallechequeo d inner join examen e on d.idexamen = e.idexamen inner join area a on e.idarea=a.idarea inner join chequeo ch  on ch.idchequeo = d.idchequeo inner join laboratorio lab on lab.idlaboratorio = ch.idlaboratorio where lab.idlaboratorio=$1 group by (nombreexamen,nombrelaboratorio,nombrearea)";
+            const response = await sqlee.query(sql, [lab.idlaboratorio]);
+            lab.examenes = response.rows;
+        } 
+        data = labs;
+        sql2 ="select * from laboratorio where idlaboratorio=$1 limit 1";
+        const response2 = await sqlee.query(sql2,[idlaboratorio]);
+        filtro=1; 
+        nombrelaboratorio = response2.rows[0].nombrelaboratorio;
+    }
+  
+    var filename = 'examenesportipo_' + (Math.floor(Math.random() * 9999) + 10000) + '.pdf';
+    // esta sera la data que vamos a mandar al template(plantilla) para crear el pdf
+    const obj = {
+        nombrelaboratorio: nombrelaboratorio,
+        examenes: data,
+        fechainicio:fechainicio,
+        fechafin:fechafin,
+        filtro:filtro,
+        nombrereporte:"Examenes realizados por tipo",
+    }
+
+    // creamos el documento
+    const document = {
+        html: html,
+        data: {
+           datos: obj   // aqui enviamos toda la data
+        },
+        path: './docs/' + filename
+    }
+
+    // creamos el pdf
+    pdf.create(document, options)
+    .then(resp => {
+        res.status(200).json({
+        message: 'Creado con exito',
+        body: {
+            path: filename //enviamos el nombre del archivo como respuesta
+        }
+    });
+    }).catch(error => {
+        console.log(error);
+    });
+
+    const filepath = `http://${process.env.REACT_APP_SERVER_IP}/docs/` + filename;
+
+}
 module.exports = {
     generarReporte,
     generarReporteResultados,
     generarReporteTipeoSanguineo,
     generarReporteCantidadExamenes,
     generarReporteEpidemiologico,
+    generarReporteTipos,
 };

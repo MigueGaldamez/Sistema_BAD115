@@ -14,6 +14,7 @@ export default function DatatableRoles(
   roles,
   actualizaRoles,
   nuevosRoles,
+  validarLista
  }) {
   
   const dataOriginal = data;
@@ -56,7 +57,7 @@ export default function DatatableRoles(
       <thead class="table-dark">
         <tr>
           {data[0] && columns.map((heading) => {
-             if(heading!='contrasenia' && heading!='idlaboratorio'  && heading!='roles'  &&   heading!='infolaboratorio' && heading!='idusuario' )
+             if(heading!='fechaactualizacion' && heading!='fechacreacion' && heading!='contrasenia' && heading!='idlaboratorio'  && heading!='roles'  &&   heading!='infolaboratorio' && heading!='idusuario' )
             return(<th>{heading}</th>)
             })}
           <th>Acciones</th>
@@ -120,10 +121,13 @@ export default function DatatableRoles(
             )
             })}
             <td  >
-              <a class="btn btn-success btn-sm mx-1" onClick={()=>{actualizarRegistro(id)}}>Actualizar</a>
-              <a class="btn btn-danger btn-sm mx-1" data-bs-toggle="modal" data-bs-target={'#eliminarModal'+id} >Eliminar</a>
+            {validarLista.includes(47) &&
+              <a class="btn btn-success btn-sm mx-1" onClick={()=>{actualizarRegistro(id)}}>Actualizar</a>}
+               {validarLista.includes(48) &&
+              <a class="btn btn-danger btn-sm mx-1" data-bs-toggle="modal" data-bs-target={'#eliminarModal'+id} >Eliminar</a>}
+               {validarLista.includes(47) &&
               <a class="btn btn-warning btn-sm mx-1" data-bs-toggle="modal" data-bs-target='#rolesM' onClick={()=>{establevervalores(row['nombreusuario'],row['roles'],row['idusuario'])}} >Editar Roles</a>
-              
+               }
               </td>
               {/* Modal para eliminar */}
               <div class="modal fade" id={'eliminarModal'+id} tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">

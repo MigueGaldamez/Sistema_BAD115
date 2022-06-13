@@ -4,7 +4,8 @@ import Axios from 'axios';
 import Moment from 'moment';
 import { Modal } from 'bootstrap/dist/js/bootstrap.bundle.min';
 import swal from 'sweetalert';
-
+import Cookies from 'universal-cookie';
+const cookies = new Cookies();
 const ReporteCantidadExamenes = () => { 
 
   //PARA CADA ATRIBUTO
@@ -15,18 +16,28 @@ const ReporteCantidadExamenes = () => {
   const[pacienteLista, setPacienteLista] = useState([]);
   const[municipioLista,setMunicipioLista]=useState([]);
   const[departamentoLista,setDepartamentoLista]=useState([]);
-
+  const[validarLista, setValidarLista] = useState([]);
+    //esto es para validar en el backend y mandar siempre el id usuario
+    Axios.interceptors.request.use(function (config) {
+      var id = cookies.get('usuario').idusuario;
+      config.headers.idusuario =  id;
+      return config;
+  });
   const obtenerRegistros=()=>{
-    Axios.get(`https://${process.env.REACT_APP_SERVER_IP}/pacientes`).then((response)=>{
+    Axios.get(`${process.env.REACT_APP_SERVER_IP}/pacientes`).then((response)=>{
       setPacienteLista(response.data);
     });
 
-    Axios.get(`https://${process.env.REACT_APP_SERVER_IP}/municipios`).then((response)=>{
+    Axios.get(`${process.env.REACT_APP_SERVER_IP}/municipios`).then((response)=>{
       setMunicipioLista(response.data);  
     });
 
-    Axios.get(`https://${process.env.REACT_APP_SERVER_IP}/departamentos`).then((response)=>{
+    Axios.get(`${process.env.REACT_APP_SERVER_IP}/departamentos`).then((response)=>{
       setDepartamentoLista(response.data); 
+    });
+    var id = cookies.get('usuario').idusuario;
+    Axios.get(`${process.env.REACT_APP_SERVER_IP}/validarpermisos/${id}`).then((response)=>{
+      setValidarLista(response.data);
     });
   }
 
@@ -44,7 +55,7 @@ const ReporteCantidadExamenes = () => {
       idmunicipio = document.getElementById("municipio").value;
     }
     console.log(idpaciente);
-    Axios.post(`https://${process.env.REACT_APP_SERVER_IP}/generarpdfexamenes`,{
+    Axios.post(`${process.env.REACT_APP_SERVER_IP}/generarpdfexamenes`,{
       filtro: filtro,
       idpaciente: idpaciente,
       iddepartamento: iddepartamento,
@@ -59,7 +70,7 @@ const ReporteCantidadExamenes = () => {
       // abrir el archivo en una nueva pestaña
       var link = document.createElement("a");
       link.download =true;
-      link.href = `https://${process.env.REACT_APP_SERVER_IP}/docs/${filename}`;
+      link.href = `${process.env.REACT_APP_SERVER_IP}/docs/${filename}`;
       link.target = "_blank";
       link.click();
 
@@ -117,7 +128,14 @@ const ReporteCantidadExamenes = () => {
  
   },[]);
   return (
-    <div class="container my-4">
+    <>{/*asi validamos cada permiso*/}
+    {(!validarLista.includes(73)) && 
+    <div class="col container mx-auto my-auto text-center">
+      <h1 class="text-primary">Ups...</h1>
+       <h4>No tiene permisos para ver estos registros</h4>
+   </div>}
+    {validarLista.includes(73) &&
+    <div class="col container my-4">
       
       <div class="mt-4 mb-4">
         <div class="row bordeLateral mb-3">
@@ -185,7 +203,7 @@ const ReporteCantidadExamenes = () => {
           </div>
 
       </div>    
-    </div>
+    </div>}</>
   );
 };
 export default ReporteCantidadExamenes;

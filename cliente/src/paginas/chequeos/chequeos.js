@@ -5,6 +5,8 @@ import DatatableRoles from "./datatable";
 import Moment from 'moment';
 import { Modal } from 'bootstrap/dist/js/bootstrap.bundle.min';
 import swal from 'sweetalert';
+import Cookies from 'universal-cookie';
+const cookies = new Cookies();
 var SHA256 = require("crypto-js/sha256");
 
 const Chequeos = () => { 
@@ -13,6 +15,7 @@ const Chequeos = () => {
   //PARA CADA ATRIBUTO
   const[laboratorio,setLaboratorio]=useState(0);
   const[paciente,setPaciente]=useState("");
+  const[usuario,setUsuario]=useState("");
   //    const[usuario,setUsuario]=useState(0);
   const[fechaChequeo,setFechaChequeo]=useState(Moment().format('YYYY-MM-DD'));
   const[horaChequeo,setHoraChequeo]=useState(Moment().format('HH:mm:ss'));
@@ -29,7 +32,7 @@ const Chequeos = () => {
   const[usuarioLista, setUsuarioLista] = useState([]);
   const[laboratorioLista, setLaboratorioLista] = useState([]);
   const[examenLista, setExamenLista] = useState([]);
-
+  const[validarLista, setValidarLista] = useState([]);
   const[modalB, setModalB] = useState([]);
   //PARA LA BUSQUEDA
   const [q, setQ] = useState('');
@@ -50,22 +53,36 @@ const Chequeos = () => {
     'estadochequeo'
   ]);
   
+  //esto es para validar en el backend y mandar siempre el id usuario
+  Axios.interceptors.request.use(function (config) {
+    var id = cookies.get('usuario').idusuario;
+    config.headers.idusuario =  id;
+    return config;
+});
+  
 
   const obtenerRegistros=()=>{
-    Axios.get(`https://${process.env.REACT_APP_SERVER_IP}/chequeos`).then((response)=>{
+    Axios.get(`${process.env.REACT_APP_SERVER_IP}/chequeos`).then((response)=>{
       setChequeoLista(response.data);
     });
-    Axios.get(`https://${process.env.REACT_APP_SERVER_IP}/pacientes`).then((response)=>{
+    Axios.get(`${process.env.REACT_APP_SERVER_IP}/pacientes`).then((response)=>{
       setPacienteLista(response.data);
     });
-    Axios.get(`https://${process.env.REACT_APP_SERVER_IP}/usuarioslibres`).then((response)=>{
+    /*Axios.get(`http://${process.env.REACT_APP_SERVER_IP}/usuarioslibres`).then((response)=>{
       setUsuarioLista(response.data);
-    });
-    Axios.get(`https://${process.env.REACT_APP_SERVER_IP}/laboratorios`).then((response)=>{
+    });*/
+    Axios.get(`${process.env.REACT_APP_SERVER_IP}/laboratorios`).then((response)=>{
       setLaboratorioLista(response.data);
     });
-    Axios.get(`https://${process.env.REACT_APP_SERVER_IP}/examenes`).then((response)=>{
+    Axios.get(`${process.env.REACT_APP_SERVER_IP}/examenes`).then((response)=>{
       setExamenLista(response.data);
+    });
+    Axios.get(`${process.env.REACT_APP_SERVER_IP}/usuariosLaboratoristas`).then((response)=>{
+      setUsuarioLista(response.data);
+    });
+    var id = cookies.get('usuario').idusuario;
+    Axios.get(`${process.env.REACT_APP_SERVER_IP}/validarpermisos/${id}`).then((response)=>{
+      setValidarLista(response.data);
     });
   };
  
@@ -89,14 +106,14 @@ const Chequeos = () => {
   const agregarRegistro=(event)=>{    
     event.preventDefault();
     console.log("fsdfd" + fechaChequeo);
-    Axios.post(`https://${process.env.REACT_APP_SERVER_IP}/chequeos`,{
+    Axios.post(`${process.env.REACT_APP_SERVER_IP}/chequeos`,{
       //TODOS LOS CAMPOS
       paciente:paciente,
       laboratorio:laboratorio,
       fechaChequeo:fechaChequeo,
       horaChequeo:horaChequeo,
       examenes:examenes,
-      //usuario:"",
+      usuario:usuario,
     }).then((response)=>{
       if(response.data.errores==null){      
         cerrarModal();
@@ -113,12 +130,21 @@ const Chequeos = () => {
       obtenerRegistros();
     }).catch(function (error) {
       if(error.response!=null){
-       swal({
-         title: "Error!",
-         text: error.response.data.detail,
-         icon: "error",
-         button: "Aww yiss!",
-       });
+        if(error.response.data.detail){
+          swal({
+            title: "Error!",
+            text: error.response.data.detail,
+            icon: "error",
+            button: "Aww yiss!",
+          });
+        }else if(error.response.data){
+          swal({
+            title: "Error!",
+            text: error.response.data,
+            icon: "error",
+            button: "Aww yiss!",
+          });
+        }
      }if(error.response==null){
        swal({
          title: "Error!",
@@ -131,7 +157,7 @@ const Chequeos = () => {
   };
 
   const eliminarRegistro=(idchequeo)=>{
-    Axios.delete(`https://${process.env.REACT_APP_SERVER_IP}/chequeos/${idchequeo}`).then((res)=>{
+    Axios.delete(`${process.env.REACT_APP_SERVER_IP}/chequeos/${idchequeo}`).then((res)=>{
       obtenerRegistros();
       swal({
         title: "Exito!",
@@ -141,12 +167,21 @@ const Chequeos = () => {
       })  
     }).catch(function (error) {
      if(error.response!=null){
-      swal({
-        title: "Error!",
-        text: error.response.data.detail,
-        icon: "error",
-        button: "Aww yiss!",
-      });
+      if(error.response.data.detail){
+        swal({
+          title: "Error!",
+          text: error.response.data.detail,
+          icon: "error",
+          button: "Aww yiss!",
+        });
+      }else if(error.response.data){
+        swal({
+          title: "Error!",
+          text: error.response.data,
+          icon: "error",
+          button: "Aww yiss!",
+        });
+      }
     }if(error.response==null){
       swal({
         title: "Error!",
@@ -159,7 +194,7 @@ const Chequeos = () => {
   };
 
   const actualizaRegistro=(idchequeo)=>{
-    Axios.put(`https://${process.env.REACT_APP_SERVER_IP}/chequeos`,{idlaboratorio:nuevoIdLaboratorio, fechaChequeo:nuevaFechaChequeo, horaChequeo:nuevaHoraChequeo, idchequeo:idchequeo}).then(()=>{
+    Axios.put(`${process.env.REACT_APP_SERVER_IP}/chequeos`,{idlaboratorio:nuevoIdLaboratorio, fechaChequeo:nuevaFechaChequeo, horaChequeo:nuevaHoraChequeo, idchequeo:idchequeo}).then(()=>{
       obtenerRegistros();
       swal({
         title: "Exito!",
@@ -169,12 +204,21 @@ const Chequeos = () => {
       })
     }).catch(function (error) {
       if(error.response!=null){
-       swal({
-         title: "Error!",
-         text: error.response.data.detail,
-         icon: "error",
-         button: "Aww yiss!",
-       });
+        if(error.response.data.detail){
+          swal({
+            title: "Error!",
+            text: error.response.data.detail,
+            icon: "error",
+            button: "Aww yiss!",
+          });
+        }else if(error.response.data){
+          swal({
+            title: "Error!",
+            text: error.response.data,
+            icon: "error",
+            button: "Aww yiss!",
+          });
+        }
      }if(error.response==null){
        swal({
          title: "Error!",
@@ -214,10 +258,17 @@ const Chequeos = () => {
   },[]);
 
   return (
-    <div class="container my-4">
+    <>{/*asi validamos cada permiso*/}
+    {(!validarLista.includes(57)) && 
+    <div class="col container mx-auto my-auto text-center">
+      <h1 class="text-primary">Ups...</h1>
+       <h4>No tiene permisos para ver estos registros</h4>
+   </div>}
+    {validarLista.includes(57) &&
+    <div class="col container my-4">
       
       <div class="modal fade" id="nuevoRegistro" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true" data-bs-backdrop="static">
-        <div class="modal-dialog">
+        <div class="modal-dialog modal-xl">
           <div class="modal-content">
             <div class="modal-header">
               <h5 class="modal-title" id="exampleModalLabel">Nuevo Registro</h5>
@@ -226,49 +277,70 @@ const Chequeos = () => {
             <form id="formulario" onSubmit={agregarRegistro}>
             <div class="modal-body">
 
-            <label for="" class="form-label mt-3">Pacientes:</label>
-              <select class="form-select form-select-sm" aria-label="Default select example" onChange={(event)=>{
+              <div class="row">
+                <div class="col-6">
+                  <label class="form-label">Paciente:</label> 
+                  <select id="paciente" class="form-select form-select-sm mb-2" size="4" aria-label="Default select example" onChange={(event)=>{
                 setPaciente(event.target.value)}}>
-                   <option selected>Seleccione un Paciente</option>
-                    {pacienteLista.map((paciente) => {
-                     
-                    
-                    return(  <option  value={paciente.idpaciente}>{paciente.nombrepaciente + ' ' + paciente.apellido}</option>)
+                    {pacienteLista.map(paciente => {
+                      return( <option value={paciente.idpaciente}>{paciente.nombrepaciente} {paciente.apellido}</option>)
                     })}
-              </select>        
-              { 
-                errores.paciente &&
-                <p><small class="text-danger">* {errores.paciente}</small></p>
-              }
+                  </select>
+                  { 
+                    errores.paciente &&
+                    <p><small class="text-danger">* {errores.paciente}</small></p>
+                  }
 
-              <label for="" class="form-label mt-3">Laboratorio:</label>
-              <select class="form-select form-select-sm" aria-label="Default select example" onChange={(event)=>{
-                setLaboratorio(event.target.value)}}>
-                   <option selected>Seleccione un Laboratorio</option>
-                    {laboratorioLista.map((laboratorio) => {
-                     
-                    
-                    return(  <option  value={laboratorio.idlaboratorio}>{laboratorio.nombrelaboratorio}</option>)
+                  <label class="form-label">Laboratorista:</label> 
+                  <select id="paciente" class="form-select form-select-sm " size="3" aria-label="Default select example" onChange={(event)=>{
+                  setUsuario(event.target.value)}}>
+                    {usuarioLista.map(usuario => {
+                      return( <option value={usuario.idusuario}>{usuario.nombreusuario}</option>)
                     })}
-              </select>        
-              { 
-                errores.laboratorio &&
-                <p><small class="text-danger">* {errores.laboratorio}</small></p>
-              }
+                  </select>
+                  { 
+                    errores.usuario &&
+                    <p><small class="text-danger">* {errores.usuario}</small></p>
+                  }
+
+                </div>
+                <div class="col-6">
+                  <label for="" class="form-label mt-3">Laboratorio:</label>
+                  <select class="form-select form-select-sm mb-2" aria-label="Default select example" onChange={(event)=>{
+                    setLaboratorio(event.target.value)}}>
+                      <option selected>Seleccione un Laboratorio</option>
+                        {laboratorioLista.map((laboratorio) => {
+                        return(  <option  value={laboratorio.idlaboratorio}>{laboratorio.nombrelaboratorio}</option>)
+                        })}
+                  </select>        
+                  { 
+                    errores.laboratorio &&
+                    <p><small class="text-danger">* {errores.laboratorio}</small></p>
+                  }
+                    
+                  <label for="" class="form-label">Fecha de chequeo:</label>
+                  <input type="date" class="form-control form-control-sm mb-2" onChange={(event)=>{setFechaChequeo(event.target.value)}} defaultValue={Moment().format('YYYY-MM-DD')} />
+                  { 
+                    errores.fechaChequeo &&
+                  <p><small class="text-danger">* {errores.fechaChequeo}</small></p>
+                  }
+
+                  <label for="" class="form-label">Hora de chequeo:</label>
+                  <input type="time" class="form-control form-control-sm mb-2" onChange={(event)=>{setHoraChequeo(event.target.value)}} defaultValue={Moment().format('HH:mm')} />
+                  { 
+                    errores.horaChequeo &&
+                  <p><small class="text-danger">* {errores.horaChequeo}</small></p>
+                  }
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-12">
                 
-              <label for="" class="form-label">Fecha de chequeo:</label>
-              <input type="date" class="form-control form-control-sm" onChange={(event)=>{setFechaChequeo(event.target.value)}} defaultValue={Moment().format('YYYY-MM-DD')} />
-              { 
-                errores.fechaChequeo &&
-               <p><small class="text-danger">* {errores.fechaChequeo}</small></p>
-              }
+                </div>
+              </div>
+              
 
-              <label for="" class="form-label">Hora de chequeo:</label>
-              <input type="time" class="form-control form-control-sm" onChange={(event)=>{setHoraChequeo(event.target.value)}} defaultValue={Moment().format('HH:mm:ss')} />
-              { 
-                errores.horaChequeo &&
-               <p><small class="text-danger">* {errores.horaChequeo}</small></p>
-              }
+              
               <h6 class="mt-3">Seleccionar Examenes</h6>
               {examenLista.map((registro) => {
                   return(
@@ -295,9 +367,10 @@ const Chequeos = () => {
       <div class="mt-4 mb-4">
       <div class="row bordeLateral mb-3">
         <h2 class="m-0"><span>Gestión de Chequeos</span>
+        {validarLista.includes(58) &&
           <button type="button" class="btn btn-primary btn-sm ms-3" onClick={abrirModal}>
             Nuevo Registro
-          </button>
+          </button>}
           </h2>
         </div>
           <div class="row">        
@@ -346,10 +419,10 @@ const Chequeos = () => {
               </div>
             </div>
           </div>
-          <DatatableRoles examenes={examenLista} pacientes={pacienteLista} labs={laboratorioLista} data={buscar(chequeoLista)} usuarios={usuarioLista} laboratorios={laboratorioLista} eliminarRegistro={eliminarRegistro} actualizarRegistro={actualizaRegistro}  setNuevoLaboratorio={setNuevoLaboratorio} setNuevaFechaChequeo={setNuevaFechaChequeo} setNuevaHoraChequeo={setNuevaHoraChequeo} />
+          <DatatableRoles validarLista={validarLista} examenes={examenLista} pacientes={pacienteLista} labs={laboratorioLista} data={buscar(chequeoLista)} usuarios={usuarioLista} laboratorios={laboratorioLista} eliminarRegistro={eliminarRegistro} actualizarRegistro={actualizaRegistro}  setNuevoLaboratorio={setNuevoLaboratorio} setNuevaFechaChequeo={setNuevaFechaChequeo} setNuevaHoraChequeo={setNuevaHoraChequeo} />
           
       </div>    
-    </div>
+    </div>}</>
   );
 };
   

@@ -4,6 +4,8 @@ import Axios from 'axios';
 import DatatableRoles from "./datatable";
 import { Modal } from 'bootstrap/dist/js/bootstrap.bundle.min';
 import swal from 'sweetalert';
+import Cookies from 'universal-cookie';
+const cookies = new Cookies();
 
 const Roles = () => { 
   //PARA los ERRORES
@@ -17,6 +19,7 @@ const Roles = () => {
   const[permisoLista, setPermisoLista] = useState([]);
   const[modalB, setModalB] = useState([]);
   const[nuevosPermisos,setNuevosPermisos]=useState([]);
+  const[validarLista, setValidarLista] = useState([]);
   //PARA LA BUSQUEDA
   const [q, setQ] = useState('');
   //TODAS LAS COLUMNAS
@@ -30,14 +33,25 @@ const Roles = () => {
     'nombrerol',
   ]);
   
+//esto es para validar en el backend y mandar siempre el id usuario
+Axios.interceptors.request.use(function (config) {
+  var id = cookies.get('usuario').idusuario;
+  config.headers.idusuario =  id;
+  return config;
+});
 
   const obtenerRoles=()=>{
-    Axios.get(`https://${process.env.REACT_APP_SERVER_IP}/roles`).then((response)=>{
+    Axios.get(`${process.env.REACT_APP_SERVER_IP}/roles`).then((response)=>{
       setRolLista(response.data);
     });
-    Axios.get(`https://${process.env.REACT_APP_SERVER_IP}/opcionespermisos`).then((response)=>{
+    Axios.get(`${process.env.REACT_APP_SERVER_IP}/opcionespermisos`).then((response)=>{
       setPermisoLista(response.data);
     });
+    var id = cookies.get('usuario').idusuario;
+    Axios.get(`${process.env.REACT_APP_SERVER_IP}/validarpermisos/${id}`).then((response)=>{
+      setValidarLista(response.data);
+    });
+
   };
  
   const abrirModal=()=>{
@@ -59,7 +73,7 @@ const Roles = () => {
   //AGREGAR
   const agregarRegistro=(event)=>{    
     event.preventDefault();
-    Axios.post(`https://${process.env.REACT_APP_SERVER_IP}/roles`,{
+    Axios.post(`${process.env.REACT_APP_SERVER_IP}/roles`,{
       //TODOS LOS CAMPOS
       nombre:nombre,
     }).then((response)=>{    
@@ -78,12 +92,21 @@ const Roles = () => {
       obtenerRoles();
     }).catch(function (error) {
       if(error.response!=null){
-       swal({
-         title: "Error!",
-         text: error.response.data.detail,
-         icon: "error",
-         button: "Aww yiss!",
-       });
+        if(error.response.data.detail){
+          swal({
+            title: "Error!",
+            text: error.response.data.detail,
+            icon: "error",
+            button: "Aww yiss!",
+          });
+        }else if(error.response.data){
+          swal({
+            title: "Error!",
+            text: error.response.data,
+            icon: "error",
+            button: "Aww yiss!",
+          });
+        }
      }if(error.response==null){
        swal({
          title: "Error!",
@@ -96,7 +119,7 @@ const Roles = () => {
   };
 
   const eliminarRegistro=(idrol)=>{
-    Axios.delete(`https://${process.env.REACT_APP_SERVER_IP}/roles/${idrol}`).then(()=>{
+    Axios.delete(`${process.env.REACT_APP_SERVER_IP}/roles/${idrol}`).then(()=>{
       obtenerRoles();  
       swal({
         title: "Exito!",
@@ -106,12 +129,21 @@ const Roles = () => {
       });    
     }).catch(function (error) {
       if(error.response!=null){
-       swal({
-         title: "Error!",
-         text: error.response.data.detail,
-         icon: "error",
-         button: "Aww yiss!",
-       });
+        if(error.response.data.detail){
+          swal({
+            title: "Error!",
+            text: error.response.data.detail,
+            icon: "error",
+            button: "Aww yiss!",
+          });
+        }else if(error.response.data){
+          swal({
+            title: "Error!",
+            text: error.response.data,
+            icon: "error",
+            button: "Aww yiss!",
+          });
+        }
      }if(error.response==null){
        swal({
          title: "Error!",
@@ -124,7 +156,7 @@ const Roles = () => {
   };
 
   const actualizaRegistro=(idrol)=>{
-    Axios.put(`https://${process.env.REACT_APP_SERVER_IP}/roles`,{nombre:nuevoNombre,idrol:idrol})
+    Axios.put(`${process.env.REACT_APP_SERVER_IP}/roles`,{nombre:nuevoNombre,idrol:idrol})
     .then(()=>{
       obtenerRoles(); 
       swal({
@@ -135,12 +167,21 @@ const Roles = () => {
       });    
     }).catch(function (error) {
       if(error.response!=null){
-       swal({
-         title: "Error!",
-         text: error.response.data.detail,
-         icon: "error",
-         button: "Aww yiss!",
-       });
+        if(error.response.data.detail){
+          swal({
+            title: "Error!",
+            text: error.response.data.detail,
+            icon: "error",
+            button: "Aww yiss!",
+          });
+        }else if(error.response.data){
+          swal({
+            title: "Error!",
+            text: error.response.data,
+            icon: "error",
+            button: "Aww yiss!",
+          });
+        }
      }if(error.response==null){
        swal({
          title: "Error!",
@@ -153,7 +194,7 @@ const Roles = () => {
   };
  
   const actualizaPermisos=(idrol)=>{
-    Axios.post(`https://${process.env.REACT_APP_SERVER_IP}/rolesPermisos`,{permisos:nuevosPermisos,idrol:idrol}).then(()=>{
+    Axios.post(`${process.env.REACT_APP_SERVER_IP}/rolesPermisos`,{permisos:nuevosPermisos,idrol:idrol}).then(()=>{
       obtenerRoles(); 
       swal({
         title: "Exito!",
@@ -163,12 +204,21 @@ const Roles = () => {
       })
     }).catch(function (error) {
       if(error.response!=null){
-       swal({
-         title: "Error!",
-         text: error.response.data.detail,
-         icon: "error",
-         button: "Aww yiss!",
-       });
+        if(error.response.data.detail){
+          swal({
+            title: "Error!",
+            text: error.response.data.detail,
+            icon: "error",
+            button: "Aww yiss!",
+          });
+        }else if(error.response.data){
+          swal({
+            title: "Error!",
+            text: error.response.data,
+            icon: "error",
+            button: "Aww yiss!",
+          });
+        }
      }if(error.response==null){
        swal({
          title: "Error!",
@@ -200,7 +250,16 @@ const Roles = () => {
   },[]);
 
   return (
-    <div class="container my-4">
+    <> {/*asi validamos cada permiso*/}
+    {(!validarLista.includes(41)) && 
+    <div class="col container mx-auto my-auto text-center">
+      <h1 class="text-primary">Ups...</h1>
+       <h4>No tiene permisos para ver estos registros</h4>
+   </div>}{
+   
+ }
+    {validarLista.includes(41) &&
+    <div class="col container my-4">
       
        {/* Modal para nuevo registro*/} 
       <div class="modal fade" id="nuevoRegistro" tabIndex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true" data-bs-backdrop="static">
@@ -235,9 +294,10 @@ const Roles = () => {
       <div class="mt-4 mb-4">
       <div class="row bordeLateral mb-3">
         <h2 class="m-0"><span>Gestión de Roles </span>
+        {validarLista.includes(42) &&
           <button type="button" class="btn btn-primary btn-sm ms-3" onClick={abrirModal}>
             Nuevo Registro
-          </button>
+          </button>}
           </h2>
         </div>
           <div class="row">        
@@ -287,10 +347,10 @@ const Roles = () => {
               </div>
             </div>
           </div>
-          <DatatableRoles actualizaPermisos={actualizaPermisos} nuevosPermisos={nuevosPermisos} setNuevosPermisos={setNuevosPermisos} permisos={permisoLista} data={buscar(rolLista)} eliminarRegistro={eliminarRegistro} actualizarRegistro={actualizaRegistro} setNuevoNombre={setNuevoNombre}/>
+          <DatatableRoles validarLista={validarLista} actualizaPermisos={actualizaPermisos} nuevosPermisos={nuevosPermisos} setNuevosPermisos={setNuevosPermisos} permisos={permisoLista} data={buscar(rolLista)} eliminarRegistro={eliminarRegistro} actualizarRegistro={actualizaRegistro} setNuevoNombre={setNuevoNombre}/>
           
       </div>    
-    </div>
+    </div>}</>
   );
 };
   

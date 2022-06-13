@@ -4,7 +4,9 @@ import Axios from 'axios';
 import DatatableRoles from "./datatable";
 import { Modal } from 'bootstrap/dist/js/bootstrap.bundle.min';
 import swal from 'sweetalert';
+import Cookies from 'universal-cookie';
 var SHA256 = require("crypto-js/sha256");
+const cookies = new Cookies();
 
 const Laboratoristas = () => { 
   //PARA los ERRORES
@@ -20,7 +22,7 @@ const Laboratoristas = () => {
   const[estado,setEstado]=useState(true);
   const[correo,setCorreo]=useState("");
   const[profesion,setProfesion]=useState(0);
-
+  const[validarLista, setValidarLista] = useState([]);
   //ESTE PARA CADA ATRIBUTO QUE SEPUEDE EDITAR
   const[nuevoNumeroJunta,setNuevoNumeroJunta]=useState("");
   const[nuevaProfesion,setNuevaProfesion]=useState(0);
@@ -50,19 +52,29 @@ const Laboratoristas = () => {
     'numerojuntavigilacia',
   ]);
   
+//esto es para validar en el backend y mandar siempre el id usuario
+Axios.interceptors.request.use(function (config) {
+  var id = cookies.get('usuario').idusuario;
+  config.headers.idusuario =  id;
+  return config;
+});
 
   const obtenerRegistros=()=>{
-    Axios.get(`https://${process.env.REACT_APP_SERVER_IP}/laboratoristas`).then((response)=>{
+    Axios.get(`${process.env.REACT_APP_SERVER_IP}/laboratoristas`).then((response)=>{
       setLaboratoristaLista(response.data);
     });
-    Axios.get(`https://${process.env.REACT_APP_SERVER_IP}/profesiones`).then((response)=>{
+    Axios.get(`${process.env.REACT_APP_SERVER_IP}/profesiones`).then((response)=>{
       setProfesionLista(response.data);
     });
-    Axios.get(`https://${process.env.REACT_APP_SERVER_IP}/usuarioslibres`).then((response)=>{
+    Axios.get(`${process.env.REACT_APP_SERVER_IP}/usuarioslibres`).then((response)=>{
       setUsuarioLista(response.data);
     });
-    Axios.get(`https://${process.env.REACT_APP_SERVER_IP}/laboratorios`).then((response)=>{
+    Axios.get(`${process.env.REACT_APP_SERVER_IP}/laboratorios`).then((response)=>{
       setLaboratorioLista(response.data);
+    });
+    var id = cookies.get('usuario').idusuario;
+    Axios.get(`${process.env.REACT_APP_SERVER_IP}/validarpermisos/${id}`).then((response)=>{
+      setValidarLista(response.data);
     });
   };
  
@@ -88,7 +100,7 @@ const Laboratoristas = () => {
     var contraseniaEncriptada = (SHA256(contrasenia)).toString();
     var confirmacionEncriptada = (SHA256(confirmarC)).toString();
     if(nuevoRegistro==true){
-      Axios.post(`https://${process.env.REACT_APP_SERVER_IP}/laboratoristas`,{
+      Axios.post(`${process.env.REACT_APP_SERVER_IP}/laboratoristas`,{
         //TODOS LOS CAMPOS
         nuevo:1,
         nombre:nombre,
@@ -116,12 +128,21 @@ const Laboratoristas = () => {
         obtenerRegistros();
       }).catch(function (error) {
         if(error.response!=null){
-         swal({
-           title: "Error!",
-           text: error.response.data.detail,
-           icon: "error",
-           button: "Aww yiss!",
-         });
+          if(error.response.data.detail){
+            swal({
+              title: "Error!",
+              text: error.response.data.detail,
+              icon: "error",
+              button: "Aww yiss!",
+            });
+          }else if(error.response.data){
+            swal({
+              title: "Error!",
+              text: error.response.data,
+              icon: "error",
+              button: "Aww yiss!",
+            });
+          }
        }if(error.response==null){
          swal({
            title: "Error!",
@@ -133,7 +154,7 @@ const Laboratoristas = () => {
        });
     }else if(nuevoRegistro==false){
       
-      Axios.post(`https://${process.env.REACT_APP_SERVER_IP}/laboratoristas`,{
+      Axios.post(`${process.env.REACT_APP_SERVER_IP}/laboratoristas`,{
         //TODOS LOS CAMPOS
         nuevo:0,
         usuario:usuario,
@@ -156,12 +177,21 @@ const Laboratoristas = () => {
         obtenerRegistros();
       }).catch(function (error) {
         if(error.response!=null){
-         swal({
-           title: "Error!",
-           text: error.response.data.detail,
-           icon: "error",
-           button: "Aww yiss!",
-         });
+          if(error.response.data.detail){
+            swal({
+              title: "Error!",
+              text: error.response.data.detail,
+              icon: "error",
+              button: "Aww yiss!",
+            });
+          }else if(error.response.data){
+            swal({
+              title: "Error!",
+              text: error.response.data,
+              icon: "error",
+              button: "Aww yiss!",
+            });
+          }
        }if(error.response==null){
          swal({
            title: "Error!",
@@ -176,7 +206,7 @@ const Laboratoristas = () => {
   };
 
   const eliminarRegistro=(idlaboratorista)=>{
-    Axios.delete(`https://${process.env.REACT_APP_SERVER_IP}/laboratoristas/${idlaboratorista}`).then(()=>{
+    Axios.delete(`${process.env.REACT_APP_SERVER_IP}/laboratoristas/${idlaboratorista}`).then(()=>{
       obtenerRegistros();
       swal({
         title: "Exito!",
@@ -186,12 +216,21 @@ const Laboratoristas = () => {
       });
     }).catch(function (error) {
       if(error.response!=null){
-       swal({
-         title: "Error!",
-         text: error.response.data.detail,
-         icon: "error",
-         button: "Aww yiss!",
-       });
+        if(error.response.data.detail){
+          swal({
+            title: "Error!",
+            text: error.response.data.detail,
+            icon: "error",
+            button: "Aww yiss!",
+          });
+        }else if(error.response.data){
+          swal({
+            title: "Error!",
+            text: error.response.data,
+            icon: "error",
+            button: "Aww yiss!",
+          });
+        }
      }if(error.response==null){
        swal({
          title: "Error!",
@@ -204,7 +243,7 @@ const Laboratoristas = () => {
   };
 
   const actualizaRegistro=(idlaboratorista)=>{
-    Axios.put(`https://${process.env.REACT_APP_SERVER_IP}/laboratoristas`,{idlaboratorista:idlaboratorista,profesion:nuevaProfesion,usuario:nuevoUsuario,numerojunta:nuevoNumeroJunta}).then(()=>{
+    Axios.put(`${process.env.REACT_APP_SERVER_IP}/laboratoristas`,{idlaboratorista:idlaboratorista,profesion:nuevaProfesion,usuario:nuevoUsuario,numerojunta:nuevoNumeroJunta}).then(()=>{
       obtenerRegistros();
       swal({
         title: "Exito!",
@@ -214,12 +253,21 @@ const Laboratoristas = () => {
       })  
     }).catch(function (error) {
       if(error.response!=null){
-       swal({
-         title: "Error!",
-         text: error.response.data.detail,
-         icon: "error",
-         button: "Aww yiss!",
-       });
+        if(error.response.data.detail){
+          swal({
+            title: "Error!",
+            text: error.response.data.detail,
+            icon: "error",
+            button: "Aww yiss!",
+          });
+        }else if(error.response.data){
+          swal({
+            title: "Error!",
+            text: error.response.data,
+            icon: "error",
+            button: "Aww yiss!",
+          });
+        }
      }if(error.response==null){
        swal({
          title: "Error!",
@@ -250,7 +298,17 @@ const Laboratoristas = () => {
   },[]);
 
   return (
-    <div class="container my-4">
+    <>
+     {/*asi validamos cada permiso*/}
+     {(!validarLista.includes(33)) && 
+       <div class="col container mx-auto my-auto text-center">
+         <h1 class="text-primary">Ups...</h1>
+          <h4>No tiene permisos para ver estos registros</h4>
+      </div>}{
+      
+    }
+       {validarLista.includes(33) &&
+    <div class="col container my-4">
       <div class="modal fade" id="nuevoRegistro" tabIndex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true" data-bs-backdrop="static">
         <div class="modal-dialog modal-lg">
           <div class="modal-content">
@@ -406,9 +464,10 @@ const Laboratoristas = () => {
       <div class="mt-4 mb-4">
       <div class="row bordeLateral mb-3">
         <h2 class="m-0"><span>Gestión de Laboratoristas</span>
+        {validarLista.includes(34) &&
           <button type="button" class="btn btn-primary btn-sm ms-3" onClick={abrirModal}>
             Nuevo Registro
-          </button>
+          </button>}
           </h2>
         </div>
           <div class="row">        
@@ -457,10 +516,10 @@ const Laboratoristas = () => {
               </div>
             </div>
           </div>
-          <DatatableRoles  data={buscar(laboratoristaLista)} eliminarRegistro={eliminarRegistro} actualizarRegistro={actualizaRegistro} profesiones={profesionLista} usuarios={usuarioLista} setNuevoNumeroJunta={setNuevoNumeroJunta} setNuevoUsuario={setNuevoUsuario} setNuevaProfesion={setNuevaProfesion}/>
+          <DatatableRoles validarLista={validarLista} data={buscar(laboratoristaLista)} eliminarRegistro={eliminarRegistro} actualizarRegistro={actualizaRegistro} profesiones={profesionLista} usuarios={usuarioLista} setNuevoNumeroJunta={setNuevoNumeroJunta} setNuevoUsuario={setNuevoUsuario} setNuevaProfesion={setNuevaProfesion}/>
           
       </div>    
-    </div>
+    </div>}</>
   );
 };
   

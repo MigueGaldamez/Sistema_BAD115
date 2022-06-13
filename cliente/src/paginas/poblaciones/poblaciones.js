@@ -4,6 +4,8 @@ import Axios from 'axios';
 import DatatableRoles from "./datatable";
 import { Modal } from 'bootstrap/dist/js/bootstrap.bundle.min';
 import swal from 'sweetalert';
+import Cookies from 'universal-cookie';
+const cookies = new Cookies();
 
 const Poblaciones = () => { 
   //PARA los ERRORES
@@ -19,6 +21,7 @@ const Poblaciones = () => {
   //LA LISTA QUEMOSTRAREMOS
   const[poblacionLista, setPoblacionLista] = useState([]);
   const[modalB, setModalB] = useState([]);
+  const[validarLista, setValidarLista] = useState([]);
   //PARA LA BUSQUEDA
   const [q, setQ] = useState('');
   //TODAS LAS COLUMNAS
@@ -36,10 +39,18 @@ const Poblaciones = () => {
     'poblacion'
   ]);
   
-
+  Axios.interceptors.request.use(function (config) {
+    var id = cookies.get('usuario').idusuario;
+    config.headers.idusuario =  id;
+    return config;
+  });
   const obtenerRegistros=()=>{
-    Axios.get(`https://${process.env.REACT_APP_SERVER_IP}/poblaciones`).then((response)=>{
+    Axios.get(`${process.env.REACT_APP_SERVER_IP}/poblaciones`).then((response)=>{
       setPoblacionLista(response.data);
+    });
+    var id = cookies.get('usuario').idusuario;
+    Axios.get(`${process.env.REACT_APP_SERVER_IP}/validarpermisos/${id}`).then((response)=>{
+      setValidarLista(response.data);
     });
   };
  
@@ -64,7 +75,7 @@ const Poblaciones = () => {
   //AGREGAR
   const agregarRegistro=(event)=>{    
     event.preventDefault();
-    Axios.post(`https://${process.env.REACT_APP_SERVER_IP}/poblaciones`,{
+    Axios.post(`${process.env.REACT_APP_SERVER_IP}/poblaciones`,{
       //TODOS LOS CAMPOS
       nombre:nombre,
       edadmaximo:edadMaxima,
@@ -85,12 +96,21 @@ const Poblaciones = () => {
       obtenerRegistros();
     }).catch(function (error) {
       if(error.response!=null){
-       swal({
-         title: "Error!",
-         text: error.response.data.detail,
-         icon: "error",
-         button: "Aww yiss!",
-       });
+        if(error.response.data.detail){
+          swal({
+            title: "Error!",
+            text: error.response.data.detail,
+            icon: "error",
+            button: "Aww yiss!",
+          });
+        }else if(error.response.data){
+          swal({
+            title: "Error!",
+            text: error.response.data,
+            icon: "error",
+            button: "Aww yiss!",
+          });
+        }
      }if(error.response==null){
        swal({
          title: "Error!",
@@ -103,7 +123,7 @@ const Poblaciones = () => {
   };
 
   const eliminarRegistro=(idpoblacion)=>{
-    Axios.delete(`https://${process.env.REACT_APP_SERVER_IP}/poblaciones/${idpoblacion}`).then(()=>{
+    Axios.delete(`${process.env.REACT_APP_SERVER_IP}/poblaciones/${idpoblacion}`).then(()=>{
       obtenerRegistros();
       swal({
         title: "Exito!",
@@ -113,12 +133,21 @@ const Poblaciones = () => {
       });
     }).catch(function (error) {
       if(error.response!=null){
-       swal({
-         title: "Error!",
-         text: error.response.data.detail,
-         icon: "error",
-         button: "Aww yiss!",
-       });
+        if(error.response.data.detail){
+          swal({
+            title: "Error!",
+            text: error.response.data.detail,
+            icon: "error",
+            button: "Aww yiss!",
+          });
+        }else if(error.response.data){
+          swal({
+            title: "Error!",
+            text: error.response.data,
+            icon: "error",
+            button: "Aww yiss!",
+          });
+        }
      }if(error.response==null){
        swal({
          title: "Error!",
@@ -131,7 +160,7 @@ const Poblaciones = () => {
   };
 
   const actualizaRegistro=(idpoblacion)=>{
-    Axios.put(`https://${process.env.REACT_APP_SERVER_IP}/poblaciones`,{nombre:nuevoNombre,edadmaximo:nuevoEdadMaxima,edadminimo:nuevoEdadMinima,idpoblacion:idpoblacion}).then(()=>{
+    Axios.put(`${process.env.REACT_APP_SERVER_IP}/poblaciones`,{nombre:nuevoNombre,edadmaximo:nuevoEdadMaxima,edadminimo:nuevoEdadMinima,idpoblacion:idpoblacion}).then(()=>{
       obtenerRegistros();
       swal({
         title: "Exito!",
@@ -141,12 +170,21 @@ const Poblaciones = () => {
       })  
     }).catch(function (error) {
       if(error.response!=null){
-       swal({
-         title: "Error!",
-         text: error.response.data.detail,
-         icon: "error",
-         button: "Aww yiss!",
-       });
+        if(error.response.data.detail){
+          swal({
+            title: "Error!",
+            text: error.response.data.detail,
+            icon: "error",
+            button: "Aww yiss!",
+          });
+        }else if(error.response.data){
+          swal({
+            title: "Error!",
+            text: error.response.data,
+            icon: "error",
+            button: "Aww yiss!",
+          });
+        }
      }if(error.response==null){
        swal({
          title: "Error!",
@@ -177,7 +215,15 @@ const Poblaciones = () => {
   },[]);
 
   return (
-    <div class="container my-4">
+    <> {(!validarLista.includes(13)) && 
+      <div class="col container mx-auto my-auto text-center">
+        <h1 class="text-primary">Ups...</h1>
+         <h4>No tiene permisos para ver estos registros</h4>
+     </div>}{
+     
+   }
+      {validarLista.includes(13) &&
+    <div class="col container my-4">
       <div class="modal fade" id="nuevoRegistro" tabIndex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true" data-bs-backdrop="static">
         <div class="modal-dialog">
           <div class="modal-content">
@@ -223,9 +269,10 @@ const Poblaciones = () => {
       <div class="mt-4 mb-4">
       <div class="row bordeLateral mb-3">
         <h2 class="m-0"><span>Gestión de Poblaciones</span>
+        {validarLista.includes(14) &&
           <button type="button" class="btn btn-primary btn-sm ms-3" onClick={abrirModal}>
             Nuevo Registro
-          </button>
+          </button>}
           </h2>
         </div>
           <div class="row">        
@@ -274,10 +321,11 @@ const Poblaciones = () => {
               </div>
             </div>
           </div>
-          <DatatableRoles  data={buscar(poblacionLista)} eliminarRegistro={eliminarRegistro} actualizarRegistro={actualizaRegistro} setNuevoNombre={setNuevoNombre} setNuevoEdadMaxima={setNuevoEdadMaxima} setNuevoEdadMinima={setNuevoEdadMinima}/>
+          <DatatableRoles  validarLista={validarLista} data={buscar(poblacionLista)} eliminarRegistro={eliminarRegistro} actualizarRegistro={actualizaRegistro} setNuevoNombre={setNuevoNombre} setNuevoEdadMaxima={setNuevoEdadMaxima} setNuevoEdadMinima={setNuevoEdadMinima}/>
           
       </div>    
-    </div>
+    </div>}
+    </>
   );
 };
   

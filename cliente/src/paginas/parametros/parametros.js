@@ -4,6 +4,8 @@ import Axios from 'axios';
 import DatatableRoles from "./datatable";
 import { Modal } from 'bootstrap/dist/js/bootstrap.bundle.min';
 import swal from 'sweetalert';
+import Cookies from 'universal-cookie';
+const cookies = new Cookies();
 
 const Parametros = () => { 
     //PARA los ERRORES
@@ -36,6 +38,7 @@ const Parametros = () => {
   const[unidadLista, setUnidadLista] = useState([]);
   const[poblacionLista, setPoblacionLista] = useState([]);
   const[modalB, setModalB] = useState([]);
+  const[validarLista, setValidarLista] = useState([]);
   //PARA LA BUSQUEDA
   const [q, setQ] = useState('');
   //TODAS LAS COLUMNAS
@@ -50,16 +53,25 @@ const Parametros = () => {
     'parametro',
     'tipo'
   ]);
-
+ //esto es para validar en el backend y mandar siempre el id usuario
+ Axios.interceptors.request.use(function (config) {
+  var id = cookies.get('usuario').idusuario;
+  config.headers.idusuario =  id;
+  return config;
+});
   const obtenerRegistros=()=>{
-    Axios.get(`https://${process.env.REACT_APP_SERVER_IP}/areas`).then((response)=>{
+    Axios.get(`${process.env.REACT_APP_SERVER_IP}/areas`).then((response)=>{
       setAreaLista(response.data);  });
-    Axios.get(`https://${process.env.REACT_APP_SERVER_IP}/parametros`).then((response)=>{
+    Axios.get(`${process.env.REACT_APP_SERVER_IP}/parametros`).then((response)=>{
       setParametroLista(response.data);  });
-    Axios.get(`https://${process.env.REACT_APP_SERVER_IP}/unidades`).then((response)=>{
+    Axios.get(`${process.env.REACT_APP_SERVER_IP}/unidades`).then((response)=>{
       setUnidadLista(response.data);  });
-    Axios.get(`https://${process.env.REACT_APP_SERVER_IP}/poblaciones`).then((response)=>{
+    Axios.get(`${process.env.REACT_APP_SERVER_IP}/poblaciones`).then((response)=>{
         setPoblacionLista(response.data);  });
+        var id = cookies.get('usuario').idusuario;
+    Axios.get(`${process.env.REACT_APP_SERVER_IP}/validarpermisos/${id}`).then((response)=>{
+      setValidarLista(response.data);
+    });
   };
 
   const abrirModal=()=>{
@@ -85,7 +97,7 @@ const Parametros = () => {
   //AGREGAR
   const agregarRegistro=(event)=>{    
     event.preventDefault();
-    Axios.post(`https://${process.env.REACT_APP_SERVER_IP}/parametros`,{
+    Axios.post(`${process.env.REACT_APP_SERVER_IP}/parametros`,{
       //TODOS LOS CAMPOS
       nombre:nombre,
       area:area,
@@ -110,12 +122,21 @@ const Parametros = () => {
       obtenerRegistros();
     }).catch(function (error) {
       if(error.response!=null){
-       swal({
-         title: "Error!",
-         text: error.response.data.detail,
-         icon: "error",
-         button: "Aww yiss!",
-       });
+        if(error.response.data.detail){
+          swal({
+            title: "Error!",
+            text: error.response.data.detail,
+            icon: "error",
+            button: "Aww yiss!",
+          });
+        }else if(error.response.data){
+          swal({
+            title: "Error!",
+            text: error.response.data,
+            icon: "error",
+            button: "Aww yiss!",
+          });
+        }
      }if(error.response==null){
        swal({
          title: "Error!",
@@ -128,7 +149,7 @@ const Parametros = () => {
   };
 
   const eliminarRegistro=(idParametro)=>{
-    Axios.delete(`https://${process.env.REACT_APP_SERVER_IP}/parametros/${idParametro}`).then((res)=>{
+    Axios.delete(`${process.env.REACT_APP_SERVER_IP}/parametros/${idParametro}`).then((res)=>{
       obtenerRegistros();
       swal({
         title: "Exito!",
@@ -138,12 +159,21 @@ const Parametros = () => {
       })  
     }).catch(function (error) {
      if(error.response!=null){
-      swal({
-        title: "Error!",
-        text: error.response.data.detail,
-        icon: "error",
-        button: "Aww yiss!",
-      });
+      if(error.response.data.detail){
+        swal({
+          title: "Error!",
+          text: error.response.data.detail,
+          icon: "error",
+          button: "Aww yiss!",
+        });
+      }else if(error.response.data){
+        swal({
+          title: "Error!",
+          text: error.response.data,
+          icon: "error",
+          button: "Aww yiss!",
+        });
+      }
     }if(error.response==null){
       swal({
         title: "Error!",
@@ -156,7 +186,7 @@ const Parametros = () => {
   };
 
   const actualizaRegistro=(idparametro)=>{
-    Axios.put(`https://${process.env.REACT_APP_SERVER_IP}/parametros`,{nombre:nuevoNombre,idparametro:idparametro,area:nuevaArea,tipo:nuevoTipo}).then(()=>{
+    Axios.put(`${process.env.REACT_APP_SERVER_IP}/parametros`,{nombre:nuevoNombre,idparametro:idparametro,area:nuevaArea,tipo:nuevoTipo}).then(()=>{
       obtenerRegistros();
       swal({
         title: "Exito!",
@@ -166,12 +196,21 @@ const Parametros = () => {
       })
     }).catch(function (error) {
       if(error.response!=null){
-       swal({
-         title: "Error!",
-         text: error.response.data.detail,
-         icon: "error",
-         button: "Aww yiss!",
-       });
+        if(error.response.data.detail){
+          swal({
+            title: "Error!",
+            text: error.response.data.detail,
+            icon: "error",
+            button: "Aww yiss!",
+          });
+        }else if(error.response.data){
+          swal({
+            title: "Error!",
+            text: error.response.data,
+            icon: "error",
+            button: "Aww yiss!",
+          });
+        }
      }if(error.response==null){
        swal({
          title: "Error!",
@@ -184,7 +223,7 @@ const Parametros = () => {
   };
   
   const actualizaRegistroDetalles=(idparametro)=>{
-    Axios.put(`https://${process.env.REACT_APP_SERVER_IP}/parametros`,
+    Axios.put(`${process.env.REACT_APP_SERVER_IP}/parametros`,
     { nombre:nuevoNombre,
       idparametro:idparametro,
       area:nuevaArea,
@@ -202,12 +241,21 @@ const Parametros = () => {
       })
     }).catch(function (error) {
       if(error.response!=null){
-       swal({
-         title: "Error!",
-         text: error.response.data.detail,
-         icon: "error",
-         button: "Aww yiss!",
-       });
+        if(error.response.data.detail){
+          swal({
+            title: "Error!",
+            text: error.response.data.detail,
+            icon: "error",
+            button: "Aww yiss!",
+          });
+        }else if(error.response.data){
+          swal({
+            title: "Error!",
+            text: error.response.data,
+            icon: "error",
+            button: "Aww yiss!",
+          });
+        }
      }if(error.response==null){
        swal({
          title: "Error!",
@@ -282,7 +330,14 @@ const Parametros = () => {
  
   },[]);
   return (
-    <div class="container my-4">
+    <>{/*asi validamos cada permiso*/}
+    {(!validarLista.includes(61)) && 
+    <div class="col container mx-auto my-auto text-center">
+      <h1 class="text-primary">Ups...</h1>
+       <h4>No tiene permisos para ver estos registros</h4>
+   </div>}
+    {validarLista.includes(61) &&
+    <div class="col container my-4">
       <div class="modal fade" id="nuevoRegistro" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true" data-bs-backdrop="static">
         <div class="modal-dialog modal-lg">
           <div class="modal-content">
@@ -361,6 +416,7 @@ const Parametros = () => {
                        <option selected value="0">Seleccione un tipo</option>
                        <option value="1">Intervalo</option>
                        <option value="2">Por opción</option>
+                       <option value="3">Especificación</option>
                    </select>
                  
                    { 
@@ -489,7 +545,9 @@ const Parametros = () => {
                   </div>
                 </form>
                }
-              
+              {tipo ==3 &&
+              <div class="mx-auto fw-bold text-center"><span>Permite ingresar un valor textual</span></div>
+              }
                     </div>
                   </div>
                   {/*hasta aqui*/}
@@ -508,13 +566,13 @@ const Parametros = () => {
           </div>
         </div>
       </div>
-      <div class="mt-4 mb-4">
-        <div class="row bordeLateral mb-3">
+      <div class="mb-4">
+        <div class="row bordeLateral mb-3 sticky-top sticky bg-white">
         <h2 class="m-0"><span>Gestión de Parametros</span>
-        
+        {validarLista.includes(62) &&
           <button type="button" class="btn btn-primary btn-sm ms-3"  onClick={abrirModal}>
             Nuevo Registro
-          </button>
+          </button>}
               
           </h2>
         </div>
@@ -594,10 +652,11 @@ const Parametros = () => {
           eliminardeListaOpcion={eliminardeListaOpcion}
           opcionesP={opcionesP}
           setOpcionesP={setOpcionesP}
+          validarLista={validarLista}
           />
 
       </div>    
-    </div>
+    </div>}</>
   );
 };
 export default Parametros;
