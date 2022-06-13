@@ -4,7 +4,7 @@ const sqlee = new Pool({
   user: 'postgres',
   host: 'localhost',
   password: 'adminadmin',//cambiarlo por el propio
-  database: 'aplicacion',//mismo aqui
+  database: 'aplicacion2',//mismo aqui
   port: '5432'
 })
 //Para cuando la base esta vacia
