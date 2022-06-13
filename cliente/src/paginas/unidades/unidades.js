@@ -44,11 +44,11 @@ const Unidades = () => {
     return config;
 });
   const obtenerRegistros=()=>{
-    Axios.get(`http://${process.env.REACT_APP_SERVER_IP}/unidades`).then((response)=>{
+    Axios.get(`https://${process.env.REACT_APP_SERVER_IP}/unidades`).then((response)=>{
       setUnidadLista(response.data);
     });
     var id = cookies.get('usuario').idusuario;
-    Axios.get(`http://${process.env.REACT_APP_SERVER_IP}/validarpermisos/${id}`).then((response)=>{
+    Axios.get(`https://${process.env.REACT_APP_SERVER_IP}/validarpermisos/${id}`).then((response)=>{
       setValidarLista(response.data);
     });
 
@@ -74,7 +74,7 @@ const Unidades = () => {
   //AGREGAR
   const agregarRegistro=(event)=>{    
     event.preventDefault();
-    Axios.post(`http://${process.env.REACT_APP_SERVER_IP}/unidades`,{
+    Axios.post(`https://${process.env.REACT_APP_SERVER_IP}/unidades`,{
       //TODOS LOS CAMPOS
       nombre:nombre,
       simbolo:simbolo,
@@ -121,7 +121,7 @@ const Unidades = () => {
   };
 
   const eliminarRegistro=(idunidad)=>{
-    Axios.delete(`http://${process.env.REACT_APP_SERVER_IP}/unidades/${idunidad}`).then(()=>{
+    Axios.delete(`https://${process.env.REACT_APP_SERVER_IP}/unidades/${idunidad}`).then(()=>{
       obtenerRegistros();
       swal({
         title: "Exito!",
@@ -158,7 +158,7 @@ const Unidades = () => {
   };
 
   const actualizaRegistro=(idunidad)=>{
-    Axios.put(`http://${process.env.REACT_APP_SERVER_IP}/unidades`,{nombre:nuevoNombre,simbolo:nuevoSimbolo,idunidad:idunidad}).then(()=>{
+    Axios.put(`https://${process.env.REACT_APP_SERVER_IP}/unidades`,{nombre:nuevoNombre,simbolo:nuevoSimbolo,idunidad:idunidad}).then(()=>{
       obtenerRegistros();
       
     }).catch(function (error) {

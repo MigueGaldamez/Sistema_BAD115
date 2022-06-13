@@ -41,12 +41,12 @@ const Municipios = () => {
     return config;
 });
   const obtenerRegistros=()=>{
-    Axios.get(`http://${process.env.REACT_APP_SERVER_IP}/municipios`).then((response)=>{
+    Axios.get(`https://${process.env.REACT_APP_SERVER_IP}/municipios`).then((response)=>{
       setMunicipioLista(response.data);  });
-    Axios.get(`http://${process.env.REACT_APP_SERVER_IP}/departamentos`).then((response)=>{
+    Axios.get(`https://${process.env.REACT_APP_SERVER_IP}/departamentos`).then((response)=>{
       setDepartamentoLista(response.data);  });
       var id = cookies.get('usuario').idusuario;
-      Axios.get(`http://${process.env.REACT_APP_SERVER_IP}/validarpermisos/${id}`).then((response)=>{
+      Axios.get(`https://${process.env.REACT_APP_SERVER_IP}/validarpermisos/${id}`).then((response)=>{
         setValidarLista(response.data);
       });
   };
@@ -72,7 +72,7 @@ const Municipios = () => {
   //AGREGAR
   const agregarRegistro=(event)=>{    
     event.preventDefault();
-    Axios.post(`http://${process.env.REACT_APP_SERVER_IP}/municipios`,{
+    Axios.post(`https://${process.env.REACT_APP_SERVER_IP}/municipios`,{
       //TODOS LOS CAMPOS
       nombre:nombre,
       departamento:departamento,
@@ -119,7 +119,7 @@ const Municipios = () => {
   };
 
   const eliminarRegistro=(idmunicipio)=>{
-    Axios.delete(`http://${process.env.REACT_APP_SERVER_IP}/municipios/${idmunicipio}`).then(()=>{
+    Axios.delete(`https://${process.env.REACT_APP_SERVER_IP}/municipios/${idmunicipio}`).then(()=>{
       obtenerRegistros();
       swal({
         title: "Exito!",
@@ -156,7 +156,7 @@ const Municipios = () => {
   };
 
   const actualizaRegistro=(idmunicipio)=>{
-    Axios.put(`http://${process.env.REACT_APP_SERVER_IP}/municipios`,{nombre:nuevoNombre,idmunicipio:idmunicipio,iddepartamento:nuevoIdDepartamento}).then(()=>{
+    Axios.put(`https://${process.env.REACT_APP_SERVER_IP}/municipios`,{nombre:nuevoNombre,idmunicipio:idmunicipio,iddepartamento:nuevoIdDepartamento}).then(()=>{
       obtenerRegistros();
       swal({
         title: "Exito!",

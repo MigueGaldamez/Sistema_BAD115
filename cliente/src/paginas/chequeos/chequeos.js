@@ -61,23 +61,23 @@ const Chequeos = () => {
   
 
   const obtenerRegistros=()=>{
-    Axios.get(`http://${process.env.REACT_APP_SERVER_IP}/chequeos`).then((response)=>{
+    Axios.get(`https://${process.env.REACT_APP_SERVER_IP}/chequeos`).then((response)=>{
       setChequeoLista(response.data);
     });
-    Axios.get(`http://${process.env.REACT_APP_SERVER_IP}/pacientes`).then((response)=>{
+    Axios.get(`https://${process.env.REACT_APP_SERVER_IP}/pacientes`).then((response)=>{
       setPacienteLista(response.data);
     });
-    Axios.get(`http://${process.env.REACT_APP_SERVER_IP}/usuarioslibres`).then((response)=>{
+    Axios.get(`https://${process.env.REACT_APP_SERVER_IP}/usuarioslibres`).then((response)=>{
       setUsuarioLista(response.data);
     });
-    Axios.get(`http://${process.env.REACT_APP_SERVER_IP}/laboratorios`).then((response)=>{
+    Axios.get(`https://${process.env.REACT_APP_SERVER_IP}/laboratorios`).then((response)=>{
       setLaboratorioLista(response.data);
     });
-    Axios.get(`http://${process.env.REACT_APP_SERVER_IP}/examenes`).then((response)=>{
+    Axios.get(`https://${process.env.REACT_APP_SERVER_IP}/examenes`).then((response)=>{
       setExamenLista(response.data);
     });
     var id = cookies.get('usuario').idusuario;
-    Axios.get(`http://${process.env.REACT_APP_SERVER_IP}/validarpermisos/${id}`).then((response)=>{
+    Axios.get(`https://${process.env.REACT_APP_SERVER_IP}/validarpermisos/${id}`).then((response)=>{
       setValidarLista(response.data);
     });
   };
@@ -102,7 +102,7 @@ const Chequeos = () => {
   const agregarRegistro=(event)=>{    
     event.preventDefault();
     console.log("fsdfd" + fechaChequeo);
-    Axios.post(`http://${process.env.REACT_APP_SERVER_IP}/chequeos`,{
+    Axios.post(`https://${process.env.REACT_APP_SERVER_IP}/chequeos`,{
       //TODOS LOS CAMPOS
       paciente:paciente,
       laboratorio:laboratorio,
@@ -153,7 +153,7 @@ const Chequeos = () => {
   };
 
   const eliminarRegistro=(idchequeo)=>{
-    Axios.delete(`http://${process.env.REACT_APP_SERVER_IP}/chequeos/${idchequeo}`).then((res)=>{
+    Axios.delete(`https://${process.env.REACT_APP_SERVER_IP}/chequeos/${idchequeo}`).then((res)=>{
       obtenerRegistros();
       swal({
         title: "Exito!",
@@ -190,7 +190,7 @@ const Chequeos = () => {
   };
 
   const actualizaRegistro=(idchequeo)=>{
-    Axios.put(`http://${process.env.REACT_APP_SERVER_IP}/chequeos`,{idlaboratorio:nuevoIdLaboratorio, fechaChequeo:nuevaFechaChequeo, horaChequeo:nuevaHoraChequeo, idchequeo:idchequeo}).then(()=>{
+    Axios.put(`https://${process.env.REACT_APP_SERVER_IP}/chequeos`,{idlaboratorio:nuevoIdLaboratorio, fechaChequeo:nuevaFechaChequeo, horaChequeo:nuevaHoraChequeo, idchequeo:idchequeo}).then(()=>{
       obtenerRegistros();
       swal({
         title: "Exito!",

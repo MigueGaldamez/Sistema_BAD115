@@ -17,15 +17,15 @@ const ReporteCantidadExamenes = () => {
   const[departamentoLista,setDepartamentoLista]=useState([]);
 
   const obtenerRegistros=()=>{
-    Axios.get(`http://${process.env.REACT_APP_SERVER_IP}/pacientes`).then((response)=>{
+    Axios.get(`https://${process.env.REACT_APP_SERVER_IP}/pacientes`).then((response)=>{
       setPacienteLista(response.data);
     });
 
-    Axios.get(`http://${process.env.REACT_APP_SERVER_IP}/municipios`).then((response)=>{
+    Axios.get(`https://${process.env.REACT_APP_SERVER_IP}/municipios`).then((response)=>{
       setMunicipioLista(response.data);  
     });
 
-    Axios.get(`http://${process.env.REACT_APP_SERVER_IP}/departamentos`).then((response)=>{
+    Axios.get(`https://${process.env.REACT_APP_SERVER_IP}/departamentos`).then((response)=>{
       setDepartamentoLista(response.data); 
     });
   }
@@ -44,7 +44,7 @@ const ReporteCantidadExamenes = () => {
       idmunicipio = document.getElementById("municipio").value;
     }
     console.log(idpaciente);
-    Axios.post(`http://${process.env.REACT_APP_SERVER_IP}/generarpdfexamenes`,{
+    Axios.post(`https://${process.env.REACT_APP_SERVER_IP}/generarpdfexamenes`,{
       filtro: filtro,
       idpaciente: idpaciente,
       iddepartamento: iddepartamento,
@@ -59,7 +59,7 @@ const ReporteCantidadExamenes = () => {
       // abrir el archivo en una nueva pestaña
       var link = document.createElement("a");
       link.download =true;
-      link.href = `http://${process.env.REACT_APP_SERVER_IP}/docs/${filename}`;
+      link.href = `https://${process.env.REACT_APP_SERVER_IP}/docs/${filename}`;
       link.target = "_blank";
       link.click();
 

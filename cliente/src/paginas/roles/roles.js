@@ -41,14 +41,14 @@ Axios.interceptors.request.use(function (config) {
 });
 
   const obtenerRoles=()=>{
-    Axios.get(`http://${process.env.REACT_APP_SERVER_IP}/roles`).then((response)=>{
+    Axios.get(`https://${process.env.REACT_APP_SERVER_IP}/roles`).then((response)=>{
       setRolLista(response.data);
     });
-    Axios.get(`http://${process.env.REACT_APP_SERVER_IP}/opcionespermisos`).then((response)=>{
+    Axios.get(`https://${process.env.REACT_APP_SERVER_IP}/opcionespermisos`).then((response)=>{
       setPermisoLista(response.data);
     });
     var id = cookies.get('usuario').idusuario;
-    Axios.get(`http://${process.env.REACT_APP_SERVER_IP}/validarpermisos/${id}`).then((response)=>{
+    Axios.get(`https://${process.env.REACT_APP_SERVER_IP}/validarpermisos/${id}`).then((response)=>{
       setValidarLista(response.data);
     });
 
@@ -73,7 +73,7 @@ Axios.interceptors.request.use(function (config) {
   //AGREGAR
   const agregarRegistro=(event)=>{    
     event.preventDefault();
-    Axios.post(`http://${process.env.REACT_APP_SERVER_IP}/roles`,{
+    Axios.post(`https://${process.env.REACT_APP_SERVER_IP}/roles`,{
       //TODOS LOS CAMPOS
       nombre:nombre,
     }).then((response)=>{    
@@ -119,7 +119,7 @@ Axios.interceptors.request.use(function (config) {
   };
 
   const eliminarRegistro=(idrol)=>{
-    Axios.delete(`http://${process.env.REACT_APP_SERVER_IP}/roles/${idrol}`).then(()=>{
+    Axios.delete(`https://${process.env.REACT_APP_SERVER_IP}/roles/${idrol}`).then(()=>{
       obtenerRoles();  
       swal({
         title: "Exito!",
@@ -156,7 +156,7 @@ Axios.interceptors.request.use(function (config) {
   };
 
   const actualizaRegistro=(idrol)=>{
-    Axios.put(`http://${process.env.REACT_APP_SERVER_IP}/roles`,{nombre:nuevoNombre,idrol:idrol})
+    Axios.put(`https://${process.env.REACT_APP_SERVER_IP}/roles`,{nombre:nuevoNombre,idrol:idrol})
     .then(()=>{
       obtenerRoles(); 
       swal({
@@ -194,7 +194,7 @@ Axios.interceptors.request.use(function (config) {
   };
  
   const actualizaPermisos=(idrol)=>{
-    Axios.post(`http://${process.env.REACT_APP_SERVER_IP}/rolesPermisos`,{permisos:nuevosPermisos,idrol:idrol}).then(()=>{
+    Axios.post(`https://${process.env.REACT_APP_SERVER_IP}/rolesPermisos`,{permisos:nuevosPermisos,idrol:idrol}).then(()=>{
       obtenerRoles(); 
       swal({
         title: "Exito!",

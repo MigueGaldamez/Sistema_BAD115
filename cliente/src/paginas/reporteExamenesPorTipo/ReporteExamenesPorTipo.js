@@ -21,14 +21,14 @@ const ReporteExamenesPorTipo = () => {
   const obtenerRegistros=()=>{
   
 
-    Axios.get(`http://${process.env.REACT_APP_SERVER_IP}/laboratorios`).then((response)=>{
+    Axios.get(`https://${process.env.REACT_APP_SERVER_IP}/laboratorios`).then((response)=>{
       setLaboratorioLista(response.data); 
     });
   }
 
   const generarReporte=() =>{
    
-    Axios.post(`http://${process.env.REACT_APP_SERVER_IP}/generarpdftipo`,{
+    Axios.post(`https://${process.env.REACT_APP_SERVER_IP}/generarpdftipo`,{
       idlaboratorio:idlaboratorio,
       fechainicio: fechainicio,
       fechafin: fechafin,
@@ -40,7 +40,7 @@ const ReporteExamenesPorTipo = () => {
       // abrir el archivo en una nueva pestaña
       var link = document.createElement("a");
       link.download =true;
-      link.href = `http://${process.env.REACT_APP_SERVER_IP}/docs/${filename}`;
+      link.href = `https://${process.env.REACT_APP_SERVER_IP}/docs/${filename}`;
       link.target = "_blank";
       link.click();
 

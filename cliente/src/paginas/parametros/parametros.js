@@ -60,16 +60,16 @@ const Parametros = () => {
   return config;
 });
   const obtenerRegistros=()=>{
-    Axios.get(`http://${process.env.REACT_APP_SERVER_IP}/areas`).then((response)=>{
+    Axios.get(`https://${process.env.REACT_APP_SERVER_IP}/areas`).then((response)=>{
       setAreaLista(response.data);  });
-    Axios.get(`http://${process.env.REACT_APP_SERVER_IP}/parametros`).then((response)=>{
+    Axios.get(`https://${process.env.REACT_APP_SERVER_IP}/parametros`).then((response)=>{
       setParametroLista(response.data);  });
-    Axios.get(`http://${process.env.REACT_APP_SERVER_IP}/unidades`).then((response)=>{
+    Axios.get(`https://${process.env.REACT_APP_SERVER_IP}/unidades`).then((response)=>{
       setUnidadLista(response.data);  });
-    Axios.get(`http://${process.env.REACT_APP_SERVER_IP}/poblaciones`).then((response)=>{
+    Axios.get(`https://${process.env.REACT_APP_SERVER_IP}/poblaciones`).then((response)=>{
         setPoblacionLista(response.data);  });
         var id = cookies.get('usuario').idusuario;
-    Axios.get(`http://${process.env.REACT_APP_SERVER_IP}/validarpermisos/${id}`).then((response)=>{
+    Axios.get(`https://${process.env.REACT_APP_SERVER_IP}/validarpermisos/${id}`).then((response)=>{
       setValidarLista(response.data);
     });
   };
@@ -97,7 +97,7 @@ const Parametros = () => {
   //AGREGAR
   const agregarRegistro=(event)=>{    
     event.preventDefault();
-    Axios.post(`http://${process.env.REACT_APP_SERVER_IP}/parametros`,{
+    Axios.post(`https://${process.env.REACT_APP_SERVER_IP}/parametros`,{
       //TODOS LOS CAMPOS
       nombre:nombre,
       area:area,
@@ -149,7 +149,7 @@ const Parametros = () => {
   };
 
   const eliminarRegistro=(idParametro)=>{
-    Axios.delete(`http://${process.env.REACT_APP_SERVER_IP}/parametros/${idParametro}`).then((res)=>{
+    Axios.delete(`https://${process.env.REACT_APP_SERVER_IP}/parametros/${idParametro}`).then((res)=>{
       obtenerRegistros();
       swal({
         title: "Exito!",
@@ -186,7 +186,7 @@ const Parametros = () => {
   };
 
   const actualizaRegistro=(idparametro)=>{
-    Axios.put(`http://${process.env.REACT_APP_SERVER_IP}/parametros`,{nombre:nuevoNombre,idparametro:idparametro,area:nuevaArea,tipo:nuevoTipo}).then(()=>{
+    Axios.put(`https://${process.env.REACT_APP_SERVER_IP}/parametros`,{nombre:nuevoNombre,idparametro:idparametro,area:nuevaArea,tipo:nuevoTipo}).then(()=>{
       obtenerRegistros();
       swal({
         title: "Exito!",
@@ -223,7 +223,7 @@ const Parametros = () => {
   };
   
   const actualizaRegistroDetalles=(idparametro)=>{
-    Axios.put(`http://${process.env.REACT_APP_SERVER_IP}/parametros`,
+    Axios.put(`https://${process.env.REACT_APP_SERVER_IP}/parametros`,
     { nombre:nuevoNombre,
       idparametro:idparametro,
       area:nuevaArea,

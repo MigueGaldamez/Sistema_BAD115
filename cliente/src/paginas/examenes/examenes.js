@@ -44,18 +44,18 @@ Axios.interceptors.request.use(function (config) {
   return config;
 });
   const obtenerRegistros=()=>{
-    Axios.get(`http://${process.env.REACT_APP_SERVER_IP}/examenes`).then((response)=>{
+    Axios.get(`https://${process.env.REACT_APP_SERVER_IP}/examenes`).then((response)=>{
       setExamenLista(response.data);  });
-    Axios.get(`http://${process.env.REACT_APP_SERVER_IP}/areas`).then((response)=>{
+    Axios.get(`https://${process.env.REACT_APP_SERVER_IP}/areas`).then((response)=>{
       setAreaLista(response.data);  });
     var id = cookies.get('usuario').idusuario;
-    Axios.get(`http://${process.env.REACT_APP_SERVER_IP}/validarpermisos/${id}`).then((response)=>{
+    Axios.get(`https://${process.env.REACT_APP_SERVER_IP}/validarpermisos/${id}`).then((response)=>{
       setValidarLista(response.data);
     });
   };
 
   const  consultarParametros=(idarea)=>{
-    Axios.get(`http://${process.env.REACT_APP_SERVER_IP}/parametros_area/${idarea}`,{
+    Axios.get(`https://${process.env.REACT_APP_SERVER_IP}/parametros_area/${idarea}`,{
       
     }).then((response)=>{
       setParametroLista(response.data);  });
@@ -81,7 +81,7 @@ Axios.interceptors.request.use(function (config) {
   //AGREGAR
   const agregarRegistro=(event)=>{    
     event.preventDefault();
-    Axios.post(`http://${process.env.REACT_APP_SERVER_IP}/examenes`,{
+    Axios.post(`https://${process.env.REACT_APP_SERVER_IP}/examenes`,{
       //TODOS LOS CAMPOS
       nombre:nombre,
       area:area,
@@ -129,7 +129,7 @@ Axios.interceptors.request.use(function (config) {
   };
 
   const eliminarRegistro=(idexamen)=>{
-    Axios.delete(`http://${process.env.REACT_APP_SERVER_IP}/examenes/${idexamen}`).then((res)=>{
+    Axios.delete(`https://${process.env.REACT_APP_SERVER_IP}/examenes/${idexamen}`).then((res)=>{
       obtenerRegistros();
       swal({
         title: "Exito!",
@@ -166,7 +166,7 @@ Axios.interceptors.request.use(function (config) {
   };
 
   const actualizaRegistro=(idexamen)=>{
-    Axios.put(`http://${process.env.REACT_APP_SERVER_IP}/examenes`,{nombre:nuevoNombre,idexamen:idexamen,area:nuevaArea,parametros:nuevosParametros}).then(()=>{
+    Axios.put(`https://${process.env.REACT_APP_SERVER_IP}/examenes`,{nombre:nuevoNombre,idexamen:idexamen,area:nuevaArea,parametros:nuevosParametros}).then(()=>{
       obtenerRegistros();
       swal({
         title: "Exito!",
