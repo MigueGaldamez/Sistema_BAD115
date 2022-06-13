@@ -31,7 +31,7 @@ const DetalleChequeo = () => {
   const[opcionesLista, setOpcionesLista] = useState([]);
   const[intervalosLista, setIntervalosLista] = useState([]);
   const[intervalosRefLista, setIntervalosRefLista] = useState([]);
-
+  const[validarLista, setValidarLista] = useState([]);
   const columns = pacientesLista[0] && Object.keys(pacientesLista[0]);
 
   const[modalB, setModalB] = useState([]);
@@ -79,6 +79,11 @@ const DetalleChequeo = () => {
     Axios.get(`http://${process.env.REACT_APP_SERVER_IP}/intervalosRefResultados`).then((response)=>{
       setIntervalosRefLista(response.data);
     });
+    var id = cookies.get('usuario').idusuario;
+    Axios.get(`http://${process.env.REACT_APP_SERVER_IP}/validarpermisos/${id}`).then((response)=>{
+      setValidarLista(response.data);
+    });
+
   };
 
   const obtenerTabla=(id)=>{
@@ -224,12 +229,21 @@ const DetalleChequeo = () => {
         //obtenerRegistros();
       }).catch(function (error) {
         if(error.response!=null){
-          swal({
-            title: "Error!",
-            text: error.response.data.detail,
-            icon: "error",
-            button: "Aww yiss!",
-          });
+          if(error.response.data.detail){
+            swal({
+              title: "Error!",
+              text: error.response.data.detail,
+              icon: "error",
+              button: "Aww yiss!",
+            });
+          }else if(error.response.data){
+            swal({
+              title: "Error!",
+              text: error.response.data,
+              icon: "error",
+              button: "Aww yiss!",
+            });
+          }
         }if(error.response==null){
           swal({
             title: "Error!",
@@ -320,12 +334,21 @@ const DetalleChequeo = () => {
         //obtenerRegistros();
       }).catch(function (error) {
         if(error.response!=null){
-          swal({
-            title: "Error!",
-            text: error.response.data.detail,
-            icon: "error",
-            button: "Aww yiss!",
-          });
+          if(error.response.data.detail){
+            swal({
+              title: "Error!",
+              text: error.response.data.detail,
+              icon: "error",
+              button: "Aww yiss!",
+            });
+          }else if(error.response.data){
+            swal({
+              title: "Error!",
+              text: error.response.data,
+              icon: "error",
+              button: "Aww yiss!",
+            });
+          }
         }if(error.response==null){
           swal({
             title: "Error!",
@@ -361,12 +384,21 @@ const DetalleChequeo = () => {
           //obtenerRegistros();
         }).catch(function (error) {
           if(error.response!=null){
-            swal({
-              title: "Error!",
-              text: error.response.data.detail,
-              icon: "error",
-              button: "Aww yiss!",
-            });
+            if(error.response.data.detail){
+              swal({
+                title: "Error!",
+                text: error.response.data.detail,
+                icon: "error",
+                button: "Aww yiss!",
+              });
+            }else if(error.response.data){
+              swal({
+                title: "Error!",
+                text: error.response.data,
+                icon: "error",
+                button: "Aww yiss!",
+              });
+            }
           }if(error.response==null){
             swal({
               title: "Error!",
@@ -426,6 +458,13 @@ const DetalleChequeo = () => {
   },[]);
 
   return (
+    <>{/*asi validamos cada permiso*/}
+    {(!validarLista.includes(65)) && 
+    <div class="col container mx-auto my-auto text-center">
+      <h1 class="text-primary">Ups...</h1>
+       <h4>No tiene permisos para ver estos registros</h4>
+   </div>}
+    {validarLista.includes(65) &&
     <div class="col container my-4">
       
       
@@ -488,6 +527,7 @@ const DetalleChequeo = () => {
                       modificar={modificar}
                       eliminar={eliminar}
                       generarReporteResultados={generarReporteResultados}
+                      validarLista={validarLista}
                       />
                     </div>
                 </div>
@@ -498,7 +538,7 @@ const DetalleChequeo = () => {
           
           
       </div>    
-    </div>
+    </div>}</>
   );
 };
   

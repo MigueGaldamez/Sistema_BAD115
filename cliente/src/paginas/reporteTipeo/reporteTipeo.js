@@ -3,12 +3,20 @@ import { useState,useEffect } from 'react';
 import Axios from 'axios';  
 import { Modal } from 'bootstrap/dist/js/bootstrap.bundle.min';
 import swal from 'sweetalert';
-
+import Cookies from 'universal-cookie';
+const cookies = new Cookies();
 const Laboratorios = () => { 
 
   //PARA CADA ATRIBUTO
   const[filtro,setFiltro]=useState('1');
-  
+  const[validarLista, setValidarLista] = useState([]);
+   //esto es para validar en el backend y mandar siempre el id usuario
+   Axios.interceptors.request.use(function (config) {
+    var id = cookies.get('usuario').idusuario;
+    config.headers.idusuario =  id;
+    return config;
+});
+
   const generarReporte=() =>{
     
     Axios.post(`http://${process.env.REACT_APP_SERVER_IP}/generarpdftipeo`,{filtro:filtro,})
@@ -33,9 +41,19 @@ const Laboratorios = () => {
   //LEER LOS DATOS AL CARGAR
   useEffect(()=>{
    //obtenerRegistros();
- 
+   var id = cookies.get('usuario').idusuario;
+   Axios.get(`http://${process.env.REACT_APP_SERVER_IP}/validarpermisos/${id}`).then((response)=>{
+     setValidarLista(response.data);
+   });
   },[]);
   return (
+    <>{/*asi validamos cada permiso*/}
+    {(!validarLista.includes(73)) && 
+    <div class="col container mx-auto my-auto text-center">
+      <h1 class="text-primary">Ups...</h1>
+       <h4>No tiene permisos para ver estos registros</h4>
+   </div>}
+    {validarLista.includes(73) &&
     <div class="col container my-4">
       
       <div class="mt-4 mb-4">
@@ -72,7 +90,7 @@ const Laboratorios = () => {
           </div>
 
       </div>    
-    </div>
+    </div>}</>
   );
 };
 export default Laboratorios;

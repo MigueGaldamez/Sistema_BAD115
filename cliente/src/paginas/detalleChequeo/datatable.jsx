@@ -23,7 +23,8 @@ export default function DatatableRoles({
   guardar,
   modificar,
   eliminar,
-  generarReporteResultados
+  generarReporteResultados,
+  validarLista
   }) {
   
   const dataOriginal = data;
@@ -107,8 +108,8 @@ export default function DatatableRoles({
 
             <td>
             {row['idmuestra']==null?<p class="mx-1"><i>No se encontró muestra</i></p>: null}
-            {(row['idmuestra']!=null && row['estadoexamen']==false)?<a class="btn btn-success btn-sm mx-1" onClick={()=>{abrirModalRegistrar(id)}}>Registrar resultados</a>: null}
-            {(row['estadoexamen']==true)?<a class="btn btn-success btn-sm mx-1" onClick={()=>{abrirModalResultados(id)}}>Ver resultados</a>: null}
+            {(row['idmuestra']!=null && row['estadoexamen']==false && validarLista.includes(67))?<a class="btn btn-success btn-sm mx-1" onClick={()=>{abrirModalRegistrar(id)}}>Registrar resultados</a>: null}
+            {(row['estadoexamen']==true && validarLista.includes(66))?<a class="btn btn-success btn-sm mx-1" onClick={()=>{abrirModalResultados(id)}}>Ver resultados</a>: null}
             </td>
 
             
@@ -390,9 +391,10 @@ export default function DatatableRoles({
             
             <a type="btn btn-success" class="btn btn-success col-auto me-auto " onClick={()=>{generarReporteResultados(valores, resultadosLista, parametroLista, intervalosLista, opcionesLista)}}>Mostrar PDF</a>
             <a type="btn" class="btn btn-secondary col-auto" data-bs-dismiss="modal" >Cancelar</a>
+            {validarLista.includes(68) &&
             <a type="btn btn-danger" class="btn btn-danger col-auto" onClick={()=>{eliminar(valores.iddetalle, valores.idchequeo)}}>Eliminar</a>
-            <a type="btn btn-success" class="btn btn-primary col-auto" onClick={()=>{modificar(valores.iddetalle, valores.idchequeo)}}>Modificar</a>
-          </div>
+            } {validarLista.includes(69) &&<a type="btn btn-success" class="btn btn-primary col-auto" onClick={()=>{modificar(valores.iddetalle, valores.idchequeo)}}>Modificar</a>
+          }</div>
         </div>
       </div>
     </div>

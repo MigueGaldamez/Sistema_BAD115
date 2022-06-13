@@ -16,7 +16,7 @@ const iniciarBaseDatos = async(req,res)=>{
   if(response.rows.length>0){
      //Si tienre registros no hace nada por ahora.
   }else{
-
+/*
     //sqldeps = "INSERT INTO departamento (iddepartamento,departamento) VALUES(1, 'Ahuachapán'),(2, 'Santa Ana'),(3, 'Sonsonate'),(4, 'La Libertad'),(5, 'Chalatenango'),(6, 'San Salvador'),(7, 'Cuscatlán'),(8, 'La Paz'),(9, 'Cabañas'),(10, 'San Vicente'),(11, 'Usulután'),(12, 'Morazán'),(13, 'San Miguel'),(14, 'La Unión')";
     //const departamentosResp =  await sqlee.query(sqldeps);
 
@@ -75,12 +75,13 @@ const iniciarBaseDatos = async(req,res)=>{
     await sqlee.query(sqlSerialparam);
     await sqlee.query(sqlSerialinter);
     await sqlee.query(sqlSerialopciones);
-
+*/
    
   }
   if(response2.rows.length>0){
     //Si tienre registros no hace nada por ahora.
  }else{
+   /*
     sqlroles = "INSERT INTO rol (idrol, nombrerol, fechacreacion, fechaactualizacion) VALUES (1, 'Administrador', '2022-06-07 10:26:22.611541', '2022-06-07 10:26:22.611541'), (2, 'Laboratorista', '2022-06-07 10:26:22.611541', '2022-06-07 10:26:22.611541')";
     const rolesResp = await sqlee.query(sqlroles);
     //1-28
@@ -102,7 +103,7 @@ const iniciarBaseDatos = async(req,res)=>{
     sqlSerialoppermiso = "SELECT setval(pg_get_serial_sequence('opcionpermiso', 'idopcionpermiso'), coalesce(max(idopcionpermiso),0) + 1, false) FROM opcionpermiso";
 
     await sqlee.query(sqlSerialrol);
-    await sqlee.query(sqlSerialoppermiso);
+    await sqlee.query(sqlSerialoppermiso);*/
  }
 };
 
