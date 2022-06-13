@@ -79,15 +79,15 @@ const Pacientes = () => {
 });
   const obtenerRegistros=()=>{
 
-    Axios.get(`http://${process.env.REACT_APP_SERVER_IP}/pacientes`).then((response)=>{
+    Axios.get(`${process.env.REACT_APP_SERVER_IP}/pacientes`).then((response)=>{
      setPacienteLista([]);
     setPacienteLista(response.data);  });
-    Axios.get(`http://${process.env.REACT_APP_SERVER_IP}/estadosciviles`).then((response)=>{ 
+    Axios.get(`${process.env.REACT_APP_SERVER_IP}/estadosciviles`).then((response)=>{ 
     setEstadoCivilLista(response.data);  });
-    Axios.get(`http://${process.env.REACT_APP_SERVER_IP}/municipios`).then((response)=>{
+    Axios.get(`${process.env.REACT_APP_SERVER_IP}/municipios`).then((response)=>{
       setMunicipioLista(response.data);  });
       var id = cookies.get('usuario').idusuario;
-      Axios.get(`http://${process.env.REACT_APP_SERVER_IP}/validarpermisos/${id}`).then((response)=>{
+      Axios.get(`${process.env.REACT_APP_SERVER_IP}/validarpermisos/${id}`).then((response)=>{
         setValidarLista(response.data);
       });
   };
@@ -148,7 +148,7 @@ const Pacientes = () => {
   //AGREGAR
   const agregarRegistro=(event)=>{    
     event.preventDefault();
-    Axios.post(`http://${process.env.REACT_APP_SERVER_IP}/pacientes`,{
+    Axios.post(`${process.env.REACT_APP_SERVER_IP}/pacientes`,{
       //TODOS LOS CAMPOS
       nombre:nombre,
       municipio:municipio,
@@ -204,7 +204,7 @@ const Pacientes = () => {
      });
   };
   const actualizaDetalles=(idpaciente)=>{
-    Axios.put(`http://${process.env.REACT_APP_SERVER_IP}/pacientes`,{
+    Axios.put(`${process.env.REACT_APP_SERVER_IP}/pacientes`,{
       nombre:nuevoNombre,
       idpaciente:idpaciente,
       idmunicipio:nuevoMunicipio,
@@ -259,7 +259,7 @@ const Pacientes = () => {
      });
   }
   const eliminarRegistro=(idpaciente)=>{
-    Axios.delete(`http://${process.env.REACT_APP_SERVER_IP}/pacientes/${idpaciente}`).then((res)=>{
+    Axios.delete(`${process.env.REACT_APP_SERVER_IP}/pacientes/${idpaciente}`).then((res)=>{
       obtenerRegistros();
       swal({
         title: "Exito!",
@@ -296,7 +296,7 @@ const Pacientes = () => {
   };
 
   const actualizaRegistro=(idpaciente)=>{
-    Axios.put(`http://${process.env.REACT_APP_SERVER_IP}/pacientes`,{nombre:nuevoNombre,idpaciente:idpaciente,idmunicipio:nuevoMunicipio, estado:nuevoEstado,apellido:nuevoApellido,completo:0}).then(()=>{
+    Axios.put(`${process.env.REACT_APP_SERVER_IP}/pacientes`,{nombre:nuevoNombre,idpaciente:idpaciente,idmunicipio:nuevoMunicipio, estado:nuevoEstado,apellido:nuevoApellido,completo:0}).then(()=>{
       obtenerRegistros();
       swal({
         title: "Exito!",

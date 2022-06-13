@@ -19,7 +19,7 @@ const Laboratorios = () => {
 
   const generarReporte=() =>{
     
-    Axios.post(`http://${process.env.REACT_APP_SERVER_IP}/generarpdftipeo`,{filtro:filtro,})
+    Axios.post(`${process.env.REACT_APP_SERVER_IP}/generarpdftipeo`,{filtro:filtro,})
     .then((response)=>{
 
       var filename = response.data.body.path;
@@ -27,7 +27,7 @@ const Laboratorios = () => {
       // abrir el archivo en una nueva pestaña
       var link = document.createElement("a");
       link.download =true;
-      link.href = `http://${process.env.REACT_APP_SERVER_IP}/docs/${filename}`;
+      link.href = `${process.env.REACT_APP_SERVER_IP}/docs/${filename}`;
       link.target = "_blank";
       link.click();
 
@@ -42,7 +42,7 @@ const Laboratorios = () => {
   useEffect(()=>{
    //obtenerRegistros();
    var id = cookies.get('usuario').idusuario;
-   Axios.get(`http://${process.env.REACT_APP_SERVER_IP}/validarpermisos/${id}`).then((response)=>{
+   Axios.get(`${process.env.REACT_APP_SERVER_IP}/validarpermisos/${id}`).then((response)=>{
      setValidarLista(response.data);
    });
   },[]);

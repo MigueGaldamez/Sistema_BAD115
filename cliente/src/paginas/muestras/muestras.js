@@ -59,17 +59,17 @@ const DetalleChequeo = () => {
 });
 
   const obtenerRegistros=()=>{
-    Axios.get(`http://${process.env.REACT_APP_SERVER_IP}/pacientesPacienteExamenes`).then((response)=>{
+    Axios.get(`${process.env.REACT_APP_SERVER_IP}/pacientesPacienteExamenes`).then((response)=>{
       setPacientesLista(response.data);
     });    
     var id = cookies.get('usuario').idusuario;
-    Axios.get(`http://${process.env.REACT_APP_SERVER_IP}/validarpermisos/${id}`).then((response)=>{
+    Axios.get(`${process.env.REACT_APP_SERVER_IP}/validarpermisos/${id}`).then((response)=>{
       setValidarLista(response.data);
     });
   };
 
   const obtenerTabla=(id)=>{
-    Axios.get(`http://${process.env.REACT_APP_SERVER_IP}/ordenes/${id}`).then((response)=>{
+    Axios.get(`${process.env.REACT_APP_SERVER_IP}/ordenes/${id}`).then((response)=>{
       setOrdenesLista(response.data);
     });
   };
@@ -111,7 +111,7 @@ const DetalleChequeo = () => {
   }
 
   const guardar=(iddetalle, idchequeo)=>{
-    Axios.post(`http://${process.env.REACT_APP_SERVER_IP}/muestras`,{
+    Axios.post(`${process.env.REACT_APP_SERVER_IP}/muestras`,{
       observaciones:observaciones, 
       horaIngreso:horaIngreso,
       fechaIngreso:fechaIngreso,
@@ -170,7 +170,7 @@ const DetalleChequeo = () => {
     })
     .then(willDelete => {
       if (willDelete) {
-        Axios.delete(`http://${process.env.REACT_APP_SERVER_IP}/muestras/${iddetalle}`).then(()=>{
+        Axios.delete(`${process.env.REACT_APP_SERVER_IP}/muestras/${iddetalle}`).then(()=>{
           swal({
             title: "Exito!",
             text: "Eliminado con exito",

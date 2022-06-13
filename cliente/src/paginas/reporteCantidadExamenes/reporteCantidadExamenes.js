@@ -24,19 +24,19 @@ const ReporteCantidadExamenes = () => {
       return config;
   });
   const obtenerRegistros=()=>{
-    Axios.get(`http://${process.env.REACT_APP_SERVER_IP}/pacientes`).then((response)=>{
+    Axios.get(`${process.env.REACT_APP_SERVER_IP}/pacientes`).then((response)=>{
       setPacienteLista(response.data);
     });
 
-    Axios.get(`http://${process.env.REACT_APP_SERVER_IP}/municipios`).then((response)=>{
+    Axios.get(`${process.env.REACT_APP_SERVER_IP}/municipios`).then((response)=>{
       setMunicipioLista(response.data);  
     });
 
-    Axios.get(`http://${process.env.REACT_APP_SERVER_IP}/departamentos`).then((response)=>{
+    Axios.get(`${process.env.REACT_APP_SERVER_IP}/departamentos`).then((response)=>{
       setDepartamentoLista(response.data); 
     });
     var id = cookies.get('usuario').idusuario;
-    Axios.get(`http://${process.env.REACT_APP_SERVER_IP}/validarpermisos/${id}`).then((response)=>{
+    Axios.get(`${process.env.REACT_APP_SERVER_IP}/validarpermisos/${id}`).then((response)=>{
       setValidarLista(response.data);
     });
   }
@@ -55,7 +55,7 @@ const ReporteCantidadExamenes = () => {
       idmunicipio = document.getElementById("municipio").value;
     }
     console.log(idpaciente);
-    Axios.post(`http://${process.env.REACT_APP_SERVER_IP}/generarpdfexamenes`,{
+    Axios.post(`${process.env.REACT_APP_SERVER_IP}/generarpdfexamenes`,{
       filtro: filtro,
       idpaciente: idpaciente,
       iddepartamento: iddepartamento,
@@ -70,7 +70,7 @@ const ReporteCantidadExamenes = () => {
       // abrir el archivo en una nueva pestaña
       var link = document.createElement("a");
       link.download =true;
-      link.href = `http://${process.env.REACT_APP_SERVER_IP}/docs/${filename}`;
+      link.href = `${process.env.REACT_APP_SERVER_IP}/docs/${filename}`;
       link.target = "_blank";
       link.click();
 

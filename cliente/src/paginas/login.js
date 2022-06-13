@@ -13,7 +13,7 @@ const Login = () => {
   const iniciarSesion=()=>{
     var contraseniaEncriptada = (SHA256(contrasenia)).toString();
     console.log(contraseniaEncriptada);
-    Axios.post(`http://${process.env.REACT_APP_SERVER_IP}/iniciarSesion`, {correo: correo, contrasenia:contraseniaEncriptada})
+    Axios.post(`${process.env.REACT_APP_SERVER_IP}/iniciarSesion`, {correo: correo, contrasenia:contraseniaEncriptada})
     .then(response=>{
  
         if(response.data.length>0){

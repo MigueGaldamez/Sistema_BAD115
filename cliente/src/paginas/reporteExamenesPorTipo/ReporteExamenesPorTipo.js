@@ -24,18 +24,18 @@ const ReporteExamenesPorTipo = () => {
     return config;
 });
   const obtenerRegistros=()=>{
-    Axios.get(`http://${process.env.REACT_APP_SERVER_IP}/laboratorios`).then((response)=>{
+    Axios.get(`${process.env.REACT_APP_SERVER_IP}/laboratorios`).then((response)=>{
       setLaboratorioLista(response.data); 
     });
     var id = cookies.get('usuario').idusuario;
-    Axios.get(`http://${process.env.REACT_APP_SERVER_IP}/validarpermisos/${id}`).then((response)=>{
+    Axios.get(`${process.env.REACT_APP_SERVER_IP}/validarpermisos/${id}`).then((response)=>{
       setValidarLista(response.data);
     });
   }
 
   const generarReporte=() =>{
    
-    Axios.post(`http://${process.env.REACT_APP_SERVER_IP}/generarpdftipo`,{
+    Axios.post(`${process.env.REACT_APP_SERVER_IP}/generarpdftipo`,{
       idlaboratorio:idlaboratorio,
       fechainicio: fechainicio,
       fechafin: fechafin,
@@ -47,7 +47,7 @@ const ReporteExamenesPorTipo = () => {
       // abrir el archivo en una nueva pestaña
       var link = document.createElement("a");
       link.download =true;
-      link.href = `http://${process.env.REACT_APP_SERVER_IP}/docs/${filename}`;
+      link.href = `${process.env.REACT_APP_SERVER_IP}/docs/${filename}`;
       link.target = "_blank";
       link.click();
 

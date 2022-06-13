@@ -38,10 +38,10 @@ const OpcionesPermisos = () => {
 });
 
   const obtenerRegistros=()=>{
-    Axios.get(`http://${process.env.REACT_APP_SERVER_IP}/opcionespermisos`).then((response)=>{
+    Axios.get(`${process.env.REACT_APP_SERVER_IP}/opcionespermisos`).then((response)=>{
       setOpcionesPermisosLista(response.data);  });
       var id = cookies.get('usuario').idusuario;
-      Axios.get(`http://${process.env.REACT_APP_SERVER_IP}/validarpermisos/${id}`).then((response)=>{
+      Axios.get(`${process.env.REACT_APP_SERVER_IP}/validarpermisos/${id}`).then((response)=>{
         setValidarLista(response.data);
       });
   };
@@ -66,7 +66,7 @@ const OpcionesPermisos = () => {
   //AGREGAR
   const agregarRegistro=(event)=>{    
     event.preventDefault();
-    Axios.post(`http://${process.env.REACT_APP_SERVER_IP}/opcionespermisos`,{
+    Axios.post(`${process.env.REACT_APP_SERVER_IP}/opcionespermisos`,{
       //TODOS LOS CAMPOS
       nombre:nombre,
     }).then((response)=>{
@@ -112,7 +112,7 @@ const OpcionesPermisos = () => {
   };
 
   const eliminarRegistro=(idopcionpermiso)=>{
-    Axios.delete(`http://${process.env.REACT_APP_SERVER_IP}/opcionespermisos/${idopcionpermiso}`).then(()=>{
+    Axios.delete(`${process.env.REACT_APP_SERVER_IP}/opcionespermisos/${idopcionpermiso}`).then(()=>{
       obtenerRegistros();
       swal({
         title: "Exito!",
@@ -149,7 +149,7 @@ const OpcionesPermisos = () => {
   };
 
   const actualizaRegistro=(idopcionpermiso)=>{
-    Axios.put(`http://${process.env.REACT_APP_SERVER_IP}/opcionespermisos`,{nombre:nuevoNombre,idopcionpermiso:idopcionpermiso}).then(()=>{
+    Axios.put(`${process.env.REACT_APP_SERVER_IP}/opcionespermisos`,{nombre:nuevoNombre,idopcionpermiso:idopcionpermiso}).then(()=>{
       obtenerRegistros();
       swal({
         title: "Exito!",

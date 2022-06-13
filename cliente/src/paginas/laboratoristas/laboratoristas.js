@@ -60,20 +60,20 @@ Axios.interceptors.request.use(function (config) {
 });
 
   const obtenerRegistros=()=>{
-    Axios.get(`http://${process.env.REACT_APP_SERVER_IP}/laboratoristas`).then((response)=>{
+    Axios.get(`${process.env.REACT_APP_SERVER_IP}/laboratoristas`).then((response)=>{
       setLaboratoristaLista(response.data);
     });
-    Axios.get(`http://${process.env.REACT_APP_SERVER_IP}/profesiones`).then((response)=>{
+    Axios.get(`${process.env.REACT_APP_SERVER_IP}/profesiones`).then((response)=>{
       setProfesionLista(response.data);
     });
-    Axios.get(`http://${process.env.REACT_APP_SERVER_IP}/usuarioslibres`).then((response)=>{
+    Axios.get(`${process.env.REACT_APP_SERVER_IP}/usuarioslibres`).then((response)=>{
       setUsuarioLista(response.data);
     });
-    Axios.get(`http://${process.env.REACT_APP_SERVER_IP}/laboratorios`).then((response)=>{
+    Axios.get(`${process.env.REACT_APP_SERVER_IP}/laboratorios`).then((response)=>{
       setLaboratorioLista(response.data);
     });
     var id = cookies.get('usuario').idusuario;
-    Axios.get(`http://${process.env.REACT_APP_SERVER_IP}/validarpermisos/${id}`).then((response)=>{
+    Axios.get(`${process.env.REACT_APP_SERVER_IP}/validarpermisos/${id}`).then((response)=>{
       setValidarLista(response.data);
     });
   };
@@ -100,7 +100,7 @@ Axios.interceptors.request.use(function (config) {
     var contraseniaEncriptada = (SHA256(contrasenia)).toString();
     var confirmacionEncriptada = (SHA256(confirmarC)).toString();
     if(nuevoRegistro==true){
-      Axios.post(`http://${process.env.REACT_APP_SERVER_IP}/laboratoristas`,{
+      Axios.post(`${process.env.REACT_APP_SERVER_IP}/laboratoristas`,{
         //TODOS LOS CAMPOS
         nuevo:1,
         nombre:nombre,
@@ -154,7 +154,7 @@ Axios.interceptors.request.use(function (config) {
        });
     }else if(nuevoRegistro==false){
       
-      Axios.post(`http://${process.env.REACT_APP_SERVER_IP}/laboratoristas`,{
+      Axios.post(`${process.env.REACT_APP_SERVER_IP}/laboratoristas`,{
         //TODOS LOS CAMPOS
         nuevo:0,
         usuario:usuario,
@@ -206,7 +206,7 @@ Axios.interceptors.request.use(function (config) {
   };
 
   const eliminarRegistro=(idlaboratorista)=>{
-    Axios.delete(`http://${process.env.REACT_APP_SERVER_IP}/laboratoristas/${idlaboratorista}`).then(()=>{
+    Axios.delete(`${process.env.REACT_APP_SERVER_IP}/laboratoristas/${idlaboratorista}`).then(()=>{
       obtenerRegistros();
       swal({
         title: "Exito!",
@@ -243,7 +243,7 @@ Axios.interceptors.request.use(function (config) {
   };
 
   const actualizaRegistro=(idlaboratorista)=>{
-    Axios.put(`http://${process.env.REACT_APP_SERVER_IP}/laboratoristas`,{idlaboratorista:idlaboratorista,profesion:nuevaProfesion,usuario:nuevoUsuario,numerojunta:nuevoNumeroJunta}).then(()=>{
+    Axios.put(`${process.env.REACT_APP_SERVER_IP}/laboratoristas`,{idlaboratorista:idlaboratorista,profesion:nuevaProfesion,usuario:nuevoUsuario,numerojunta:nuevoNumeroJunta}).then(()=>{
       obtenerRegistros();
       swal({
         title: "Exito!",

@@ -61,43 +61,44 @@ const DetalleChequeo = () => {
   return config;
 });
   const obtenerRegistros=()=>{
-    Axios.get(`http://${process.env.REACT_APP_SERVER_IP}/pacientesPacienteExamenes`).then((response)=>{
+    Axios.get(`${process.env.REACT_APP_SERVER_IP}/pacientesPacienteExamenes`).then((response)=>{
       setPacientesLista(response.data);
     });
 
-    Axios.get(`http://${process.env.REACT_APP_SERVER_IP}/opcionesResultados`).then((response)=>{
+    Axios.get(`${process.env.REACT_APP_SERVER_IP}/opcionesResultados`).then((response)=>{
       setOpcionesLista(response.data);
     });
 
-    Axios.get(`http://${process.env.REACT_APP_SERVER_IP}/intervalosResultados`).then((response)=>{
+    Axios.get(`${process.env.REACT_APP_SERVER_IP}/intervalosResultados`).then((response)=>{
       setIntervalosLista(response.data);
     });
     
-    Axios.get(`http://${process.env.REACT_APP_SERVER_IP}/intervalosRefResultados`).then((response)=>{
+    Axios.get(`${process.env.REACT_APP_SERVER_IP}/intervalosRefResultados`).then((response)=>{
       setIntervalosRefLista(response.data);
     });
     var id = cookies.get('usuario').idusuario;
-    Axios.get(`http://${process.env.REACT_APP_SERVER_IP}/validarpermisos/${id}`).then((response)=>{
+    Axios.get(`${process.env.REACT_APP_SERVER_IP}/validarpermisos/${id}`).then((response)=>{
       setValidarLista(response.data);
+      console.log(response.data);
     });
 
   };
 
   const obtenerTabla=(id)=>{
-    Axios.get(`http://${process.env.REACT_APP_SERVER_IP}/ordenes/${id}`).then((response)=>{
+    Axios.get(`${process.env.REACT_APP_SERVER_IP}/ordenes/${id}`).then((response)=>{
       setOrdenesLista(response.data);
     });
   };
 
   
   const obtenerParametros=(id)=>{
-    Axios.get(`http://${process.env.REACT_APP_SERVER_IP}/parametrosResultados/${id}`).then((response)=>{
+    Axios.get(`${process.env.REACT_APP_SERVER_IP}/parametrosResultados/${id}`).then((response)=>{
       setParametrosLista(response.data);
     });
   };
 
   const obtenerResultados=(id)=>{
-    Axios.get(`http://${process.env.REACT_APP_SERVER_IP}/resultados/${id}`).then((response)=>{
+    Axios.get(`${process.env.REACT_APP_SERVER_IP}/resultados/${id}`).then((response)=>{
       setResultadosLista(response.data);
     });
   };
@@ -169,7 +170,7 @@ const DetalleChequeo = () => {
         }
       }
       
-      Axios.post(`http://${process.env.REACT_APP_SERVER_IP}/validarResultados`,{
+      Axios.post(`${process.env.REACT_APP_SERVER_IP}/validarResultados`,{
         tipo: element.tipo,
         idparametro:element.idparametro,
         iddetalle:iddetalle,
@@ -194,7 +195,7 @@ const DetalleChequeo = () => {
           if (cont==parametroLista.length){
 
             registros.forEach( function (element) {
-              Axios.post(`http://${process.env.REACT_APP_SERVER_IP}/resultados`,{
+              Axios.post(`${process.env.REACT_APP_SERVER_IP}/resultados`,{
                 tipo: element.tipo,
                 idparametro: element.idparametro,
                 iddetalle: element.iddetalle,
@@ -274,7 +275,7 @@ const DetalleChequeo = () => {
           valor: 0,
         }
       }
-      Axios.post(`http://${process.env.REACT_APP_SERVER_IP}/validarResultados`,{
+      Axios.post(`${process.env.REACT_APP_SERVER_IP}/validarResultados`,{
         tipo: element.tipo,
         idparametro:element.idparametro,
         iddetalle:iddetalle,
@@ -299,7 +300,7 @@ const DetalleChequeo = () => {
           if (cont==parametroLista.length){
 
             registros.forEach( function (element) {
-              Axios.put(`http://${process.env.REACT_APP_SERVER_IP}/resultados`,{
+              Axios.put(`${process.env.REACT_APP_SERVER_IP}/resultados`,{
                 tipo: element.tipo,
                 idparametro: element.idparametro,
                 iddetalle: element.iddetalle,
@@ -368,7 +369,7 @@ const DetalleChequeo = () => {
     })
     .then(willDelete => {
       if (willDelete) {
-        Axios.delete(`http://${process.env.REACT_APP_SERVER_IP}/resultados/${iddetalle}`).then(()=>{
+        Axios.delete(`${process.env.REACT_APP_SERVER_IP}/resultados/${iddetalle}`).then(()=>{
           swal({
             title: "Exito!",
             text: "Eliminado con exito",
@@ -412,7 +413,7 @@ const DetalleChequeo = () => {
   }
 
   const generarReporteResultados=(valores, resultados, parametros, intervalos, opciones) =>{
-    Axios.post(`http://${process.env.REACT_APP_SERVER_IP}/generarpdfresultados`,{
+    Axios.post(`${process.env.REACT_APP_SERVER_IP}/generarpdfresultados`,{
       valores:valores,
       resultados:resultados,
       parametros:parametros,
@@ -425,7 +426,7 @@ const DetalleChequeo = () => {
       console.log(response.data.body.path);
       var link = document.createElement("a");
       link.download =true;
-      link.href = `http://${process.env.REACT_APP_SERVER_IP}/docs/${filename}`;
+      link.href = `${process.env.REACT_APP_SERVER_IP}/docs/${filename}`;
       link.target = "_blank";
       link.click();
       //document.getElementById('my_iframe').src = url;
