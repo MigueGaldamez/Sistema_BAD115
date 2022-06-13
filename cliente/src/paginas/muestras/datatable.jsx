@@ -9,6 +9,7 @@ export default function DatatableRoles({
   eliminar,
   setObservaciones,
   errores,
+  validarLista,
   }) {
   
   const dataOriginal = data;
@@ -88,8 +89,9 @@ export default function DatatableRoles({
             })}
 
             <td>
-            {(row['idmuestra']==null)?<a class="btn btn-success btn-sm mx-1" onClick={()=>{abrirModalRegistrar(id)}}>Registrar muestra</a>: null}
-            {(row['idmuestra']!=null)?<a class="btn btn-success btn-sm mx-1" onClick={()=>{abrirModalMuestra(id)}}>Ver muestra</a>: null}
+              
+            {(validarLista.includes(71) && row['idmuestra']==null)?<a class="btn btn-success btn-sm mx-1" onClick={()=>{abrirModalRegistrar(id)}}>Registrar muestra</a>: null}
+            {(validarLista.includes(72) && row['idmuestra']!=null)?<a class="btn btn-success btn-sm mx-1" onClick={()=>{abrirModalMuestra(id)}}>Ver muestra</a>: null}
             </td>
 
             

@@ -4,25 +4,32 @@ import Axios from 'axios';
 import Moment from 'moment';
 import { Modal } from 'bootstrap/dist/js/bootstrap.bundle.min';
 import swal from 'sweetalert';
+import Cookies from 'universal-cookie';
+const cookies = new Cookies();
 
 const ReporteExamenesPorTipo = () => { 
 
   //PARA CADA ATRIBUTO
-  const[filtro,setFiltro]=useState('0');
   const[fechainicio,setFechaIncio]=useState(Moment().subtract(7, 'days').format('YYYY-MM-DD'));
   const[fechafin,setFechaFin]=useState(Moment().format('YYYY-MM-DD'));
   const[idlaboratorio,setidlaboratorio]=useState(0);
 
-  const[pacienteLista, setPacienteLista] = useState([]);
-  const[municipioLista,setMunicipioLista]=useState([]);
-  const[departamentoLista,setDepartamentoLista]=useState([]);
   const[laboratorioLista,setLaboratorioLista]=useState([]);
+  const[validarLista, setValidarLista] = useState([]);
 
+  //esto es para validar en el backend y mandar siempre el id usuario
+  Axios.interceptors.request.use(function (config) {
+    var id = cookies.get('usuario').idusuario;
+    config.headers.idusuario =  id;
+    return config;
+});
   const obtenerRegistros=()=>{
-  
-
     Axios.get(`http://${process.env.REACT_APP_SERVER_IP}/laboratorios`).then((response)=>{
       setLaboratorioLista(response.data); 
+    });
+    var id = cookies.get('usuario').idusuario;
+    Axios.get(`http://${process.env.REACT_APP_SERVER_IP}/validarpermisos/${id}`).then((response)=>{
+      setValidarLista(response.data);
     });
   }
 
@@ -58,6 +65,13 @@ const ReporteExamenesPorTipo = () => {
  
   },[]);
   return (
+    <>{/*asi validamos cada permiso*/}
+    {(!validarLista.includes(73)) && 
+    <div class="col container mx-auto my-auto text-center">
+      <h1 class="text-primary">Ups...</h1>
+       <h4>No tiene permisos para ver estos registros</h4>
+   </div>}
+    {validarLista.includes(73) &&
     <div class="col container">
       
       <div class="mt-4 mb-4 sticky-top sticky">
@@ -119,7 +133,7 @@ const ReporteExamenesPorTipo = () => {
           </div>
 
       </div>    
-    </div>
+    </div>}</>
   );
 };
 export default ReporteExamenesPorTipo;

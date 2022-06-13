@@ -10,11 +10,11 @@ generarAuthToken = function() {
 
 const obtenerUsuarios = async(req,res)=>{
     valor = req.headers.authorization;
- 
+    const idusuario = req.headers.idusuario;
     try{
         
-        sql = 'SELECT * FROM usuario order by idusuario asc';
-        const response = await sqlee.query(sql);
+        sql = 'SELECT * FROM usuario where idusuario!=$1 order by idusuario asc';
+        const response = await sqlee.query(sql,[idusuario]);
         usuarios = response.rows;
 
         for(const usuario of usuarios){
