@@ -16,7 +16,7 @@ const { crearPermiso, obtenerPermisos, actualizarPermiso, eliminarPermiso, } = r
 const { crearParametro, obtenerParametros, actualizarParametro, eliminarParametro,parametrosPorArea, } = require('../controladores/parametros.controller');
 
 const { crearEstadoCivil, obtenerEstadosCiviles, actualizarEstadoCivil, eliminarEstadoCivil, } = require('../controladores/estadosciviles.controller');
-const { crearPaciente, obtenerPacientes, actualizarPaciente, eliminarPaciente, obtenerPacienteExamenes,} = require('../controladores/pacientes.controller');
+const { crearPaciente, obtenerPacientes, actualizarPaciente, eliminarPaciente, obtenerPacienteExamenes, obtenerPacienteMuestras} = require('../controladores/pacientes.controller');
 
 const { obtenerChequeos, crearChequeo, actualizarChequeo, eliminarChequeo, /*obtenerChequeosPaciente,*/ } = require('../controladores/chequeos.controller');
 
@@ -25,7 +25,7 @@ const { crearExamen, obtenerExamenes, actualizarExamen, eliminarExamen, } = requ
 
 const { obtenerOrdenes, obtenerParametrosResultados, obtenerOpcionesResultados, guardarResultado, obtenerIntervalosResultados, validarResultado, obtenerResultados, actualizarResultado, eliminarResultado, obtenerIntervalosRefResultados, } = require('../controladores/detalleChequeo.controller');
 
-const { crearMuestra, eliminarMuestra} = require('../controladores/muestras.controller');
+const { crearMuestra, eliminarMuestra, obtenerMuestras} = require('../controladores/muestras.controller');
 
 const { generarReporte, generarReporteResultados, generarReporteTipeoSanguineo, generarReporteCantidadExamenes, generarReporteEpidemiologico, generarReporteTipos } = require('../controladores/reporte.controller');
 const { obtenerPermisosUsuario, } = require('../controladores/validarpermisos.controller');
@@ -122,6 +122,7 @@ router.post('/pacientes', crearPaciente);
 router.put('/pacientes', actualizarPaciente)
 router.delete('/pacientes/:idpaciente', eliminarPaciente);
 router.get('/pacientesPacienteExamenes', obtenerPacienteExamenes);
+router.get('/pacientesPacienteMuestras', obtenerPacienteMuestras);
 
 //CRUD CHEQUEO
 router.delete('/chequeos/:idchequeo', eliminarChequeo);
@@ -156,6 +157,7 @@ router.get('/resultados/:iddetalle', obtenerResultados);
 router.delete('/resultados/:iddetalle', eliminarResultado);
 
 //CRUD MUESTRA
+router.get('/obtenerMuestras',obtenerMuestras);
 router.post('/muestras', crearMuestra);
 router.delete('/muestras/:iddetalle', eliminarMuestra);
 

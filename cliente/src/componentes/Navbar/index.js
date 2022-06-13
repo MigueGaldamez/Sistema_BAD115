@@ -96,11 +96,33 @@ const Navbar = () => {
                 <li class="nav-item w-100">
                     <NavLink to="/parametros" class="nav-link  text-light" aria-current="page" href="#">Parametros</NavLink>
                 </li>
-                <li class="nav-item w-100">
-                    <NavLink to="/resultados" class="nav-link  text-light" aria-current="page" href="#">Resultados</NavLink>
+                <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle text-light mr-4" href="#submenu7" id="navbarDarkDropdownMenuLink" role="button" data-bs-toggle="collapse" aria-expanded="false">
+                    Resultados
+                    </a>
+                    <ul class="collapse nav flex-column ms-1" id="submenu7" aria-labelledby="dropdownMenuButton1">
+                        <li class="nav-item w-100 text-light">
+                            <NavLinkDrop to="/resultados" class="dropdown-item" aria-current="page" href="#">Registrar resultados</NavLinkDrop>
+                        </li>
+                        <li class="nav-item w-100 text-light">
+                            <NavLinkDrop to="/resultados" class="dropdown-item" aria-current="page" href="#">Ver resultados</NavLinkDrop>
+                        </li>
+                       
+                    </ul>
                 </li>
-                <li class="nav-item w-100">
-                    <NavLink to="/muestras" class="nav-link  text-light" aria-current="page" href="#">Muestras</NavLink>
+                <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle text-light mr-4" href="#submenu6" id="navbarDarkDropdownMenuLink" role="button" data-bs-toggle="collapse" aria-expanded="false">
+                        Muestras
+                    </a>
+                    <ul class="collapse nav flex-column ms-1" id="submenu6" aria-labelledby="dropdownMenuButton1">
+                        <li class="nav-item w-100 text-light">
+                            <NavLinkDrop to="/muestras" class="dropdown-item" aria-current="page" href="#">Registrar muestra</NavLinkDrop>
+                        </li>
+                        <li class="nav-item w-100 text-light">
+                            <NavLinkDrop to="/listadomuestras" class="dropdown-item" aria-current="page" href="#">Ver muestras</NavLinkDrop>
+                        </li>
+                       
+                    </ul>
                 </li>
                 <li class="nav-item dropdown">
                 <a class="nav-link dropdown-toggle text-light mr-4" href="#submenu4" id="navbarDarkDropdownMenuLink" role="button" data-bs-toggle="collapse" aria-expanded="false">

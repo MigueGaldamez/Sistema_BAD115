@@ -1,6 +1,26 @@
 //SIEMPRE PONERLO
 const { sqlee } = require('./controlador');
 
+const obtenerMuestras = async(req,res)=>{
+    try{
+        //sql = 'SELECT detallechequeo.iddetalle as iddetalle, detallechequeo.idexamen as idexamen, detallechequeo.idchequeo as idchequeo, estadoexamen, fecharegistro, horaregistro, examen.idarea as idarea, nombreexamen, examen.idarea, nombrearea, chequeo.idpaciente as idpaciente, chequeo.idlaboratorio as idlaboratorio, usuario.idusuario as idusuario, nombreusuario, fechachequeo, horachequeo, archivo, estadochequeo, idestado, nombrepaciente, apellido, direccion, fechanacimiento, correopaciente, genero, idmuestra, observaciones, fechaingreso, horaingreso, nombrelaboratorio FROM detallechequeo ' + 
+        sql = 'SELECT * FROM detallechequeo ' + 
+        'join examen on examen.idexamen = detallechequeo.idexamen ' + 
+        'join area on area.idarea = examen.idarea ' + 
+        'join chequeo on chequeo.idchequeo = detallechequeo.idchequeo ' +
+        'join paciente on paciente.idpaciente = chequeo.idpaciente ' +
+        'left join muestra on muestra.iddetalle = detallechequeo.iddetalle ' +
+        'join laboratorio on laboratorio.idlaboratorio = chequeo.idlaboratorio ' +
+        'order by detallechequeo.iddetalle desc';
+        const response = await sqlee.query(sql);
+        
+        res.status(200).json(response.rows);
+    }catch(error){
+        console.log(error);
+        res.status(500).json(error);
+    }
+};
+
 const crearMuestra =  async (req, res) => {
     const {observaciones, horaIngreso, fechaIngreso, iddetalle} = req.body;
     var response = null;
@@ -57,4 +77,5 @@ const eliminarMuestra =  async (req, res) => {
 module.exports = {
     crearMuestra,
     eliminarMuestra,
+    obtenerMuestras,
 };

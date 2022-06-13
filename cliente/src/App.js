@@ -31,6 +31,7 @@ import ReporteTipeo from './paginas/reporteTipeo/reporteTipeo';
 import ReporteExamenes from './paginas/reporteCantidadExamenes/reporteCantidadExamenes';
 import ReporteEpidemiologico from './paginas/reporteEpidemiologico/reporteEpidemiologico';
 import ReporteExamenesPorTipo from './paginas/reporteExamenesPorTipo/ReporteExamenesPorTipo';
+import MuestrasLista from './paginas/muestras/muestrasLista';
 
 const cookies = new Cookies();
 
@@ -67,6 +68,7 @@ function App() {
           
           <Route path='/resultados' element={ <RequireAuth redirectTo="/login"><DetalleChequeo/></RequireAuth>} />
           <Route path='/muestras' element={ <RequireAuth redirectTo="/login"><Muestras/></RequireAuth>} />
+          <Route path='/listadomuestras' element={ <RequireAuth redirectTo="/login"><MuestrasLista/></RequireAuth>} />
           <Route path='/reportetipeo' element={ <RequireAuth redirectTo="/login"><ReporteTipeo/></RequireAuth>} />
           <Route path='/reporteexamenes' element={ <RequireAuth redirectTo="/login"><ReporteExamenes/></RequireAuth>} />
           <Route path='/reporteepidemiologico' element={ <RequireAuth redirectTo="/login"><ReporteEpidemiologico/></RequireAuth>} />

@@ -55,6 +55,28 @@ const obtenerPacienteExamenes = async(req,res)=>{
   
 };
 
+const obtenerPacienteMuestras = async(req,res)=>{
+    try{
+        sql = 'select chequeo.idchequeo as idcheq, nombrepaciente, apellido, fechanacimiento, count(chequeo.idchequeo) as cuenta ' +
+        'from detallechequeo ' +
+        'join chequeo on detallechequeo.idchequeo = chequeo.idchequeo ' +
+        'join paciente on paciente.idpaciente = chequeo.idpaciente ' +
+        'left join muestra on muestra.iddetalle = detallechequeo.iddetalle ' +
+        'where idmuestra is NULL ' +
+        'group by (chequeo.idchequeo, nombrepaciente, apellido, fechanacimiento) ' +
+        'order by chequeo.idchequeo asc';
+        //sql = 'select * from paciente';
+        const response = await sqlee.query(sql);
+
+        pacientes = response.rows;
+
+        res.status(200).json(pacientes);
+    }catch(error){
+        res.status(500).json(error);
+    }
+  
+};
+
 const crearPaciente =  async (req, res) => {
     const {genero,nombre,apellido,municipio,correo,estadoCivil,direccion,fechaNacimiento,numeros,identificadorEmergencias,numeroEmergencias } = req.body;
     var erroresC ={};
@@ -279,4 +301,5 @@ module.exports = {
    actualizarPaciente,
    eliminarPaciente,
    obtenerPacienteExamenes,
+   obtenerPacienteMuestras,
 };

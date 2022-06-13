@@ -48,7 +48,7 @@ const DetalleChequeo = () => {
   */
 
   const obtenerRegistros=()=>{
-    Axios.get(`http://${process.env.REACT_APP_SERVER_IP}/pacientesPacienteExamenes`).then((response)=>{
+    Axios.get(`http://${process.env.REACT_APP_SERVER_IP}/pacientesPacienteMuestras`).then((response)=>{
       setPacientesLista(response.data);
     });    
   };
