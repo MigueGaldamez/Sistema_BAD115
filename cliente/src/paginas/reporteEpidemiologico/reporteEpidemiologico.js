@@ -9,7 +9,7 @@ const cookies = new Cookies();
 const Laboratorios = () => { 
 
   //PARA CADA ATRIBUTO
-  const[filtro,setFiltro]=useState('1');
+  const[filtro,setFiltro]=useState('5');
   const[padecimiento,setPadecimiento]=useState('1');
   const[validarLista, setValidarLista] = useState([]);
  //esto es para validar en el backend y mandar siempre el id usuario
@@ -84,7 +84,7 @@ const Laboratorios = () => {
                             <div class="col col-6">
                             <select class="form-select form-select-sm my-2" aria-label="Default select example" onChange={(event)=>{setFiltro(event.target.value)}}>
                                 <option value="5">Zona Geográfica</option>
-                                {/*<option value="6">Edad</option>*/}
+                                <option value="6">Edad</option>
                                 <option value="7">Género</option>
                             </select>
                             </div>

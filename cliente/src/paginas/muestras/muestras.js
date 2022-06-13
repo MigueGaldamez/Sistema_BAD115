@@ -59,7 +59,7 @@ const DetalleChequeo = () => {
 });
 
   const obtenerRegistros=()=>{
-    Axios.get(`${process.env.REACT_APP_SERVER_IP}/pacientesPacienteExamenes`).then((response)=>{
+    Axios.get(`${process.env.REACT_APP_SERVER_IP}/pacientesPacienteMuestras`).then((response)=>{
       setPacientesLista(response.data);
     });    
     var id = cookies.get('usuario').idusuario;

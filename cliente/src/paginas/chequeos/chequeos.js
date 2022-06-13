@@ -15,6 +15,7 @@ const Chequeos = () => {
   //PARA CADA ATRIBUTO
   const[laboratorio,setLaboratorio]=useState(0);
   const[paciente,setPaciente]=useState("");
+  const[usuario,setUsuario]=useState("");
   //    const[usuario,setUsuario]=useState(0);
   const[fechaChequeo,setFechaChequeo]=useState(Moment().format('YYYY-MM-DD'));
   const[horaChequeo,setHoraChequeo]=useState(Moment().format('HH:mm:ss'));
@@ -67,14 +68,17 @@ const Chequeos = () => {
     Axios.get(`${process.env.REACT_APP_SERVER_IP}/pacientes`).then((response)=>{
       setPacienteLista(response.data);
     });
-    Axios.get(`${process.env.REACT_APP_SERVER_IP}/usuarioslibres`).then((response)=>{
+    /*Axios.get(`http://${process.env.REACT_APP_SERVER_IP}/usuarioslibres`).then((response)=>{
       setUsuarioLista(response.data);
-    });
+    });*/
     Axios.get(`${process.env.REACT_APP_SERVER_IP}/laboratorios`).then((response)=>{
       setLaboratorioLista(response.data);
     });
     Axios.get(`${process.env.REACT_APP_SERVER_IP}/examenes`).then((response)=>{
       setExamenLista(response.data);
+    });
+    Axios.get(`${process.env.REACT_APP_SERVER_IP}/usuariosLaboratoristas`).then((response)=>{
+      setUsuarioLista(response.data);
     });
     var id = cookies.get('usuario').idusuario;
     Axios.get(`${process.env.REACT_APP_SERVER_IP}/validarpermisos/${id}`).then((response)=>{
@@ -109,7 +113,7 @@ const Chequeos = () => {
       fechaChequeo:fechaChequeo,
       horaChequeo:horaChequeo,
       examenes:examenes,
-      //usuario:"",
+      usuario:usuario,
     }).then((response)=>{
       if(response.data.errores==null){      
         cerrarModal();
@@ -264,7 +268,7 @@ const Chequeos = () => {
     <div class="col container my-4">
       
       <div class="modal fade" id="nuevoRegistro" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true" data-bs-backdrop="static">
-        <div class="modal-dialog">
+        <div class="modal-dialog modal-xl">
           <div class="modal-content">
             <div class="modal-header">
               <h5 class="modal-title" id="exampleModalLabel">Nuevo Registro</h5>
@@ -273,49 +277,70 @@ const Chequeos = () => {
             <form id="formulario" onSubmit={agregarRegistro}>
             <div class="modal-body">
 
-            <label for="" class="form-label mt-3">Pacientes:</label>
-              <select class="form-select form-select-sm" aria-label="Default select example" onChange={(event)=>{
+              <div class="row">
+                <div class="col-6">
+                  <label class="form-label">Paciente:</label> 
+                  <select id="paciente" class="form-select form-select-sm mb-2" size="4" aria-label="Default select example" onChange={(event)=>{
                 setPaciente(event.target.value)}}>
-                   <option selected>Seleccione un Paciente</option>
-                    {pacienteLista.map((paciente) => {
-                     
-                    
-                    return(  <option  value={paciente.idpaciente}>{paciente.nombrepaciente + ' ' + paciente.apellido}</option>)
+                    {pacienteLista.map(paciente => {
+                      return( <option value={paciente.idpaciente}>{paciente.nombrepaciente} {paciente.apellido}</option>)
                     })}
-              </select>        
-              { 
-                errores.paciente &&
-                <p><small class="text-danger">* {errores.paciente}</small></p>
-              }
+                  </select>
+                  { 
+                    errores.paciente &&
+                    <p><small class="text-danger">* {errores.paciente}</small></p>
+                  }
 
-              <label for="" class="form-label mt-3">Laboratorio:</label>
-              <select class="form-select form-select-sm" aria-label="Default select example" onChange={(event)=>{
-                setLaboratorio(event.target.value)}}>
-                   <option selected>Seleccione un Laboratorio</option>
-                    {laboratorioLista.map((laboratorio) => {
-                     
-                    
-                    return(  <option  value={laboratorio.idlaboratorio}>{laboratorio.nombrelaboratorio}</option>)
+                  <label class="form-label">Laboratorista:</label> 
+                  <select id="paciente" class="form-select form-select-sm " size="3" aria-label="Default select example" onChange={(event)=>{
+                  setUsuario(event.target.value)}}>
+                    {usuarioLista.map(usuario => {
+                      return( <option value={usuario.idusuario}>{usuario.nombreusuario}</option>)
                     })}
-              </select>        
-              { 
-                errores.laboratorio &&
-                <p><small class="text-danger">* {errores.laboratorio}</small></p>
-              }
+                  </select>
+                  { 
+                    errores.usuario &&
+                    <p><small class="text-danger">* {errores.usuario}</small></p>
+                  }
+
+                </div>
+                <div class="col-6">
+                  <label for="" class="form-label mt-3">Laboratorio:</label>
+                  <select class="form-select form-select-sm mb-2" aria-label="Default select example" onChange={(event)=>{
+                    setLaboratorio(event.target.value)}}>
+                      <option selected>Seleccione un Laboratorio</option>
+                        {laboratorioLista.map((laboratorio) => {
+                        return(  <option  value={laboratorio.idlaboratorio}>{laboratorio.nombrelaboratorio}</option>)
+                        })}
+                  </select>        
+                  { 
+                    errores.laboratorio &&
+                    <p><small class="text-danger">* {errores.laboratorio}</small></p>
+                  }
+                    
+                  <label for="" class="form-label">Fecha de chequeo:</label>
+                  <input type="date" class="form-control form-control-sm mb-2" onChange={(event)=>{setFechaChequeo(event.target.value)}} defaultValue={Moment().format('YYYY-MM-DD')} />
+                  { 
+                    errores.fechaChequeo &&
+                  <p><small class="text-danger">* {errores.fechaChequeo}</small></p>
+                  }
+
+                  <label for="" class="form-label">Hora de chequeo:</label>
+                  <input type="time" class="form-control form-control-sm mb-2" onChange={(event)=>{setHoraChequeo(event.target.value)}} defaultValue={Moment().format('HH:mm')} />
+                  { 
+                    errores.horaChequeo &&
+                  <p><small class="text-danger">* {errores.horaChequeo}</small></p>
+                  }
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-12">
                 
-              <label for="" class="form-label">Fecha de chequeo:</label>
-              <input type="date" class="form-control form-control-sm" onChange={(event)=>{setFechaChequeo(event.target.value)}} defaultValue={Moment().format('YYYY-MM-DD')} />
-              { 
-                errores.fechaChequeo &&
-               <p><small class="text-danger">* {errores.fechaChequeo}</small></p>
-              }
+                </div>
+              </div>
+              
 
-              <label for="" class="form-label">Hora de chequeo:</label>
-              <input type="time" class="form-control form-control-sm" onChange={(event)=>{setHoraChequeo(event.target.value)}} defaultValue={Moment().format('HH:mm:ss')} />
-              { 
-                errores.horaChequeo &&
-               <p><small class="text-danger">* {errores.horaChequeo}</small></p>
-              }
+              
               <h6 class="mt-3">Seleccionar Examenes</h6>
               {examenLista.map((registro) => {
                   return(

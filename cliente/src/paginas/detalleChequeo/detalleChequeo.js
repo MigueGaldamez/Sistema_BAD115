@@ -38,28 +38,31 @@ const DetalleChequeo = () => {
   const[modalRegistro, setModalRegistro] = useState([]);
   const[modalVerResultado, setModalVerResultado] = useState([]);
   //PARA LA BUSQUEDA
-  /*
+  
   const [q, setQ] = useState('');
   //TODAS LAS COLUMNAS
-  const [columns] =useState([
+  /*const [columns] =useState([
     'idexamen',
     'nombreexamen',
     'area',
     
-  ]);
+  ]);*/
   //LAS COLUMNAS POR LAS QUE SEPUEDEN FILTRAR
   const [buscarColumnas, setBuscarColumnas] = useState([
-    'idexamen',
-    'nombreexamen',
-    'area',
+    'idcheq',
+    'nombrepaciente',
+    'apellido',
+    'fechanacimiento',
+    'cuenta',
   ]);
-  */
- //esto es para validar en el backend y mandar siempre el id usuario
- Axios.interceptors.request.use(function (config) {
-  var id = cookies.get('usuario').idusuario;
-  config.headers.idusuario =  id;
-  return config;
-});
+
+  Axios.interceptors.request.use(function (config) {
+    var id = cookies.get('usuario').idusuario;
+    config.headers.idusuario =  id;
+    return config;
+  });
+  
+
   const obtenerRegistros=()=>{
     Axios.get(`${process.env.REACT_APP_SERVER_IP}/pacientesPacienteExamenes`).then((response)=>{
       setPacientesLista(response.data);
@@ -436,7 +439,9 @@ const DetalleChequeo = () => {
   }
 
   /*function buscar(rows) {
-    return rows.filter((row) =>
+    //var ListaTemp = pacientesLista;
+    console.log(ListaTemp);
+    setPacientesLista(rows.filter((row) =>
       buscarColumnas.some(
         (column) =>
           row[column]
@@ -444,7 +449,7 @@ const DetalleChequeo = () => {
             .toLowerCase()
             .indexOf(q.toLowerCase()) > -1,
       ),
-    );
+    ));
   }*/
 
 

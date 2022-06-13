@@ -22,7 +22,6 @@
     <hr style="margin:0; margin-top:5px; margin-bottom:5px; color: black;">
     <h1 style="font-size: 17px;font-weight: 600;  margin-top: 20px; text-align: center;">{{ datos.nombrereporte }}</h1>
     <hr style="margin:0; margin-top:5px; margin-bottom:5px; color: black;">
-    {{#each datos.datosLista}}
     <table style="font-size: 12px; text-align: center; width: 50%; margin-left: 25%;" class="table" width="50%">
       <thead>
         <tr>
@@ -31,12 +30,13 @@
         </tr>
       </thead>
       <tbody>
+        {{#each datos.datosLista}}
         <tr>
-          <td style="border-bottom: hidden;" width="25%">{{ this.filtro}}</td>
-          <td style="border-bottom: hidden;" width="25%">{{ this.counta }}</td>
+          <td style="border-bottom: hidden;" width="25%">{{ this.nombre }}</td>
+          <td style="border-bottom: hidden;" width="25%">{{ this.cuenta }}</td>
         </tr>
+        {{/each}}
       </tbody>
     </table>
-    {{/each}}
 </body>
 </html>

@@ -231,20 +231,21 @@ const generarReporteTipeoSanguineo =  async (req, res) => {
             var BN = 0;
             var ABN = 0;
 
-            sql = 'select p.idpaciente, opcion, p.idmunicipio as idmunicipio ' +
+            sql = 'select p.idpaciente, opcion, p.idmunicipio as idmunicipio, r.iddetalle as iddetalle  ' +
             'from resultado r '+
             'join detallechequeo d on d.iddetalle = r.iddetalle '+
             'join chequeo c on c.idchequeo = d.idchequeo '+
             'join paciente p on c.idpaciente = p.idpaciente '+
             'join municipio m on p.idmunicipio = m.idmunicipio '+
             'where idparametro=$1 ' +
-            'and p.idmunicipio=$2 '+        
-            'group by opcion, p.idmunicipio, p.idpaciente';
+            'and p.idmunicipio=$2 ';
             const response = await sqlee.query(sql, [idparametro, idmunicipio]);
             
             var resultados = response.rows;
             //console.log(resultados);
             for(var resultado of resultados){
+
+                var iddetalle = resultado.iddetalle;
 
                 sql = "select p.idpaciente, opcion, p.idmunicipio as idmunicipio " +
                 "from resultado r " +
@@ -254,9 +255,10 @@ const generarReporteTipeoSanguineo =  async (req, res) => {
                 "join paciente p on c.idpaciente = p.idpaciente "+
                 "join municipio m on p.idmunicipio = m.idmunicipio "+
                 "where  parametro LIKE 'Variante Du' " +
-                "and p.idmunicipio=$1 "+        
+                "and p.idmunicipio=$1 "+ 
+                "and r.iddetalle=$2 " +       
                 "group by opcion, p.idmunicipio, p.idpaciente";
-                const response = await sqlee.query(sql, [idmunicipio]);
+                const response = await sqlee.query(sql, [idmunicipio, iddetalle]);
 
                 var resultados2 = response.rows;
                 for (var resultado2 of resultados2){
@@ -349,7 +351,7 @@ const generarReporteTipeoSanguineo =  async (req, res) => {
                 maxedad: y-18,
             },
             {
-                grupo: 'Adulto juventud (19 - 26 años)',
+                grupo: 'Adulto joven (19 - 26 años)',
                 minedad: y-19,
                 maxedad: y-26,
             },
@@ -359,7 +361,7 @@ const generarReporteTipeoSanguineo =  async (req, res) => {
                 maxedad: y-59,
             },
             {
-                grupo: 'Persona Mayor (60 años o mas)',
+                grupo: 'Adulto Mayor (60 años o mas)',
                 minedad: y-60,
                 maxedad: y-130,
             },
@@ -378,7 +380,7 @@ const generarReporteTipeoSanguineo =  async (req, res) => {
             var BN = 0;
             var ABN = 0;
 
-            sql = "select p.idpaciente, r.idparametro as idparametro, opcion, EXTRACT(YEAR FROM fechanacimiento) as anio " +
+            sql = "select p.idpaciente, r.idparametro as idparametro, opcion, EXTRACT(YEAR FROM fechanacimiento) as anio, r.iddetalle as iddetalle " +
             "from resultado r " +
             "join detallechequeo d on d.iddetalle = r.iddetalle " +
             "join parametro pa on pa.idparametro = r.idparametro " +
@@ -391,6 +393,8 @@ const generarReporteTipeoSanguineo =  async (req, res) => {
             var resultados = response.rows;
             for (var resultado of resultados) {
 
+                var iddetalle = resultado.iddetalle;
+
                 sql = "select p.idpaciente, r.idparametro as idparametro, opcion, EXTRACT(YEAR FROM fechanacimiento) as anio " +
                 "from resultado r " +
                 "join detallechequeo d on d.iddetalle = r.iddetalle " +
@@ -398,8 +402,9 @@ const generarReporteTipeoSanguineo =  async (req, res) => {
                 "join chequeo c on c.idchequeo = d.idchequeo " +
                 "join paciente p on c.idpaciente = p.idpaciente " +
                 "where (parametro LIKE 'Variante Du') " +
-                "and (EXTRACT(YEAR FROM fechanacimiento) BETWEEN $1 AND $2)";
-                const response = await sqlee.query(sql, [edad.maxedad, edad.minedad]);
+                "and (r.iddetalle = $1) " +
+                "and (EXTRACT(YEAR FROM fechanacimiento) BETWEEN $2 AND $3)";
+                const response = await sqlee.query(sql, [iddetalle, edad.maxedad, edad.minedad]);
 
                 var resultados2 = response.rows;
                 for (var resultado2 of resultados2){
@@ -489,7 +494,7 @@ const generarReporteTipeoSanguineo =  async (req, res) => {
             var BN = 0;
             var ABN = 0;
 
-            sql = "select p.idpaciente, opcion, genero " +
+            sql = "select p.idpaciente, opcion, genero, r.iddetalle as iddetalle " +
             "from resultado r " +
             "join detallechequeo d on d.iddetalle = r.iddetalle " +
             "join parametro pa on pa.idparametro = r.idparametro " +
@@ -502,6 +507,8 @@ const generarReporteTipeoSanguineo =  async (req, res) => {
             var resultados = response.rows;
             for(var resultado of resultados){
 
+                var iddetalle = resultado.iddetalle;
+
                 sql = "select p.idpaciente, opcion, genero " +
                 "from resultado r " +
                 "join detallechequeo d on d.iddetalle = r.iddetalle " +
@@ -509,8 +516,9 @@ const generarReporteTipeoSanguineo =  async (req, res) => {
                 "join chequeo c on c.idchequeo = d.idchequeo " +
                 "join paciente p on c.idpaciente = p.idpaciente " +
                 "where  parametro LIKE 'Variante Du' " +
-                "and genero = $1 ";
-                const response = await sqlee.query(sql, [genero.genero]);
+                "and r.iddetalle = $1 " +
+                "and genero = $2 ";
+                const response = await sqlee.query(sql, [iddetalle, genero.genero]);
 
                 var resultados2 = response.rows;
                 for (var resultado2 of resultados2){
@@ -627,7 +635,7 @@ const generarReporteEpidemiologico =  async (req, res) => {
         "join paciente p on p.idpaciente = c.idpaciente " +
         "join parametro pa on pa.idparametro = r.idparametro " +
         "join municipio m on m.idmunicipio = p.idmunicipio " +
-        "where r.valor > 200.00 AND pa.parametro like '%glicerid%' " +
+        "where r.valor > 160.00 AND pa.parametro like '%glicerid%' " +
         "group by m.idmunicipio " ;
         const response = await sqlee.query(sql);
         var municipios = response.rows;
@@ -651,7 +659,7 @@ const generarReporteEpidemiologico =  async (req, res) => {
         var fecha = new Date();
         var y = fecha.getFullYear();
 
-        var edades = [
+        var gruposedades = [
             {
                 grupo: 'Primera infancia (0-5 años)',
                 minedad: y,
@@ -668,7 +676,7 @@ const generarReporteEpidemiologico =  async (req, res) => {
                 maxedad: y-18,
             },
             {
-                grupo: 'Adulto juventud (19 - 26 años)',
+                grupo: 'Adulto joven (19 - 26 años)',
                 minedad: y-19,
                 maxedad: y-26,
             },
@@ -678,22 +686,31 @@ const generarReporteEpidemiologico =  async (req, res) => {
                 maxedad: y-59,
             },
             {
-                grupo: 'Persona Mayor (60 años o mas)',
+                grupo: 'Adulto Mayor (60 años o mas)',
                 minedad: y-60,
                 maxedad: y-130,
             },
             
         ]
-        for(const edad of edades){
-            sql = "select count(p.idpaciente) as cuenta, AGE(p.fechanacimiento) " +
+        for(var grupo of gruposedades){
+            sql = "select count(p.idpaciente) as cuenta " +
             "from resultado r " +
             "join detallechequeo dc on dc.iddetalle = r.iddetalle " +
             "join chequeo c on c.idchequeo = dc.idchequeo " +
             "join paciente p on p.idpaciente = c.idpaciente " +
             "join parametro pa  on pa.idparametro = r.idparametro " +
-            "where r.valor > 200.00 AND pa.parametro like '%glicerid%' " +
-            "group by p.fechanacimiento" ;
-            const response = await sqlee.query(sql);
+            "where ((r.valor > 160.00) AND (pa.parametro like '%glicerid%')) " +
+            "and (EXTRACT(YEAR FROM fechanacimiento) BETWEEN $1 AND $2)" ;
+            const response = await sqlee.query(sql, [grupo.maxedad, grupo.minedad]);
+
+            var edads = response.rows;
+            for(const edad of edads){
+                const elemento = {
+                    nombre: grupo.grupo,
+                    cuenta: edad.cuenta,
+                }
+                array.push(elemento);
+            }
         }
         // esta sera la data que vamos a mandar al template(plantilla) para crear el pdf
         obj = {
@@ -713,7 +730,7 @@ const generarReporteEpidemiologico =  async (req, res) => {
             "join detallechequeo dc on dc.iddetalle = r.iddetalle " +
             "join chequeo c on c.idchequeo = dc.idchequeo " +
             "join paciente p on p.idpaciente = c.idpaciente " +
-            "where r.valor > 200.00 AND pa.parametro like '%glicerid%' " +
+            "where r.valor > 160.00 AND pa.parametro like '%glicerid%' " +
             "group by p.genero ";
             const response = await sqlee.query(sql);
 
@@ -769,7 +786,7 @@ const generarReporteEpidemiologico =  async (req, res) => {
         var fecha = new Date();
         var y = fecha.getFullYear();
 
-        var edades = [
+        var gruposedades = [
             {
                 grupo: 'Primera infancia (0-5 años)',
                 minedad: y,
@@ -786,7 +803,7 @@ const generarReporteEpidemiologico =  async (req, res) => {
                 maxedad: y-18,
             },
             {
-                grupo: 'Adulto juventud (19 - 26 años)',
+                grupo: 'Adulto joven (19 - 26 años)',
                 minedad: y-19,
                 maxedad: y-26,
             },
@@ -796,22 +813,32 @@ const generarReporteEpidemiologico =  async (req, res) => {
                 maxedad: y-59,
             },
             {
-                grupo: 'Persona Mayor (60 años o mas)',
+                grupo: 'Adulto Mayor (60 años o mas)',
                 minedad: y-60,
                 maxedad: y-130,
             },
             
         ]
-        for(const edad of edades){
-            sql = "select count(p.idpaciente) as cuenta, AGE(p.fechanacimiento) " +
+        for(var grupo of gruposedades){
+            sql = "select count(p.idpaciente) as cuenta " +
             "from resultado r " +
             "join detallechequeo dc on dc.iddetalle = r.iddetalle " +
             "join chequeo c on c.idchequeo = dc.idchequeo " +
             "join paciente p on p.idpaciente = c.idpaciente " +
             "join parametro pa  on pa.idparametro = r.idparametro " +
-            "where r.valor > 200.00 AND pa.parametro like '%olestero%' " +
-            "group by p.fechanacimiento" ;
-            const response = await sqlee.query(sql);
+            "where ((r.valor > 200.00) AND (pa.parametro like '%olestero%')) " +
+            "and (EXTRACT(YEAR FROM fechanacimiento) BETWEEN $1 AND $2)" ;
+            const response = await sqlee.query(sql, [grupo.maxedad, grupo.minedad]);
+
+            var edads = response.rows;
+            for(const edad of edads){
+                const elemento = {
+                    nombre: grupo.grupo,
+                    cuenta: edad.cuenta,
+                }
+                array.push(elemento);
+            }
+
         }
         // esta sera la data que vamos a mandar al template(plantilla) para crear el pdf
         obj = {
@@ -864,7 +891,7 @@ const generarReporteEpidemiologico =  async (req, res) => {
         "join parametro pa on pa.idparametro = r.idparametro " +
         "join municipio m on m.idmunicipio = p.idmunicipio " +
         "where ((p.genero like '%asculino%' AND r.valor > 7) OR (p.genero like '%emenino%' AND r.valor > 5.7)) AND pa.parametro like '%cido%' AND pa.parametro like '%rico%' " +
-        "group by m.idmunicipio " ;
+        "group by municipio " ;
         const response = await sqlee.query(sql);
 
         var municipios = response.rows;
@@ -888,7 +915,7 @@ const generarReporteEpidemiologico =  async (req, res) => {
         var fecha = new Date();
         var y = fecha.getFullYear();
 
-        var edades = [
+        var gruposedades = [
             {
                 grupo: 'Primera infancia (0-5 años)',
                 minedad: y,
@@ -905,7 +932,7 @@ const generarReporteEpidemiologico =  async (req, res) => {
                 maxedad: y-18,
             },
             {
-                grupo: 'Adulto juventud (19 - 26 años)',
+                grupo: 'Adulto joven (19 - 26 años)',
                 minedad: y-19,
                 maxedad: y-26,
             },
@@ -915,21 +942,31 @@ const generarReporteEpidemiologico =  async (req, res) => {
                 maxedad: y-59,
             },
             {
-                grupo: 'Persona Mayor (60 años o mas)',
+                grupo: 'Adulto Mayor (60 años o mas)',
                 minedad: y-60,
                 maxedad: y-130,
             },
             
         ]
-        for(const edad of edades){
-            sql = "select count(p.idpaciente) as cuenta, AGE(p.fechanacimiento) " +
+        for(var grupo of gruposedades){
+            sql = "select count(p.idpaciente) as cuenta " +
             "from resultado r " +
             "join detallechequeo dc on dc.iddetalle = r.iddetalle " +
             "join chequeo c on c.idchequeo = dc.idchequeo " +
             "join paciente p on p.idpaciente = c.idpaciente " +
             "join parametro pa  on pa.idparametro = r.idparametro " +
-            "where ((p.genero like '%asculino%' AND r.valor > 7) OR (p.genero like '%emenino%' AND r.valor > 5.7)) AND pa.parametro like '%cido%' AND pa.parametro like '%rico%' " +
-            "group by p.fechanacimiento" ;
+            "where (((p.genero like '%asculino%' AND r.valor > 7) OR (p.genero like '%emenino%' AND r.valor > 5.7)) AND (pa.parametro like '%cido%' AND pa.parametro like '%rico%')) " +
+            "and (EXTRACT(YEAR FROM fechanacimiento) BETWEEN $1 AND $2)" ;
+            const response = await sqlee.query(sql, [grupo.maxedad, grupo.minedad]);
+
+            var edads = response.rows;
+            for(const edad of edads){
+                const elemento = {
+                    nombre: grupo.grupo,
+                    cuenta: edad.cuenta,
+                }
+                array.push(elemento);
+            }
         }
         // esta sera la data que vamos a mandar al template(plantilla) para crear el pdf
         obj = {
@@ -1007,7 +1044,7 @@ const generarReporteEpidemiologico =  async (req, res) => {
         var fecha = new Date();
         var y = fecha.getFullYear();
 
-        var edades = [
+        var gruposedades = [
             {
                 grupo: 'Primera infancia (0-5 años)',
                 minedad: y,
@@ -1024,7 +1061,7 @@ const generarReporteEpidemiologico =  async (req, res) => {
                 maxedad: y-18,
             },
             {
-                grupo: 'Adulto juventud (19 - 26 años)',
+                grupo: 'Adulto joven (19 - 26 años)',
                 minedad: y-19,
                 maxedad: y-26,
             },
@@ -1034,22 +1071,31 @@ const generarReporteEpidemiologico =  async (req, res) => {
                 maxedad: y-59,
             },
             {
-                grupo: 'Persona Mayor (60 años o mas)',
+                grupo: 'Adulto Mayor (60 años o mas)',
                 minedad: y-60,
                 maxedad: y-130,
             },
             
         ]
-        for(const edad of edades){
-            sql = "select count(p.idpaciente) as cuenta, AGE(p.fechanacimiento) " +
+        for(var grupo of gruposedades){
+            sql = "select count(p.idpaciente) as cuenta " +
             "from resultado r " +
             "join detallechequeo dc on dc.iddetalle = r.iddetalle " +
             "join chequeo c on c.idchequeo = dc.idchequeo " +
             "join paciente p on p.idpaciente = c.idpaciente " +
             "join parametro pa  on pa.idparametro = r.idparametro " +
-            "where r.valor > 115.00 AND pa.parametro like '%lucosa%' " +
-            "group by p.fechanacimiento" ;
-            const response = await sqlee.query(sql);
+            "where ((r.valor > 115.00) AND (pa.parametro like '%lucosa%')) " +
+            "and (EXTRACT(YEAR FROM fechanacimiento) BETWEEN $1 AND $2)" ;
+            const response = await sqlee.query(sql, [grupo.maxedad, grupo.minedad]);
+
+            var edads = response.rows;
+            for(const edad of edads){
+                const elemento = {
+                    nombre: grupo.grupo,
+                    cuenta: edad.cuenta,
+                }
+                array.push(elemento);
+            }
         }
         // esta sera la data que vamos a mandar al template(plantilla) para crear el pdf
         obj = {
