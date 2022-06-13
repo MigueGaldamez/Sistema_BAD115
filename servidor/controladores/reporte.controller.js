@@ -1374,7 +1374,7 @@ const generarReporteTipos=  async (req, res) => {
         nombrelaboratorio = response2.rows[0].nombrelaboratorio;
     }
   
-    var filename = 'examenesportipo_'+ (nombrepaciente).replace(/ /g, "") + '_' + (Math.floor(Math.random() * 9999) + 10000) + '.pdf';
+    var filename = 'examenesportipo_' + (Math.floor(Math.random() * 9999) + 10000) + '.pdf';
     // esta sera la data que vamos a mandar al template(plantilla) para crear el pdf
     const obj = {
         nombrelaboratorio: nombrelaboratorio,
