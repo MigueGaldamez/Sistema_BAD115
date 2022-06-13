@@ -4,6 +4,8 @@ import Axios from 'axios';
 import DatatableRoles from "./datatable";
 import { Modal } from 'bootstrap/dist/js/bootstrap.bundle.min';
 import swal from 'sweetalert';
+import Cookies from 'universal-cookie';
+const cookies = new Cookies();
 
 const Unidades = () => { 
   //PARA los ERRORES
@@ -17,6 +19,7 @@ const Unidades = () => {
   //LA LISTA QUEMOSTRAREMOS
   const[unidadLista, setUnidadLista] = useState([]);
   const[modalB, setModalB] = useState([]);
+  const[validarLista, setValidarLista] = useState([]);
   //PARA LA BUSQUEDA
   const [q, setQ] = useState('');
   //TODAS LAS COLUMNAS
@@ -34,10 +37,21 @@ const Unidades = () => {
   ]);
   
 
+  //esto es para validar en el backend y mandar siempre el id usuario
+  Axios.interceptors.request.use(function (config) {
+    var id = cookies.get('usuario').idusuario;
+    config.headers.idusuario =  id;
+    return config;
+});
   const obtenerRegistros=()=>{
     Axios.get(`http://${process.env.REACT_APP_SERVER_IP}/unidades`).then((response)=>{
       setUnidadLista(response.data);
     });
+    var id = cookies.get('usuario').idusuario;
+    Axios.get(`http://${process.env.REACT_APP_SERVER_IP}/validarpermisos/${id}`).then((response)=>{
+      setValidarLista(response.data);
+    });
+
   };
  
   const abrirModal=()=>{
@@ -80,12 +94,21 @@ const Unidades = () => {
       obtenerRegistros();
     }).catch(function (error) {
       if(error.response!=null){
-       swal({
-         title: "Error!",
-         text: error.response.data.detail,
-         icon: "error",
-         button: "Aww yiss!",
-       });
+        if(error.response.data.detail){
+          swal({
+            title: "Error!",
+            text: error.response.data.detail,
+            icon: "error",
+            button: "Aww yiss!",
+          });
+        }else if(error.response.data){
+          swal({
+            title: "Error!",
+            text: error.response.data,
+            icon: "error",
+            button: "Aww yiss!",
+          });
+        }
      }if(error.response==null){
        swal({
          title: "Error!",
@@ -108,12 +131,21 @@ const Unidades = () => {
       });
     }).catch(function (error) {
       if(error.response!=null){
-       swal({
-         title: "Error!",
-         text: error.response.data.detail,
-         icon: "error",
-         button: "Aww yiss!",
-       });
+        if(error.response.data.detail){
+          swal({
+            title: "Error!",
+            text: error.response.data.detail,
+            icon: "error",
+            button: "Aww yiss!",
+          });
+        }else if(error.response.data){
+          swal({
+            title: "Error!",
+            text: error.response.data,
+            icon: "error",
+            button: "Aww yiss!",
+          });
+        }
      }if(error.response==null){
        swal({
          title: "Error!",
@@ -128,20 +160,24 @@ const Unidades = () => {
   const actualizaRegistro=(idunidad)=>{
     Axios.put(`http://${process.env.REACT_APP_SERVER_IP}/unidades`,{nombre:nuevoNombre,simbolo:nuevoSimbolo,idunidad:idunidad}).then(()=>{
       obtenerRegistros();
-      swal({
-        title: "Exito!",
-        text: "Actualizado con exito",
-        icon: "success",
-        button: `Entendido`, 
-      })  
+      
     }).catch(function (error) {
       if(error.response!=null){
-       swal({
-         title: "Error!",
-         text: error.response.data.detail,
-         icon: "error",
-         button: "Aww yiss!",
-       });
+        if(error.response.data.detail){
+          swal({
+            title: "Error!",
+            text: error.response.data.detail,
+            icon: "error",
+            button: "Aww yiss!",
+          });
+        }else if(error.response.data){
+          swal({
+            title: "Error!",
+            text: error.response.data,
+            icon: "error",
+            button: "Aww yiss!",
+          });
+        }
      }if(error.response==null){
        swal({
          title: "Error!",
@@ -172,6 +208,15 @@ const Unidades = () => {
   },[]);
 
   return (
+    <>{/*asi validamos cada permiso*/}
+    {(!validarLista.includes(25)) && 
+    <div class="col container mx-auto my-auto text-center">
+      <h1 class="text-primary">Ups...</h1>
+       <h4>No tiene permisos para ver estos registros</h4>
+   </div>}{
+   
+ }
+    {validarLista.includes(25) &&
     <div class="col container my-4">
       <div class="modal fade" id="nuevoRegistro" tabIndex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true" data-bs-backdrop="static">
         <div class="modal-dialog">
@@ -214,9 +259,10 @@ const Unidades = () => {
       <div class="mt-4 mb-4">
       <div class="row bordeLateral mb-3">
         <h2 class="m-0"><span>Gestión de Unidades</span>
+        {validarLista.includes(26) &&
           <button type="button" class="btn btn-primary btn-sm ms-3" onClick={abrirModal}>
             Nuevo Registro
-          </button>
+          </button>}
           </h2>
         </div>
           <div class="row">        
@@ -265,10 +311,10 @@ const Unidades = () => {
               </div>
             </div>
           </div>
-          <DatatableRoles  data={buscar(unidadLista)} eliminarRegistro={eliminarRegistro} actualizarRegistro={actualizaRegistro} setNuevoNombre={setNuevoNombre} setNuevoSimbolo={setNuevoSimbolo}/>
+          <DatatableRoles validarLista={validarLista} data={buscar(unidadLista)} eliminarRegistro={eliminarRegistro} actualizarRegistro={actualizaRegistro} setNuevoNombre={setNuevoNombre} setNuevoSimbolo={setNuevoSimbolo}/>
           
       </div>    
-    </div>
+    </div>}</>
   );
 };
   

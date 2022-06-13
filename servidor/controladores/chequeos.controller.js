@@ -1,6 +1,6 @@
 //SIEMPRE PONERLO
 const { sqlee } = require('./controlador');
-
+const {verificarPermiso} = require('./validarpermisos.controller');
 const obtenerChequeos = async(req,res)=>{
     try{
         sql = 'SELECT * FROM chequeo order by idchequeo desc';
@@ -39,6 +39,7 @@ const obtenerChequeos = async(req,res)=>{
 
 const obtenerChequeosPaciente = async(req,res)=>{
     const idpaciente = req.body.idpaciente;
+    
     try{
         sql = 'SELECT * FROM chequeo where idpaciente = $1 order by idchequeo desc';
         const response = await sqlee.query(sql, [idpaciente]);
@@ -74,61 +75,69 @@ const crearChequeo =  async (req, res) => {
     console.log(req.body);
     var erroresC ={};
     var correcto = true;
-    try{
+    const idusuario = req.headers.idusuario;
+    //segundo parametro es la opcion
+    let permiso = await verificarPermiso(idusuario,58);
+    if(permiso){
+        try{
        
-        if(paciente=='' || paciente==0){
-            erroresC.paciente = "Este campo es obligatorio";  
-            correcto =false;
-        }
-        if(usuario=='' || usuario==0){
-            erroresC.usuario = "Este campo es obligatorio";  
-            correcto =false;
-        }
-        if(laboratorio=='' || laboratorio==0){
-            erroresC.laboratorio = "Este campo es obligatorio";  
-            correcto =false;
-        }
-        if(fechaChequeo==''){
-            console.log(fechaChequeo);
-            erroresC.fechaChequeo = "Este campo es obligatorio";  
-            correcto =false;
-        }
-        if(horaChequeo==''){
-            erroresC.horaChequeo = "Este campo es obligatorio";
-            correcto =false;  
-        }
-        if(examenes.length<=0){
-            erroresC.examenes = "Este campo es obligatorio";
-            correcto =false; 
-        }
-        if(correcto==false)
-        {
-            
-            res.status(200).json({
-                error:'hay error',
-                errores: erroresC,
-            })
-        }
-        else{
-            const archivo = "nada";
-            const response =  await sqlee.query('INSERT INTO chequeo (idpaciente, idlaboratorio, idUsuario, fechaChequeo, horaChequeo) VALUES ($1,$2,$3,$4,$5) RETURNING idchequeo',
-            [paciente, laboratorio, usuario, fechaChequeo, horaChequeo]);
-            for(const examen of examenes){
-                const response2 =  await sqlee.query('INSERT INTO detallechequeo (idchequeo, idexamen,estadoexamen) VALUES ($1,$2,false)',
-                [response.rows[0].idchequeo,examen]);
+            if(paciente=='' || paciente==0){
+                erroresC.paciente = "Este campo es obligatorio";  
+                correcto =false;
             }
-            res.status(200).json({
-                message: 'Añadido con Exito',
-                body: {
-                    chequeo: response
+            if(usuario=='' || usuario==0){
+                erroresC.usuario = "Este campo es obligatorio";  
+                correcto =false;
+            }
+            if(laboratorio=='' || laboratorio==0){
+                erroresC.laboratorio = "Este campo es obligatorio";  
+                correcto =false;
+            }
+            if(fechaChequeo==''){
+                console.log(fechaChequeo);
+                erroresC.fechaChequeo = "Este campo es obligatorio";  
+                correcto =false;
+            }
+            if(horaChequeo==''){
+                erroresC.horaChequeo = "Este campo es obligatorio";
+                correcto =false;  
+            }
+            if(examenes.length<=0){
+                erroresC.examenes = "Este campo es obligatorio";
+                correcto =false; 
+            }
+            if(correcto==false)
+            {
+                
+                res.status(200).json({
+                    error:'hay error',
+                    errores: erroresC,
+                })
+            } else{
+                const archivo = "nada";
+                const response =  await sqlee.query('INSERT INTO chequeo (idpaciente, idlaboratorio, idUsuario, fechaChequeo, horaChequeo) VALUES ($1,$2, $3, $4,$5) RETURNING idchequeo',
+                [paciente, laboratorio, usuario, fechaChequeo, horaChequeo]);
+                for(const examen of examenes){
+                    const response2 =  await sqlee.query('INSERT INTO detallechequeo (idchequeo, idexamen,estadoexamen) VALUES ($1,$2,false)',
+                    [response.rows[0].idchequeo,examen]);
                 }
-            })
+                res.status(200).json({
+                    message: 'Añadido con Exito',
+                    body: {
+                        chequeo: response
+                    }
+                })
+            }
+           
+        }catch(error){
+            console.log(error);
+            res.status(500).json(error);
         }
-       
-    }catch(error){
-        console.log(error);
-        res.status(500).json(error);
+    }else{
+      res.status(400).send('No tiene permisos para esta acción');
     }
+
+   
 };
 
 const actualizarChequeo = async (req,res)=>{
@@ -137,49 +146,67 @@ const actualizarChequeo = async (req,res)=>{
     var { idlaboratorio, fechaChequeo, horaChequeo } = req.body;
     var erroresC ={};
     var correcto = true;
-    try{
-        registroSQL = 'SELECT * FROM chequeo where idchequeo=$1 limit 1';
-        const responseRe = await sqlee.query(registroSQL,[id]);
-        registro = responseRe.rows[0];
-
-        if(idlaboratorio=='' || idlaboratorio<=0){
-            idlaboratorio = registro.idlaboratorio;
-        }
-        if(fechaChequeo=='' || fechaChequeo==null){
-            fechaChequeo = registro.fechachequeo;
-        }
-        if(horaChequeo=='' || horaChequeo==null){
-            horaChequeo = registro.horachequeo; 
-        }
-       
-        sql = "UPDATE chequeo SET idlaboratorio=$1, fechaChequeo=$2, horaChequeo=$3 WHERE idchequeo=$4 ";
-        const response = await sqlee.query(sql,[idlaboratorio,fechaChequeo,horaChequeo,id]);
-        res.status(200).json({
-            message: 'Añadido con Exito',
-            body: {
-                chequeo: response
+    const idusuario = req.headers.idusuario;
+    //segundo parametro es la opcion
+    let permiso = await verificarPermiso(idusuario,59);
+    if(permiso){
+        try{
+            registroSQL = 'SELECT * FROM chequeo where idchequeo=$1 limit 1';
+            const responseRe = await sqlee.query(registroSQL,[id]);
+            registro = responseRe.rows[0];
+    
+            if(idlaboratorio=='' || idlaboratorio<=0){
+                idlaboratorio = registro.idlaboratorio;
             }
-        })
-        
-        
-    }catch(error){
-        console.log(error);
-        res.status(500).json(error);
+            if(fechaChequeo=='' || fechaChequeo==null){
+                fechaChequeo = registro.fechachequeo;
+            }
+            if(horaChequeo=='' || horaChequeo==null){
+                horaChequeo = registro.horachequeo; 
+            }
+           
+            sql = "UPDATE chequeo SET idlaboratorio=$1, fechaChequeo=$2, horaChequeo=$3 WHERE idchequeo=$4 ";
+            const response = await sqlee.query(sql,[idlaboratorio,fechaChequeo,horaChequeo,id]);
+            res.status(200).json({
+                message: 'Añadido con Exito',
+                body: {
+                    chequeo: response
+                }
+            })
+            
+            
+        }catch(error){
+            console.log(error);
+            res.status(500).json(error);
+        }
+    }else{
+      res.status(400).send('No tiene permisos para esta acción');
     }
+
+  
 };
 
 const eliminarChequeo =  async (req, res) => {
     const id = parseInt(req.params.idchequeo);
     console.log(id);
-    try{
+    const idusuario = req.headers.idusuario;
+    //segundo parametro es la opcion
+    let permiso = await verificarPermiso(idusuario,60);
+    if(permiso){
+        try{
        
-        const response2 = await sqlee.query('DELETE FROM chequeo where idChequeo = $1', [
-            id
-        ]);
-        res.status(200).json(`Eliminado satisfactoriamente`);
-    }catch(error){
-        res.status(500).json(error);
+            const response2 = await sqlee.query('DELETE FROM chequeo where idChequeo = $1', [
+                id
+            ]);
+            res.status(200).json(`Eliminado satisfactoriamente`);
+        }catch(error){
+            res.status(500).json(error);
+        }
+    }else{
+      res.status(400).send('No tiene permisos para esta acción');
     }
+
+   
    
 };
 

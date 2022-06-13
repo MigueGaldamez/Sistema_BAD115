@@ -1391,26 +1391,43 @@ const generarReporteTipos=  async (req, res) => {
     var filename = '';
     var nombrelaboratorio='';
     var data = [];
+    var filtro;
     if(idlaboratorio==0){
-        sql ="select nombrelaboratorio,nombrearea, nombreexamen, count(d.idexamen) from detallechequeo d inner join examen e on d.idexamen = e.idexamen inner join area a on e.idarea=a.idarea inner join chequeo ch  on ch.idchequeo = d.idchequeo inner join laboratorio lab on lab.idlaboratorio = ch.idlaboratorio group by (nombreexamen,nombrelaboratorio,nombrearea)";
-        const response = await sqlee.query(sql);
-        data = response.rows;
+        sqllabos = "select nombrelaboratorio, lab.idlaboratorio, count(d.idexamen) from detallechequeo d inner join examen e on d.idexamen = e.idexamen inner join area a on e.idarea=a.idarea inner join chequeo ch  on ch.idchequeo = d.idchequeo inner join laboratorio lab on lab.idlaboratorio = ch.idlaboratorio group by (lab.idlaboratorio,nombrelaboratorio)";
+        const labos = await sqlee.query(sqllabos);
+        labs = labos.rows;
+        for(const lab of labs){
+            sql ="select nombrelaboratorio,nombrearea,nombreexamen, count(d.idexamen) from detallechequeo d inner join examen e on d.idexamen = e.idexamen inner join area a on e.idarea=a.idarea inner join chequeo ch  on ch.idchequeo = d.idchequeo inner join laboratorio lab on lab.idlaboratorio = ch.idlaboratorio where lab.idlaboratorio=$1 group by (nombreexamen,nombrelaboratorio,nombrearea)";
+            const response = await sqlee.query(sql, [lab.idlaboratorio]);
+            lab.examenes = response.rows;
+        } 
+        filtro=0;
+        data = labs;
+        nombrelaboratorio="Sistema Clinico SIGLAB";
     }else if(idlaboratorio!=0){
-        sql ="select nombrelaboratorio,nombrearea,nombreexamen, count(d.idexamen) from detallechequeo d inner join examen e on d.idexamen = e.idexamen inner join area a on e.idarea=a.idarea inner join chequeo ch  on ch.idchequeo = d.idchequeo inner join laboratorio lab on lab.idlaboratorio = ch.idlaboratorio where lab.idlaboratorio=$1 group by (nombreexamen,nombrelaboratorio,nombrearea)";
-        const response = await sqlee.query(sql, [idlaboratorio]);
-        data = response.rows;
+        sqllabos = "select nombrelaboratorio, lab.idlaboratorio, count(d.idexamen) from detallechequeo d inner join examen e on d.idexamen = e.idexamen inner join area a on e.idarea=a.idarea inner join chequeo ch  on ch.idchequeo = d.idchequeo inner join laboratorio lab on lab.idlaboratorio = ch.idlaboratorio where lab.idlaboratorio=$1 group by (lab.idlaboratorio,nombrelaboratorio)";
+        const labos = await sqlee.query(sqllabos,[idlaboratorio]);
+        labs = labos.rows;
+        for(const lab of labs){
+            sql ="select nombrelaboratorio,nombrearea,nombreexamen, count(d.idexamen) from detallechequeo d inner join examen e on d.idexamen = e.idexamen inner join area a on e.idarea=a.idarea inner join chequeo ch  on ch.idchequeo = d.idchequeo inner join laboratorio lab on lab.idlaboratorio = ch.idlaboratorio where lab.idlaboratorio=$1 group by (nombreexamen,nombrelaboratorio,nombrearea)";
+            const response = await sqlee.query(sql, [lab.idlaboratorio]);
+            lab.examenes = response.rows;
+        } 
+        data = labs;
         sql2 ="select * from laboratorio where idlaboratorio=$1 limit 1";
         const response2 = await sqlee.query(sql2,[idlaboratorio]);
+        filtro=1; 
         nombrelaboratorio = response2.rows[0].nombrelaboratorio;
     }
-   
-    var filename = 'examenesportipo_.pdf';
+  
+    var filename = 'examenesportipo_' + (Math.floor(Math.random() * 9999) + 10000) + '.pdf';
     // esta sera la data que vamos a mandar al template(plantilla) para crear el pdf
     const obj = {
         nombrelaboratorio: nombrelaboratorio,
         examenes: data,
         fechainicio:fechainicio,
         fechafin:fechafin,
+        filtro:filtro,
         nombrereporte:"Examenes realizados por tipo",
     }
 

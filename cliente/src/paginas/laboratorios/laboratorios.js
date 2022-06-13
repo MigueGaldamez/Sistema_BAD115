@@ -95,12 +95,22 @@ const Laboratorios = () => {
       obtenerRegistros();
     }).catch(function (error) {
       if(error.response!=null){
-       swal({
-         title: "Error!",
-         text: error.response.data.detail,
-         icon: "error",
-         button: "Aww yiss!",
-       });
+        if(error.response.data.detail){
+          swal({
+            title: "Error!",
+            text: error.response.data.detail,
+            icon: "error",
+            button: "Aww yiss!",
+          });
+        }else if(error.response.data){
+          swal({
+            title: "Error!",
+            text: error.response.data,
+            icon: "error",
+            button: "Aww yiss!",
+          });
+        }
+    
      }if(error.response==null){
        swal({
          title: "Error!",
@@ -123,12 +133,21 @@ const Laboratorios = () => {
       })  
     }).catch(function (error) {
      if(error.response!=null){
-      swal({
-        title: "Error!",
-        text: error.response.data.detail,
-        icon: "error",
-        button: "Aww yiss!",
-      });
+      if(error.response.data.detail){
+        swal({
+          title: "Error!",
+          text: error.response.data.detail,
+          icon: "error",
+          button: "Aww yiss!",
+        });
+      }else if(error.response.data){
+        swal({
+          title: "Error!",
+          text: error.response.data,
+          icon: "error",
+          button: "Aww yiss!",
+        });
+      }
     }if(error.response==null){
       swal({
         title: "Error!",
@@ -151,12 +170,21 @@ const Laboratorios = () => {
       })
     }).catch(function (error) {
       if(error.response!=null){
-       swal({
-         title: "Error!",
-         text: error.response.data.detail,
-         icon: "error",
-         button: "Aww yiss!",
-       });
+        if(error.response.data.detail){
+          swal({
+            title: "Error!",
+            text: error.response.data.detail,
+            icon: "error",
+            button: "Aww yiss!",
+          });
+        }else if(error.response.data){
+          swal({
+            title: "Error!",
+            text: error.response.data,
+            icon: "error",
+            button: "Aww yiss!",
+          });
+        }
      }if(error.response==null){
        swal({
          title: "Error!",

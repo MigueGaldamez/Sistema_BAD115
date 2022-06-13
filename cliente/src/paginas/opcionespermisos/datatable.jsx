@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import Pagination from '../../componentes/Paginacion/paginacion';
-export default function DatatableRoles({ data,eliminarRegistro,actualizarRegistro,setNuevoNombre }) {
+export default function DatatableRoles({ data,eliminarRegistro,actualizarRegistro,setNuevoNombre,validarLista }) {
   
   const dataOriginal = data;
   const [paginaActual, setPaginaActual] = useState(1);
-  const [registrosXpagina] = useState(5);
+  const [registrosXpagina] = useState(12);
 
   //Obtener los actuales 
   const indexUltimoRegistro = paginaActual * registrosXpagina;
@@ -46,9 +46,11 @@ export default function DatatableRoles({ data,eliminarRegistro,actualizarRegistr
            
             )})}
               <td  >
-              <a class="btn btn-success btn-sm mx-1" onClick={()=>{actualizarRegistro(id)}}>Actualizar</a>
+              {validarLista.includes(51) &&
+              <a class="btn btn-success btn-sm mx-1" onClick={()=>{actualizarRegistro(id)}}>Actualizar</a>}
+               {validarLista.includes(52) &&
               <a class="btn btn-danger btn-sm mx-1" data-bs-toggle="modal" data-bs-target={'#eliminarModal'+id} >Eliminar</a>
-              </td>
+               }</td>
               {/* Modal para eliminar */}
               <div class="modal fade" id={'eliminarModal'+id} tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
                 <div class="modal-dialog">

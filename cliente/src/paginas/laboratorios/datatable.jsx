@@ -74,7 +74,7 @@ export default function DatatableRoles(
            
             )})}
             
-              <td  >
+              <td>
               {validarLista.includes(3) &&
               <a class="btn btn-success btn-sm mx-1" onClick={()=>{actualizarRegistro(id)}}>Actualizar</a>
               }

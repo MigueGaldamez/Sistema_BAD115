@@ -143,6 +143,7 @@ const guardarResultado =  async (req, res) => {
     var response = null;
     var erroresC ={};
     var correcto = true;
+    console.log(req.body);
     try{
         
 

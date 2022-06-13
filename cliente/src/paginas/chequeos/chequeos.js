@@ -5,6 +5,8 @@ import DatatableRoles from "./datatable";
 import Moment from 'moment';
 import { Modal } from 'bootstrap/dist/js/bootstrap.bundle.min';
 import swal from 'sweetalert';
+import Cookies from 'universal-cookie';
+const cookies = new Cookies();
 var SHA256 = require("crypto-js/sha256");
 
 const Chequeos = () => { 
@@ -30,7 +32,7 @@ const Chequeos = () => {
   const[usuarioLista, setUsuarioLista] = useState([]);
   const[laboratorioLista, setLaboratorioLista] = useState([]);
   const[examenLista, setExamenLista] = useState([]);
-
+  const[validarLista, setValidarLista] = useState([]);
   const[modalB, setModalB] = useState([]);
   //PARA LA BUSQUEDA
   const [q, setQ] = useState('');
@@ -51,6 +53,13 @@ const Chequeos = () => {
     'estadochequeo'
   ]);
   
+  //esto es para validar en el backend y mandar siempre el id usuario
+  Axios.interceptors.request.use(function (config) {
+    var id = cookies.get('usuario').idusuario;
+    config.headers.idusuario =  id;
+    return config;
+});
+  
 
   const obtenerRegistros=()=>{
     Axios.get(`http://${process.env.REACT_APP_SERVER_IP}/chequeos`).then((response)=>{
@@ -70,6 +79,10 @@ const Chequeos = () => {
     });
     Axios.get(`http://${process.env.REACT_APP_SERVER_IP}/usuariosLaboratoristas`).then((response)=>{
       setUsuarioLista(response.data);
+    });
+    var id = cookies.get('usuario').idusuario;
+    Axios.get(`http://${process.env.REACT_APP_SERVER_IP}/validarpermisos/${id}`).then((response)=>{
+      setValidarLista(response.data);
     });
   };
  
@@ -117,12 +130,21 @@ const Chequeos = () => {
       obtenerRegistros();
     }).catch(function (error) {
       if(error.response!=null){
-       swal({
-         title: "Error!",
-         text: error.response.data.detail,
-         icon: "error",
-         button: "Aww yiss!",
-       });
+        if(error.response.data.detail){
+          swal({
+            title: "Error!",
+            text: error.response.data.detail,
+            icon: "error",
+            button: "Aww yiss!",
+          });
+        }else if(error.response.data){
+          swal({
+            title: "Error!",
+            text: error.response.data,
+            icon: "error",
+            button: "Aww yiss!",
+          });
+        }
      }if(error.response==null){
        swal({
          title: "Error!",
@@ -145,12 +167,21 @@ const Chequeos = () => {
       })  
     }).catch(function (error) {
      if(error.response!=null){
-      swal({
-        title: "Error!",
-        text: error.response.data.detail,
-        icon: "error",
-        button: "Aww yiss!",
-      });
+      if(error.response.data.detail){
+        swal({
+          title: "Error!",
+          text: error.response.data.detail,
+          icon: "error",
+          button: "Aww yiss!",
+        });
+      }else if(error.response.data){
+        swal({
+          title: "Error!",
+          text: error.response.data,
+          icon: "error",
+          button: "Aww yiss!",
+        });
+      }
     }if(error.response==null){
       swal({
         title: "Error!",
@@ -173,12 +204,21 @@ const Chequeos = () => {
       })
     }).catch(function (error) {
       if(error.response!=null){
-       swal({
-         title: "Error!",
-         text: error.response.data.detail,
-         icon: "error",
-         button: "Aww yiss!",
-       });
+        if(error.response.data.detail){
+          swal({
+            title: "Error!",
+            text: error.response.data.detail,
+            icon: "error",
+            button: "Aww yiss!",
+          });
+        }else if(error.response.data){
+          swal({
+            title: "Error!",
+            text: error.response.data,
+            icon: "error",
+            button: "Aww yiss!",
+          });
+        }
      }if(error.response==null){
        swal({
          title: "Error!",
@@ -218,6 +258,13 @@ const Chequeos = () => {
   },[]);
 
   return (
+    <>{/*asi validamos cada permiso*/}
+    {(!validarLista.includes(57)) && 
+    <div class="col container mx-auto my-auto text-center">
+      <h1 class="text-primary">Ups...</h1>
+       <h4>No tiene permisos para ver estos registros</h4>
+   </div>}
+    {validarLista.includes(57) &&
     <div class="col container my-4">
       
       <div class="modal fade" id="nuevoRegistro" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true" data-bs-backdrop="static">
@@ -320,9 +367,10 @@ const Chequeos = () => {
       <div class="mt-4 mb-4">
       <div class="row bordeLateral mb-3">
         <h2 class="m-0"><span>Gestión de Chequeos</span>
+        {validarLista.includes(58) &&
           <button type="button" class="btn btn-primary btn-sm ms-3" onClick={abrirModal}>
             Nuevo Registro
-          </button>
+          </button>}
           </h2>
         </div>
           <div class="row">        
@@ -371,10 +419,10 @@ const Chequeos = () => {
               </div>
             </div>
           </div>
-          <DatatableRoles examenes={examenLista} pacientes={pacienteLista} labs={laboratorioLista} data={buscar(chequeoLista)} usuarios={usuarioLista} laboratorios={laboratorioLista} eliminarRegistro={eliminarRegistro} actualizarRegistro={actualizaRegistro}  setNuevoLaboratorio={setNuevoLaboratorio} setNuevaFechaChequeo={setNuevaFechaChequeo} setNuevaHoraChequeo={setNuevaHoraChequeo} />
+          <DatatableRoles validarLista={validarLista} examenes={examenLista} pacientes={pacienteLista} labs={laboratorioLista} data={buscar(chequeoLista)} usuarios={usuarioLista} laboratorios={laboratorioLista} eliminarRegistro={eliminarRegistro} actualizarRegistro={actualizaRegistro}  setNuevoLaboratorio={setNuevoLaboratorio} setNuevaFechaChequeo={setNuevaFechaChequeo} setNuevaHoraChequeo={setNuevaHoraChequeo} />
           
       </div>    
-    </div>
+    </div>}</>
   );
 };
   
